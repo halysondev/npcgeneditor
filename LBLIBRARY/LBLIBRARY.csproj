@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>LBLIBRARY</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <TargetFramework>net4.5</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="LBLIBRARY.Standard.ico" />
+    <None Remove="LBLIBRARY.Small.ico" />
+    <EmbeddedResource Include="LBLIBRARY.Standard.ico" LogicalName="LBLIBRARY.Standard.ico" />
+    <EmbeddedResource Include="LBLIBRARY.Small.ico" LogicalName="LBLIBRARY.Small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="zlib.net" Version="1.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DevILNET\DevILNet.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+</Project>
