@@ -1,2 +1,2 @@
-# npcgen data editor by Lyka Updated by Haly, 
+# npcgen data editor by Luka Updated by Haly, 
 # reads x64 elementclient coord
