@@ -1145,6 +1145,11 @@ public class Form1 : Form
         Process[] processesByName = Process.GetProcessesByName("elementclient_64");
         if (processesByName.Length == 0)
         {
+            processesByName = Process.GetProcessesByName("elementclient");
+        }
+
+        if (processesByName.Length == 0)
+        {
             if (Language == 1)
             {
                 MessageBox.Show("Клиент игры не запущен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
