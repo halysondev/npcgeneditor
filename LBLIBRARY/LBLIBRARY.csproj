@@ -5,7 +5,7 @@
     <UseWindowsForms>True</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <TargetFramework>net4.5</TargetFramework>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <LangVersion>11.0</LangVersion>

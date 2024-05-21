@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -13,6606 +14,6909 @@ using System.Windows.Forms;
 using System.Xml;
 using LBLIBRARY;
 using NpcGenDataEditor.Properties;
+using System.Windows;
+using System.Windows.Input;
+using System.ComponentModel;
 
 namespace NpcGenDataEditor;
 
 public class Form1 : Form
 {
-	public List<offsets> Offsets = new List<offsets>();
+    public List<offsets> Offsets = new List<offsets>();
 
-	private List<int> SearchMonsters;
+    private List<int> SearchMonsters;
 
-	private List<int> SearchResources;
+    private List<int> SearchResources;
 
-	private List<int> SearchDynamics;
+    private List<int> SearchDynamics;
 
-	private List<int> SearchTriggers;
+    private List<int> SearchTriggers;
 
-	private NpcGen Read;
+    private NpcGen Read;
 
-	private Elementsdata Element;
+    private Elementsdata Element;
 
-	private ArchiveEngine PckFile;
+    private ArchiveEngine PckFile;
 
-	private ShowLocationWindow MapForm;
+    private ShowLocationWindow MapForm;
 
-	private MobsNpcsForm ChooseFromElementsForm;
+    private MobsNpcsForm ChooseFromElementsForm;
 
-	private DynamicObjectsForm DynamicForm;
+    private DynamicObjectsForm DynamicForm;
 
-	private List<ClassDefaultMonsters> MonstersContact;
+    private List<ClassDefaultMonsters> MonstersContact;
 
-	private List<ClassDefaultResources> ResourcesContact;
+    private List<ClassDefaultResources> ResourcesContact;
 
-	private List<ClassDynamicObject> DynamicsContact;
+    private List<ClassDynamicObject> DynamicsContact;
 
-	private List<DefaultInformation> DynamicsListRu;
+    private List<DefaultInformation> DynamicsListRu;
 
-	private List<DefaultInformation> DynamicsListEn;
+    private List<DefaultInformation> DynamicsListEn;
 
-	private List<MapLoadedInformation> LoadedMapConfigs;
+    private List<MapLoadedInformation> LoadedMapConfigs;
 
-	private List<GameMapInfo> Maps;
+    private List<GameMapInfo> Maps;
 
-	private List<int> NpcRowCollection;
+    private List<int> NpcRowCollection;
 
-	private List<int> UnderNpcRowCollection;
+    private List<int> UnderNpcRowCollection;
 
-	private List<int> ResourcesRowCollection;
+    private List<int> ResourcesRowCollection;
 
-	private List<int> UnderResourcesRowCollection;
+    private List<int> UnderResourcesRowCollection;
 
-	private List<int> DynamicsRowCollection;
+    private List<int> DynamicsRowCollection;
 
-	private List<int> TriggersRowCollection;
+    private List<int> TriggersRowCollection;
 
-	private List<IntDictionary> ErrorExistenceCollection = new List<IntDictionary>();
+    private List<IntDictionary> ErrorExistenceCollection = new List<IntDictionary>();
 
-	private List<IntDictionary> ErrorResourcesCollection = new List<IntDictionary>();
+    private List<IntDictionary> ErrorResourcesCollection = new List<IntDictionary>();
 
-	private List<IntDictionary> ErrorDynamicsCollection = new List<IntDictionary>();
+    private List<IntDictionary> ErrorDynamicsCollection = new List<IntDictionary>();
 
-	private Keys MonstersDefaultKey;
+    private Keys MonstersDefaultKey;
 
-	private Keys MonstersExtraKey;
+    private Keys MonstersExtraKey;
 
-	private Keys ResourcesDefaultKey;
+    private Keys ResourcesDefaultKey;
 
-	private Keys ResourcesExtraKey;
+    private Keys ResourcesExtraKey;
 
-	private Keys DynamicsDefaultKey;
+    private Keys DynamicsDefaultKey;
 
-	private Keys DynamicsExtraKey;
+    private Keys DynamicsExtraKey;
 
-	private int NpcRowIndex;
+    private int NpcRowIndex;
 
-	private int NpcGroupIndex;
+    private int NpcGroupIndex;
 
-	private int ResourcesRowIndex;
+    private int ResourcesRowIndex;
 
-	private int ResourcesGroupIndex;
+    private int ResourcesGroupIndex;
 
-	private int DynamicRowIndex;
+    private int DynamicRowIndex;
 
-	private int TriggersRowIndex;
+    private int TriggersRowIndex;
 
-	private int Action;
+    private int Action;
 
-	private int Language = 1;
+    private int Language = 1;
 
-	private int InterfaceColor = 1;
+    private int InterfaceColor = 1;
 
-	private bool AllowCellChanging = true;
+    private bool AllowCellChanging = true;
 
-	private int ErrorsLanguage;
+    private int ErrorsLanguage;
 
-	private IContainer components = null;
+    private IContainer components = null;
 
-	private Label label1;
+    private Label label1;
 
-	private TextBox Elements_textbox;
+    private TextBox Elements_textbox;
 
-	private Label label2;
+    private Label label2;
 
-	private TextBox Npcgen_textbox;
+    private TextBox Npcgen_textbox;
 
-	private Button Search_element;
+    private Button Search_element;
 
-	private Button Search_Npcgen;
+    private Button Search_Npcgen;
 
-	private Button OpenFiles;
+    private Button OpenFiles;
 
-	private Button SaveFile;
+    private Button SaveFile;
 
-	private ProgressBar MainProgressBar;
+    private ProgressBar MainProgressBar;
 
-	private TabControl MainTabControl;
+    private TabControl MainTabControl;
 
-	private TabPage ResourcesTab;
+    private TabPage ResourcesTab;
 
-	private TabPage ExistenceTab;
+    private TabPage ExistenceTab;
 
-	private TabPage DynObjectsTab;
+    private TabPage DynObjectsTab;
 
-	private TabPage TriggersTab;
+    private TabPage TriggersTab;
 
-	private Button ExistenceCloneButton;
+    private Button ExistenceCloneButton;
 
-	private Button ExistenceRemoveButton;
+    private Button ExistenceRemoveButton;
 
-	private GroupBox MainGroupBox;
+    private GroupBox MainGroupBox;
 
-	private OpenFileDialog Element_dialog;
+    private OpenFileDialog Element_dialog;
 
-	private OpenFileDialog Npcgen_dialog;
+    private OpenFileDialog Npcgen_dialog;
 
-	private ComboBox ExistenceLocating;
+    private ComboBox ExistenceLocating;
 
-	private Label label3;
+    private Label label3;
 
-	private Label label4;
+    private Label label4;
 
-	private TextBox Surfaces_path;
+    private TextBox Surfaces_path;
 
-	private Button Search_surfaces;
+    private Button Search_surfaces;
 
-	private Button Open_surfaces;
+    private Button Open_surfaces;
 
-	private TextBox Group_amount_textbox;
+    private TextBox Group_amount_textbox;
 
-	private Label label5;
+    private Label label5;
 
-	private GroupBox groupBox1;
+    private GroupBox groupBox1;
 
-	private TextBox Z_scatter;
+    private TextBox Z_scatter;
 
-	private Label label12;
+    private Label label12;
 
-	private TextBox Y_scatter;
+    private TextBox Y_scatter;
 
-	private Label label13;
+    private Label label13;
 
-	private TextBox X_scatter;
+    private TextBox X_scatter;
 
-	private Label label14;
+    private Label label14;
 
-	private TextBox Z_rotate;
+    private TextBox Z_rotate;
 
-	private Label label11;
+    private Label label11;
 
-	private TextBox Y_rotate;
+    private TextBox Y_rotate;
 
-	private Label label10;
+    private Label label10;
 
-	private TextBox X_rotate;
+    private TextBox X_rotate;
 
-	private TextBox Z_position;
+    private TextBox Z_position;
 
-	private TextBox Y_position;
+    private TextBox Y_position;
 
-	private Label label9;
+    private Label label9;
 
-	private TextBox X_position;
+    private TextBox X_position;
 
-	private Label label8;
+    private Label label8;
 
-	private Label label7;
+    private Label label7;
 
-	private Label label6;
+    private Label label6;
 
-	private ComboBox ExistenceType;
+    private ComboBox ExistenceType;
 
-	private Label label15;
+    private Label label15;
 
-	private TextBox Group_type;
+    private TextBox Group_type;
 
-	private Label label16;
+    private Label label16;
 
-	private CheckBox ExistenceInitGen;
+    private CheckBox ExistenceInitGen;
 
-	private CheckBox ExistenceAutoRevive;
+    private CheckBox ExistenceAutoRevive;
 
-	private CheckBox BValicOnce;
+    private CheckBox BValicOnce;
 
-	private TextBox Trigger;
+    private TextBox Trigger;
 
-	private Label label18;
+    private Label label18;
 
-	private TextBox dwGenId;
+    private TextBox dwGenId;
 
-	private Label label17;
+    private Label label17;
 
-	private TextBox IMaxNuml;
+    private TextBox IMaxNuml;
 
-	private Label label20;
+    private Label label20;
 
-	private TextBox Life_time;
+    private TextBox Life_time;
 
-	private Label label19;
+    private Label label19;
 
-	private Button ExistenceGroupRemoveButton;
+    private Button ExistenceGroupRemoveButton;
 
-	private Button ExistenceGroupCloneButton;
+    private Button ExistenceGroupCloneButton;
 
-	private DataGridView NpcsGroupGrid;
+    private DataGridView NpcsGroupGrid;
 
-	private NumericUpDown Id_numeric;
+    private NumericUpDown Id_numeric;
 
-	private Label label21;
+    private Label label21;
 
-	private NumericUpDown Amount_numeric;
+    private NumericUpDown Amount_numeric;
 
-	private Label label22;
+    private Label label22;
 
-	private NumericUpDown Respawn_numeric;
+    private NumericUpDown Respawn_numeric;
 
-	private Label label23;
+    private Label label23;
 
-	private NumericUpDown DeathAmount_numeric;
+    private NumericUpDown DeathAmount_numeric;
 
-	private Label label24;
+    private Label label24;
 
-	private ComboBox Agression;
+    private ComboBox Agression;
 
-	private Label label25;
+    private Label label25;
 
-	private ComboBox Path_type;
+    private ComboBox Path_type;
 
-	private Label label26;
+    private Label label26;
 
-	private Label label28;
+    private Label label28;
 
-	private NumericUpDown Path_numeric;
+    private NumericUpDown Path_numeric;
 
-	private Label label27;
+    private Label label27;
 
-	private NumericUpDown Path_speed;
+    private NumericUpDown Path_speed;
 
-	private Label label29;
+    private Label label29;
 
-	private NumericUpDown Water_numeric;
+    private NumericUpDown Water_numeric;
 
-	private NumericUpDown Turn_numeric;
+    private NumericUpDown Turn_numeric;
 
-	private Label label30;
+    private Label label30;
 
-	private NumericUpDown AskHelp_numeric;
+    private NumericUpDown AskHelp_numeric;
 
-	private Label label31;
+    private Label label31;
 
-	private NumericUpDown NeedHelp_numeric;
+    private NumericUpDown NeedHelp_numeric;
 
-	private Label label32;
+    private Label label32;
 
-	private CheckBox bFac_Accept;
+    private CheckBox bFac_Accept;
 
-	private CheckBox bFac_Helper;
+    private CheckBox bFac_Helper;
 
-	private CheckBox bFaction;
+    private CheckBox bFaction;
 
-	private CheckBox bNeedHelp;
+    private CheckBox bNeedHelp;
 
-	private Label label33;
+    private Label label33;
 
-	private NumericUpDown Deadtime_numeric;
+    private NumericUpDown Deadtime_numeric;
 
-	private Label label34;
+    private Label label34;
 
-	private NumericUpDown RefreshLower_numeric;
+    private NumericUpDown RefreshLower_numeric;
 
-	private NumericUpDown Group_numeric;
+    private NumericUpDown Group_numeric;
 
-	private Label label35;
+    private Label label35;
 
-	private OpenFileDialog Surfaces_search;
+    private OpenFileDialog Surfaces_search;
 
-	private ComboBox Maps_combobox;
+    private ComboBox Maps_combobox;
 
-	private SaveFileDialog Npcgen_save_dialog;
+    private SaveFileDialog Npcgen_save_dialog;
 
-	private DataGridView ResourcesGrid;
+    private DataGridView ResourcesGrid;
 
-	private Button ResourcesRemoveButton;
+    private Button ResourcesRemoveButton;
 
-	private Button ResourcesCloneButton;
+    private Button ResourcesCloneButton;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
 
-	private Button ButtonShowMap;
+    private Button ButtonShowMap;
 
-	private ProgressBar MapProgress;
+    private ProgressBar MapProgress;
 
-	private GroupBox groupBox3;
+    private GroupBox groupBox3;
 
-	private TextBox RIMaxNuml;
+    private TextBox RIMaxNuml;
 
-	private Label label36;
+    private Label label36;
 
-	private TextBox RTriggerID;
+    private TextBox RTriggerID;
 
-	private Label label37;
+    private Label label37;
 
-	private TextBox RdwGenID;
+    private TextBox RdwGenID;
 
-	private Label label38;
+    private Label label38;
 
-	private CheckBox RBValidOnce;
+    private CheckBox RBValidOnce;
 
-	private CheckBox ResourcesAutoRevive;
+    private CheckBox ResourcesAutoRevive;
 
-	private CheckBox ResourcesInitGen;
+    private CheckBox ResourcesInitGen;
 
-	private TextBox RRotation;
+    private TextBox RRotation;
 
-	private Label label41;
+    private Label label41;
 
-	private TextBox RZ_Random;
+    private TextBox RZ_Random;
 
-	private Label label42;
+    private Label label42;
 
-	private TextBox RX_Random;
+    private TextBox RX_Random;
 
-	private Label label43;
+    private Label label43;
 
-	private TextBox RInCline2;
+    private TextBox RInCline2;
 
-	private Label label44;
+    private Label label44;
 
-	private TextBox RInCline1;
+    private TextBox RInCline1;
 
-	private Label label45;
+    private Label label45;
 
-	private TextBox RZ_position;
+    private TextBox RZ_position;
 
-	private TextBox RY_position;
+    private TextBox RY_position;
 
-	private TextBox RX_position;
+    private TextBox RX_position;
 
-	private Label label47;
+    private Label label47;
 
-	private Label label48;
+    private Label label48;
 
-	private Label label49;
+    private Label label49;
 
-	private TextBox RGroup_amount_textbox;
+    private TextBox RGroup_amount_textbox;
 
-	private Label label51;
+    private Label label51;
 
-	private GroupBox groupBox5;
+    private GroupBox groupBox5;
 
-	private Label label53;
+    private Label label53;
 
-	private NumericUpDown RfHeiOff_numeric;
+    private NumericUpDown RfHeiOff_numeric;
 
-	private Label label55;
+    private Label label55;
 
-	private NumericUpDown RRespawn_numeric;
+    private NumericUpDown RRespawn_numeric;
 
-	private Label label58;
+    private Label label58;
 
-	private NumericUpDown RAmount_numeric;
+    private NumericUpDown RAmount_numeric;
 
-	private Label label59;
+    private Label label59;
 
-	private NumericUpDown RId_numeric;
+    private NumericUpDown RId_numeric;
 
-	private Label label60;
+    private Label label60;
 
-	private Button ResourcesGroupRemoveButton;
+    private Button ResourcesGroupRemoveButton;
 
-	private Button ResourcesGroupCloneButton;
+    private Button ResourcesGroupCloneButton;
 
-	private DataGridView ResourcesGroupGrid;
+    private DataGridView ResourcesGroupGrid;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
 
-	private Label label39;
+    private Label label39;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
 
-	private NumericUpDown RType_numeric;
+    private NumericUpDown RType_numeric;
 
-	private ComboBox Version_combobox;
+    private ComboBox Version_combobox;
 
-	private Label label52;
+    private Label label52;
 
-	private TabPage OptionsTab;
+    private TabPage OptionsTab;
 
-	private GroupBox groupBox6;
+    private GroupBox groupBox6;
 
-	private ComboBox ExtraMobButton_combobox;
+    private ComboBox ExtraMobButton_combobox;
 
-	private Label label46;
+    private Label label46;
 
-	private ComboBox DefaultMobButton_combobox;
+    private ComboBox DefaultMobButton_combobox;
 
-	private Label label50;
+    private Label label50;
 
-	private ToolTip toolTip1;
+    private ToolTip toolTip1;
 
-	private Button DynObjectsRemoveButton;
+    private Button DynObjectsRemoveButton;
 
-	private Button DynObjectsCloneButton;
+    private Button DynObjectsCloneButton;
 
-	private DataGridView DynamicGrid;
+    private DataGridView DynamicGrid;
 
-	private GroupBox groupBox7;
+    private GroupBox groupBox7;
 
-	private Button DynObjectsInsertCordsFromGame;
+    private Button DynObjectsInsertCordsFromGame;
 
-	private GroupBox groupBox10;
+    private GroupBox groupBox10;
 
-	private NumericUpDown AddDynamicsID;
+    private NumericUpDown AddDynamicsID;
 
-	private Label label61;
+    private Label label61;
 
-	private TextBox DZ_position;
+    private TextBox DZ_position;
 
-	private TextBox DY_position;
+    private TextBox DY_position;
 
-	private TextBox DX_position;
+    private TextBox DX_position;
 
-	private Label label80;
+    private Label label80;
 
-	private Label label81;
+    private Label label81;
 
-	private Label label82;
+    private Label label82;
 
-	private TextBox DRotation;
+    private TextBox DRotation;
 
-	private Label label70;
+    private Label label70;
 
-	private TextBox DIncline2;
+    private TextBox DIncline2;
 
-	private Label label71;
+    private Label label71;
 
-	private TextBox DIncline1;
+    private TextBox DIncline1;
 
-	private Label label72;
+    private Label label72;
 
-	private Label label69;
+    private Label label69;
 
-	private TextBox DTrigger_id;
+    private TextBox DTrigger_id;
 
-	private Label label73;
+    private Label label73;
 
-	private TextBox DScale;
+    private TextBox DScale;
 
-	private Label label74;
+    private Label label74;
 
-	private NumericUpDown AddDynamicsTrigger;
+    private NumericUpDown AddDynamicsTrigger;
 
-	private Label label40;
+    private Label label40;
 
-	private GroupBox groupBox9;
+    private GroupBox groupBox9;
 
-	private PictureBox DynamicPictureBox;
+    private PictureBox DynamicPictureBox;
 
-	private Button ResourcesInsertCordsFromGame;
+    private Button ResourcesInsertCordsFromGame;
 
-	private GroupBox groupBox11;
+    private GroupBox groupBox11;
 
-	private NumericUpDown AddResourceRespawnTime;
+    private NumericUpDown AddResourceRespawnTime;
 
-	private Label label54;
+    private Label label54;
 
-	private NumericUpDown AddResourceAmount;
+    private NumericUpDown AddResourceAmount;
 
-	private Label label56;
+    private Label label56;
 
-	private NumericUpDown AddResourceID;
+    private NumericUpDown AddResourceID;
 
-	private Label label57;
+    private Label label57;
 
-	private NumericUpDown AddResourcesTrigger;
+    private NumericUpDown AddResourcesTrigger;
 
-	private Label label75;
+    private Label label75;
 
-	private OpenFileDialog Dynamics_dialog;
+    private OpenFileDialog Dynamics_dialog;
 
-	private Label Label_DynamicName;
+    private Label Label_DynamicName;
 
-	private TextBox DId_numeric;
+    private TextBox DId_numeric;
 
-	private Button ConvertAndSaveButton;
+    private Button ConvertAndSaveButton;
 
-	private Button InformationButton;
+    private Button InformationButton;
 
-	private ComboBox ExtraResourceButton_combobox;
+    private ComboBox ExtraResourceButton_combobox;
 
-	private Label label62;
+    private Label label62;
 
-	private ComboBox DefaultResourceButton_combobox;
+    private ComboBox DefaultResourceButton_combobox;
 
-	private Label label77;
+    private Label label77;
 
-	private DataGridView TriggersGrid;
+    private DataGridView TriggersGrid;
 
-	private Button TriggersRemoveButton;
+    private Button TriggersRemoveButton;
 
-	private Button TriggersCloneButton;
+    private Button TriggersCloneButton;
 
-	private DataGridView MUTrigger;
+    private DataGridView MUTrigger;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn28;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn28;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn29;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn29;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn30;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn30;
 
-	private GroupBox groupBox12;
+    private GroupBox groupBox12;
 
-	private TextBox TId_textbox;
+    private TextBox TId_textbox;
 
-	private Label label78;
+    private Label label78;
 
-	private Label label89;
+    private Label label89;
 
-	private TextBox TName_textbox;
+    private TextBox TName_textbox;
 
-	private TextBox TGmId_textbox;
+    private TextBox TGmId_textbox;
 
-	private Button GotoNpcMobsContacts;
+    private Button GotoNpcMobsContacts;
 
-	private CheckBox TStartBySchedule;
+    private CheckBox TStartBySchedule;
 
-	private CheckBox TStopBySchedule;
+    private CheckBox TStopBySchedule;
 
-	private TextBox TDuration;
+    private TextBox TDuration;
 
-	private Label label85;
+    private Label label85;
 
-	private TextBox TWaitStop_textbox;
+    private TextBox TWaitStop_textbox;
 
-	private Label label84;
+    private Label label84;
 
-	private TextBox TWaitStart_textbox;
+    private TextBox TWaitStart_textbox;
 
-	private CheckBox TAutoStart;
+    private CheckBox TAutoStart;
 
-	private Label label79;
+    private Label label79;
 
-	private Label label83;
+    private Label label83;
 
-	private GroupBox groupBox15;
+    private GroupBox groupBox15;
 
-	private DataGridView DUTrigger;
+    private DataGridView DUTrigger;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn25;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn25;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn26;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn26;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn27;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn27;
 
-	private Button GotoDynamicsContacts;
+    private Button GotoDynamicsContacts;
 
-	private GroupBox groupBox14;
+    private GroupBox groupBox14;
 
-	private DataGridView RUTrigger;
+    private DataGridView RUTrigger;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn22;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn22;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn23;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn23;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn24;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn24;
 
-	private Button GotoResourcesContacts;
+    private Button GotoResourcesContacts;
 
-	private GroupBox groupBox13;
+    private GroupBox groupBox13;
 
-	private GroupBox groupBox17;
+    private GroupBox groupBox17;
 
-	private TextBox TStopMinute;
+    private TextBox TStopMinute;
 
-	private Label label93;
+    private Label label93;
 
-	private TextBox TStopHour;
+    private TextBox TStopHour;
 
-	private Label label94;
+    private Label label94;
 
-	private TextBox TStopDay;
+    private TextBox TStopDay;
 
-	private Label label95;
+    private Label label95;
 
-	private ComboBox TStopWeekDay;
+    private ComboBox TStopWeekDay;
 
-	private TextBox TStopMonth;
+    private TextBox TStopMonth;
 
-	private Label label96;
+    private Label label96;
 
-	private TextBox TStopYear;
+    private TextBox TStopYear;
 
-	private Label label97;
+    private Label label97;
 
-	private Label label98;
+    private Label label98;
 
-	private GroupBox groupBox16;
+    private GroupBox groupBox16;
 
-	private TextBox TStartMinute;
+    private TextBox TStartMinute;
 
-	private Label label92;
+    private Label label92;
 
-	private TextBox TStartHour;
+    private TextBox TStartHour;
 
-	private Label label91;
+    private Label label91;
 
-	private TextBox TStartDay;
+    private TextBox TStartDay;
 
-	private Label label90;
+    private Label label90;
 
-	private ComboBox TStartWeekDay;
+    private ComboBox TStartWeekDay;
 
-	private TextBox TStartMonth;
+    private TextBox TStartMonth;
 
-	private Label label87;
+    private Label label87;
 
-	private TextBox TStartYear;
+    private TextBox TStartYear;
 
-	private Label label86;
+    private Label label86;
 
-	private Label label88;
+    private Label label88;
 
-	private Label label99;
+    private Label label99;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
 
-	private ComboBox ExtraDynamicsButton_combobox;
+    private ComboBox ExtraDynamicsButton_combobox;
 
-	private Label label100;
+    private Label label100;
 
-	private ComboBox DefaultDynamicsButton_combobox;
+    private ComboBox DefaultDynamicsButton_combobox;
 
-	private Label label101;
+    private Label label101;
 
-	private RadioButton English;
+    private RadioButton English;
 
-	private RadioButton Russian;
+    private RadioButton Russian;
 
-	private ContextMenuStrip TriggersContext;
+    private ContextMenuStrip TriggersContext;
 
-	private ToolStripMenuItem DeleteEmptyTrigger;
+    private ToolStripMenuItem DeleteEmptyTrigger;
 
-	private ComboBox ConvertComboboxVersion;
+    private ComboBox ConvertComboboxVersion;
 
-	private ContextMenuStrip ExistenceContext;
+    private ContextMenuStrip ExistenceContext;
 
-	private ToolStripMenuItem toolStripMenuItem1;
+    private ToolStripMenuItem toolStripMenuItem1;
 
-	private ToolStripMenuItem UpExistence;
+    private ToolStripMenuItem UpExistence;
 
-	private ToolStripMenuItem DownExistence;
+    private ToolStripMenuItem DownExistence;
 
-	private ToolStripMenuItem toolStripMenuItem4;
+    private ToolStripMenuItem toolStripMenuItem4;
 
-	private ToolStripMenuItem UpTrigger;
+    private ToolStripMenuItem UpTrigger;
 
-	private ToolStripMenuItem DownTrigger;
+    private ToolStripMenuItem DownTrigger;
 
-	private TabPage SearchTab;
+    private TabPage SearchTab;
 
-	private ToolStripMenuItem LineUpX;
+    private ToolStripMenuItem LineUpX;
 
-	private ToolStripMenuItem LineUpZ;
+    private ToolStripMenuItem LineUpZ;
 
-	private ToolStripSeparator toolStripSeparator1;
+    private ToolStripSeparator toolStripSeparator1;
 
-	private GroupBox groupBox18;
+    private GroupBox groupBox18;
 
-	private TextBox ExistenceSearchName;
+    private TextBox ExistenceSearchName;
 
-	private Label label102;
+    private Label label102;
 
-	private RadioButton ExistenceSearchId_Radio;
+    private RadioButton ExistenceSearchId_Radio;
 
-	private TextBox ExistenceSearchId;
+    private TextBox ExistenceSearchId;
 
-	private Label label76;
+    private Label label76;
 
-	private RadioButton ExistenceSearchName_Radio;
+    private RadioButton ExistenceSearchName_Radio;
 
-	private TextBox ExistenceSearchTrigger;
+    private TextBox ExistenceSearchTrigger;
 
-	private RadioButton ExistenceSearchTrigger_Radio;
+    private RadioButton ExistenceSearchTrigger_Radio;
 
-	private GroupBox groupBox21;
+    private GroupBox groupBox21;
 
-	private TextBox TriggerSearchName;
+    private TextBox TriggerSearchName;
 
-	private RadioButton TriggerSearchName_Radio;
+    private RadioButton TriggerSearchName_Radio;
 
-	private TextBox TriggerSearchGmID;
+    private TextBox TriggerSearchGmID;
 
-	private Label label107;
+    private Label label107;
 
-	private RadioButton TriggerSearchId_Radio;
+    private RadioButton TriggerSearchId_Radio;
 
-	private TextBox TriggerSearchID;
+    private TextBox TriggerSearchID;
 
-	private Label label108;
+    private Label label108;
 
-	private RadioButton TriggerSearchGmId_Radio;
+    private RadioButton TriggerSearchGmId_Radio;
 
-	private GroupBox groupBox20;
+    private GroupBox groupBox20;
 
-	private TextBox DynamicSearchTrigger;
+    private TextBox DynamicSearchTrigger;
 
-	private RadioButton DynamicSearchTrigger_Radio;
+    private RadioButton DynamicSearchTrigger_Radio;
 
-	private TextBox DynamicSearchName;
+    private TextBox DynamicSearchName;
 
-	private Label label105;
+    private Label label105;
 
-	private RadioButton DynamicSearchId_Radio;
+    private RadioButton DynamicSearchId_Radio;
 
-	private TextBox DynamicSearchId;
+    private TextBox DynamicSearchId;
 
-	private Label label106;
+    private Label label106;
 
-	private RadioButton DynamicSearchName_Radio;
+    private RadioButton DynamicSearchName_Radio;
 
-	private GroupBox groupBox19;
+    private GroupBox groupBox19;
 
-	private TextBox ResourceSearchTrigger;
+    private TextBox ResourceSearchTrigger;
 
-	private RadioButton ResourceSearchTrigger_Radio;
+    private RadioButton ResourceSearchTrigger_Radio;
 
-	private TextBox ResourceSearchName;
+    private TextBox ResourceSearchName;
 
-	private Label label103;
+    private Label label103;
 
-	private RadioButton ResourceSearchId_Radio;
+    private RadioButton ResourceSearchId_Radio;
 
-	private TextBox ResourceSearchId;
+    private TextBox ResourceSearchId;
 
-	private Label label104;
+    private Label label104;
 
-	private RadioButton ResourceSearchName_Radio;
+    private RadioButton ResourceSearchName_Radio;
 
-	private Button ExistenceSearchButton;
+    private Button ExistenceSearchButton;
 
-	private TextBox ExistenceSearchPath;
+    private TextBox ExistenceSearchPath;
 
-	private RadioButton ExistenceSearchPath_Radio;
+    private RadioButton ExistenceSearchPath_Radio;
 
-	private Button TriggerSearchButton;
+    private Button TriggerSearchButton;
 
-	private Button DynamicSearchButton;
+    private Button DynamicSearchButton;
 
-	private Button ResourceSearchButton;
+    private Button ResourceSearchButton;
 
-	private DataGridView SearchGrid;
+    private DataGridView SearchGrid;
 
-	private ContextMenuStrip contextMenuStrip1;
+    private ContextMenuStrip contextMenuStrip1;
 
-	private ToolStripMenuItem MoveToSelected;
+    private ToolStripMenuItem MoveToSelected;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
 
-	private DataGridViewTextBoxColumn Column2;
+    private DataGridViewTextBoxColumn Column2;
 
-	private ContextMenuStrip contextMenuStrip2;
+    private ContextMenuStrip contextMenuStrip2;
 
-	private ToolStripMenuItem MoveToTrigger;
+    private ToolStripMenuItem MoveToTrigger;
 
-	private TabPage ErrorsTab;
+    private TabPage ErrorsTab;
 
-	private Button SearchErrorsButton;
+    private Button SearchErrorsButton;
 
-	private DataGridView ErrorsGrid;
+    private DataGridView ErrorsGrid;
 
-	private DataGridViewTextBoxColumn Column3;
+    private DataGridViewTextBoxColumn Column3;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn31;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn31;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn32;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn32;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn33;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn33;
 
-	private DataGridView NpcMobsGrid;
+    private DataGridView NpcMobsGrid;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
 
-	private DataGridViewTextBoxColumn Column4;
+    private DataGridViewTextBoxColumn Column4;
 
-	private Button RemoveAllErrors;
+    private Button RemoveAllErrors;
 
-	private GroupBox groupBox23;
+    private GroupBox groupBox23;
 
-	private RadioButton Clear;
+    private RadioButton Clear;
 
-	private RadioButton Dark;
+    private RadioButton Dark;
 
-	private GroupBox groupBox22;
+    private GroupBox groupBox22;
 
-	private Button ExistenceInsertCordsFromGame;
+    private Button ExistenceInsertCordsFromGame;
 
-	private GroupBox groupBox8;
+    private GroupBox groupBox8;
 
-	private NumericUpDown AddMonsterRespawnTime;
+    private NumericUpDown AddMonsterRespawnTime;
 
-	private Label label63;
+    private Label label63;
 
-	private NumericUpDown AddMonsterAmount;
+    private NumericUpDown AddMonsterAmount;
 
-	private Label label64;
+    private Label label64;
 
-	private NumericUpDown AddMonsterId;
+    private NumericUpDown AddMonsterId;
 
-	private Label label65;
+    private Label label65;
 
-	private ComboBox AddMonsterType;
+    private ComboBox AddMonsterType;
 
-	private Label label66;
+    private Label label66;
 
-	private ComboBox AddintExistenceType;
+    private ComboBox AddintExistenceType;
 
-	private NumericUpDown AddMonsterTrigger;
+    private NumericUpDown AddMonsterTrigger;
 
-	private Label label67;
+    private Label label67;
 
-	private Label label68;
+    private Label label68;
 
-	private ToolStrip ExistenceToolStrip;
+    private ToolStrip ExistenceToolStrip;
 
-	private ToolStripButton ExportExistence;
+    private ToolStripButton ExportExistence;
 
-	private ToolStripButton ImportExistence;
+    private ToolStripButton ImportExistence;
 
-	private ToolStripDropDownButton LineUpExistenceDropDown;
+    private ToolStripDropDownButton LineUpExistenceDropDown;
 
-	private ToolStripMenuItem ToolStripLineUpX;
+    private ToolStripMenuItem ToolStripLineUpX;
 
-	private ToolStripMenuItem ToolStripLineUpZ;
+    private ToolStripMenuItem ToolStripLineUpZ;
 
-	private ToolStripDropDownButton MoveExistenceDropDown;
+    private ToolStripDropDownButton MoveExistenceDropDown;
 
-	private ToolStripMenuItem MoveUpToolStripMenuItem;
+    private ToolStripMenuItem MoveUpToolStripMenuItem;
 
-	private ToolStripMenuItem MoveDownToolStripMenuItem;
+    private ToolStripMenuItem MoveDownToolStripMenuItem;
 
-	private ToolStrip toolStrip1;
+    private ToolStrip toolStrip1;
 
-	private ToolStripButton ExportResources;
+    private ToolStripButton ExportResources;
 
-	private ToolStripButton ImportResources;
+    private ToolStripButton ImportResources;
 
-	private ToolStripDropDownButton LineUpResource;
+    private ToolStripDropDownButton LineUpResource;
 
-	private ToolStripMenuItem ResourcesOnX;
+    private ToolStripMenuItem ResourcesOnX;
 
-	private ToolStripMenuItem ResourcesOnZ;
+    private ToolStripMenuItem ResourcesOnZ;
 
-	private ToolStripDropDownButton MoveResources;
+    private ToolStripDropDownButton MoveResources;
 
-	private ToolStripMenuItem ResourceUp;
+    private ToolStripMenuItem ResourceUp;
 
-	private ToolStripMenuItem ResourceDown;
+    private ToolStripMenuItem ResourceDown;
 
-	private ToolStrip toolStrip2;
+    private ToolStrip toolStrip2;
 
-	private ToolStripButton toolStripButton3;
+    private ToolStripButton toolStripButton3;
 
-	private ToolStripButton toolStripButton4;
+    private ToolStripButton toolStripButton4;
 
-	private ToolStripDropDownButton toolStripDropDownButton3;
+    private ToolStripDropDownButton toolStripDropDownButton3;
 
-	private ToolStripMenuItem toolStripMenuItem7;
+    private ToolStripMenuItem toolStripMenuItem7;
 
-	private ToolStripMenuItem toolStripMenuItem8;
+    private ToolStripMenuItem toolStripMenuItem8;
 
-	private ToolStripDropDownButton toolStripDropDownButton4;
+    private ToolStripDropDownButton toolStripDropDownButton4;
 
-	private ToolStripMenuItem toolStripMenuItem9;
+    private ToolStripMenuItem toolStripMenuItem9;
 
-	private ToolStripMenuItem toolStripMenuItem10;
+    private ToolStripMenuItem toolStripMenuItem10;
 
-	private ToolStrip toolStrip3;
+    private ToolStrip toolStrip3;
 
-	private ToolStripButton toolStripButton5;
+    private ToolStripButton toolStripButton5;
 
-	private ToolStripButton toolStripButton6;
+    private ToolStripButton toolStripButton6;
 
-	private ToolStripDropDownButton toolStripDropDownButton6;
+    private ToolStripDropDownButton toolStripDropDownButton6;
 
-	private ToolStripMenuItem toolStripMenuItem13;
+    private ToolStripMenuItem toolStripMenuItem13;
 
-	private ToolStripMenuItem toolStripMenuItem14;
+    private ToolStripMenuItem toolStripMenuItem14;
 
-	private ToolStripButton toolStripButton7;
+    private ToolStripButton toolStripButton7;
 
-	private ToolStripSeparator toolStripSeparator2;
+    private ToolStripSeparator toolStripSeparator2;
 
-	private ToolStripMenuItem экспортToolStripMenuItem;
+    private ToolStripMenuItem экспортToolStripMenuItem;
 
-	private ToolStripMenuItem импортToolStripMenuItem;
+    private ToolStripMenuItem импортToolStripMenuItem;
 
-	private ToolStripSeparator toolStripSeparator3;
+    private ToolStripSeparator toolStripSeparator3;
 
-	private ToolStripMenuItem toolStripMenuItem12;
+    private ToolStripMenuItem toolStripMenuItem12;
 
-	private ToolStripMenuItem toolStripMenuItem11;
+    private ToolStripMenuItem toolStripMenuItem11;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
 
-	private DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
+    private DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
 
-	private DataGridViewTextBoxColumn Column1;
+    private DataGridViewTextBoxColumn Column1;
 
-	private ToolStripSeparator toolStripSeparator4;
+    private ToolStripSeparator toolStripSeparator4;
 
-	private ToolStripMenuItem вНачалоToolStripMenuItem;
+    private ToolStripMenuItem вНачалоToolStripMenuItem;
 
-	private ToolStripMenuItem ExistenceToEnd;
+    private ToolStripMenuItem ExistenceToEnd;
 
-	[DllImport("kernel32.dll")]
-	public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
 
-	[DllImport("Kernel32.dll")]
-	private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int nSize, int lpNumberOfBytesRead);
+    [DllImport("Kernel32.dll")]
+    private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int nSize, int lpNumberOfBytesRead);
 
-	public Form1()
-	{
-		InitializeComponent();
-		try
-		{
-			KBDHook.LocalHook = false;
-			KBDHook.KeyDown += KBDHook_KeyDown;
-			KBDHook.InstallHook();
-		}
-		catch
-		{
-		}
-		StreamReader streamReader = new StreamReader(Path.Combine(Application.StartupPath, "offsets.txt"));
-		while (!streamReader.EndOfStream)
-		{
-			string text = streamReader.ReadLine();
-			if (text.StartsWith("Name"))
-			{
-				Version_combobox.Items.Add(text.Replace("Name=", ""));
-				string[] array = streamReader.ReadLine().Split(' ');
-				Offsets.Add(new offsets
-				{
-					baseChain = new long[3]
-					{
-						long.Parse(array[0], NumberStyles.HexNumber),
+    public Form1()
+    {
+        InitializeComponent();
+        try
+        {
+            KBDHook.LocalHook = false;
+            KBDHook.KeyDown += KBDHook_KeyDown;
+            KBDHook.InstallHook();
+        }
+        catch
+        {
+        }
+        StreamReader streamReader = new StreamReader(Path.Combine(Application.StartupPath, "offsets.txt"));
+        while (!streamReader.EndOfStream)
+        {
+            string text = streamReader.ReadLine();
+            if (text.StartsWith("Name"))
+            {
+                Version_combobox.Items.Add(text.Replace("Name=", ""));
+                string[] array = streamReader.ReadLine().Split(' ');
+                Offsets.Add(new offsets
+                {
+                    baseChain = new long[3]
+                    {
+                        long.Parse(array[0], NumberStyles.HexNumber),
                         long.Parse(array[1], NumberStyles.HexNumber),
                         long.Parse(array[2], NumberStyles.HexNumber)
-					},
-					dirX = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
-					dirY = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
-					dirZ = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
-					posX = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
-					posY = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
-					posZ = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber)
-				});
-			}
-		}
-	}
-
-	private void KBDHook_KeyDown(LLKHEventArgs e)
-	{
-		ClassPosition classPosition = null;
-		if ((e.Keys == MonstersExtraKey && Control.ModifierKeys == MonstersDefaultKey) || (e.Keys == ResourcesExtraKey && Control.ModifierKeys == ResourcesDefaultKey) || (e.Keys == DynamicsExtraKey && Control.ModifierKeys == DynamicsDefaultKey))
-		{
-			classPosition = GetCoordinates();
-		}
-		if (classPosition == null)
-		{
-			return;
-		}
-		if (e.Keys == MonstersExtraKey && Control.ModifierKeys == MonstersDefaultKey)
-		{
-			Read.NpcMobsAmount++;
-			ClassDefaultMonsters dm3 = new ClassDefaultMonsters
-			{
-				X_position = classPosition.PosX,
-				Y_position = classPosition.PosY,
-				Z_position = classPosition.PosZ,
-				X_direction = classPosition.DirX,
-				Y_direction = classPosition.DirY,
-				Z_direction = classPosition.DirZ,
-				Amount_in_group = 1,
-				Location = AddintExistenceType.SelectedIndex,
-				Type = AddMonsterType.SelectedIndex,
-				Trigger_id = Convert.ToInt32(AddMonsterTrigger.Value)
-			};
-			ClassExtraMonsters item = new ClassExtraMonsters
-			{
-				Id = Convert.ToInt32(AddMonsterId.Value),
-				Amount = Convert.ToInt32(AddMonsterAmount.Value),
-				Respawn = Convert.ToInt32(AddMonsterRespawnTime.Value)
-			};
-			dm3.MobDops = new List<ClassExtraMonsters> { item };
-			Read.NpcMobList.Add(dm3);
-			string text = "?";
-			int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == dm3.MobDops[0].Id);
-			if (num != -1)
-			{
-				text = Element.ExistenceLists[num].Name;
-			}
-			NpcMobsGrid.Rows.Add(Read.NpcMobsAmount, dm3.MobDops[0].Id, text);
-			NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
-		}
-		if (e.Keys == ResourcesExtraKey && Control.ModifierKeys == ResourcesDefaultKey)
-		{
-			Read.ResourcesAmount++;
-			ClassDefaultResources dm2 = new ClassDefaultResources
-			{
-				X_position = classPosition.PosX,
-				Y_position = classPosition.PosY,
-				Z_position = classPosition.PosZ,
-				Amount_in_group = 1,
-				Trigger_id = Convert.ToInt32(AddResourcesTrigger.Value)
-			};
-			ClassExtraResources item2 = new ClassExtraResources
-			{
-				Id = Convert.ToInt32(AddResourceID.Value),
-				Amount = Convert.ToInt32(AddResourceAmount.Value),
-				Respawntime = Convert.ToInt32(AddResourceRespawnTime.Value)
-			};
-			dm2.ResExtra = new List<ClassExtraResources> { item2 };
-			Read.ResourcesList.Add(dm2);
-			string text2 = "?";
-			int num2 = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == dm2.ResExtra[0].Id);
-			if (num2 != -1)
-			{
-				text2 = Element.ResourcesList[num2].Name;
-			}
-			ResourcesGrid.Rows.Add(Read.NpcMobsAmount, dm2.ResExtra[0].Id, text2);
-			ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
-		}
-		if (e.Keys != DynamicsExtraKey || Control.ModifierKeys != DynamicsDefaultKey)
-		{
-			return;
-		}
-		ClassDynamicObject dm = new ClassDynamicObject
-		{
-			Id = Convert.ToInt32(AddDynamicsTrigger.Value),
-			TriggerId = Convert.ToInt32(AddDynamicsID.Value),
-			X_position = classPosition.PosX,
-			Y_position = classPosition.PosY,
-			Z_position = classPosition.PosZ
-		};
-		Read.DynobjectAmount++;
-		Read.DynamicsList.Add(dm);
-		string text3 = "?";
-		if (Language == 1)
-		{
-			int num3 = DynamicsListRu.FindIndex((DefaultInformation z) => z.Id == dm.Id);
-			if (num3 != -1)
-			{
-				text3 = DynamicsListRu[num3].Name;
-			}
-		}
-		else if (Language == 2)
-		{
-			int num4 = DynamicsListEn.FindIndex((DefaultInformation z) => z.Id == dm.Id);
-			if (num4 != -1)
-			{
-				text3 = DynamicsListEn[num4].Name;
-			}
-		}
-		DynamicGrid.Rows.Add(Read.DynobjectAmount, dm.Id, text3, dm.TriggerId);
-		DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
-	}
-
-	public ClassPosition GetCoordinates()
-	{
-		Process[] processesByName = Process.GetProcessesByName("elementclient_64");
-		if (processesByName.Length == 0)
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Клиент игры не запущен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else if (Language == 2)
-			{
-				MessageBox.Show("Game isn't running!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			return null;
-		}
-		offsets offsets2 = Offsets[Version_combobox.SelectedIndex];
-		VAMemory vAMemory = new VAMemory("elementclient_64");
-		long num = 0;
-		for (int i = 0; i < 3; i++)
-		{
-			long num2 = num + offsets2.baseChain[i];
-			num = vAMemory.ReadInt64((IntPtr)num2);
-		}
-		float num3 = vAMemory.ReadFloat((IntPtr)num + offsets2.posX);
-		float num4 = vAMemory.ReadFloat((IntPtr)num + offsets2.posY);
-		float z = vAMemory.ReadFloat((IntPtr)num + offsets2.posZ);
-		float dX = vAMemory.ReadFloat((IntPtr)num + offsets2.dirX);
-		float dY = vAMemory.ReadFloat((IntPtr)num + offsets2.dirY);
-		float dZ = vAMemory.ReadFloat((IntPtr)num + offsets2.dirZ);
-		return new ClassPosition(num3, num4, z, dX, dY, dZ);
-	}
-
-	private List<PointF> GetPoint(int Action)
-	{
-		List<PointF> list = new List<PointF>();
-		switch (Action)
-		{
-		case 1:
-			foreach (int item in NpcRowCollection)
-			{
-				list.Add(new PointF(Read.NpcMobList[item].X_position, Read.NpcMobList[item].Z_position));
-			}
-			break;
-		case 2:
-			foreach (int item2 in ResourcesRowCollection)
-			{
-				list.Add(new PointF(Read.ResourcesList[item2].X_position, Read.ResourcesList[item2].Z_position));
-			}
-			break;
-		case 3:
-			foreach (int item3 in DynamicsRowCollection)
-			{
-				list.Add(new PointF(Read.DynamicsList[item3].X_position, Read.DynamicsList[item3].Z_position));
-			}
-			break;
-		}
-		return list;
-	}
-
-	private void LinkMaps(List<PCKFileEntry> l, string MapName)
-	{
-		int num = 256;
-		Bitmap bm = null;
-		int num2 = LoadedMapConfigs.FindIndex((MapLoadedInformation z) => z.Name == MapName);
-		if (num2 != -1)
-		{
-			if (l.Count == 88)
-			{
-				num = 1024;
-			}
-			bm = new Bitmap(LoadedMapConfigs[num2].Width, LoadedMapConfigs[num2].Height);
-			int num3 = 0;
-			int num4 = 0;
-			Graphics graphics = Graphics.FromImage(bm);
-			MapProgress.BeginInvoke((MethodInvoker)delegate
-			{
-				MapProgress.Maximum = l.Count;
-				MapProgress.Value = 0;
-			});
-			l = l.OrderBy((PCKFileEntry t) => t.Path).ToList();
-			for (int i = 0; i < l.Count; i++)
-			{
-				graphics.DrawImage(PWHelper.LoadDDSImage(PckFile.ReadFile(PckFile.PckFile, l[i]).ToArray()), new Point(num3, num4));
-				num3 += num;
-				if (num3 == bm.Width)
-				{
-					num4 += num;
-					num3 = 0;
-				}
-				MapProgress.BeginInvoke((MethodInvoker)delegate
-				{
-					MapProgress.Value++;
-				});
-			}
-			BeginInvoke((MethodInvoker)delegate
-			{
-				MapProgress.Value = 0;
-				if (MapForm == null)
-				{
-					MapForm = new ShowLocationWindow(this, bm);
-					MapForm.Show(this);
-				}
-				else if (!MapForm.Visible)
-				{
-					MapForm = new ShowLocationWindow(this, bm);
-					MapForm.Show(this);
-				}
-				else
-				{
-					MapForm.SetPicture(bm);
-				}
-			});
-		}
-		else if (Language == 1)
-		{
-			MessageBox.Show("Настройки карты не найдены в Maps.conf", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else
-		{
-			MessageBox.Show("Map options haven't been found in Maps.conf", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	public void SetId(int Id, int act, int Window)
-	{
-		if (act == 1 && Window == 1)
-		{
-			Id_numeric.Value = Id;
-			UnderNpcAndMobs_Leave(Id_numeric, null);
-		}
-		else if (act == 1 && Window == 2)
-		{
-			ExistenceSearchId.Text = Id.ToString();
-			ExistenceSearchId_TextChanged(null, null);
-		}
-		else if (act == 2 && Window == 1)
-		{
-			RId_numeric.Value = Id;
-			UnderResourcesLeave(RId_numeric, null);
-		}
-		else if (act == 2 && Window == 2)
-		{
-			ResourceSearchId.Text = Id.ToString();
-			ResourceSearchId_TextChanged(null, null);
-		}
-		else if (act == 3 && Window == 1)
-		{
-			DId_numeric.Text = Id.ToString();
-			DynamicsLeave(DId_numeric, null);
-		}
-		else if (act == 3 && Window == 2)
-		{
-			DynamicSearchId.Text = Id.ToString();
-			DynamicSearchId_TextChanged(null, null);
-		}
-	}
-
-	private void DefaultMobButton_combobox_SelectedIndexChanged(object sender, EventArgs e)
-	{
-		Control control = sender as Control;
-		KeysConverter keysConverter = new KeysConverter();
-		switch (control.Name)
-		{
-		case "DefaultMobButton_combobox":
-			MonstersDefaultKey = (Keys)keysConverter.ConvertFromString(DefaultMobButton_combobox.SelectedItem.ToString());
-			break;
-		case "ExtraMobButton_combobox":
-			MonstersExtraKey = (Keys)keysConverter.ConvertFromString(ExtraMobButton_combobox.SelectedItem.ToString());
-			break;
-		case "DefaultResourceButton_combobox":
-			ResourcesDefaultKey = (Keys)keysConverter.ConvertFromString(DefaultResourceButton_combobox.SelectedItem.ToString());
-			break;
-		case "ExtraResourceButton_combobox":
-			ResourcesExtraKey = (Keys)keysConverter.ConvertFromString(ExtraResourceButton_combobox.SelectedItem.ToString());
-			break;
-		case "DefaultDynamicsButton_combobox":
-			DynamicsDefaultKey = (Keys)keysConverter.ConvertFromString(DefaultDynamicsButton_combobox.SelectedItem.ToString());
-			break;
-		case "ExtraDynamicsButton_combobox":
-			DynamicsExtraKey = (Keys)keysConverter.ConvertFromString(ExtraDynamicsButton_combobox.SelectedItem.ToString());
-			break;
-		}
-	}
-
-	private void SearchElementButton(object sender, EventArgs e)
-	{
-		if (Element_dialog.ShowDialog() == DialogResult.OK)
-		{
-			Elements_textbox.Text = Element_dialog.FileName;
-		}
-	}
-
-	private void SearchNpcgenButton(object sender, EventArgs e)
-	{
-		if (Npcgen_dialog.ShowDialog() == DialogResult.OK)
-		{
-			Npcgen_textbox.Text = Npcgen_dialog.FileName;
-		}
-	}
-
-	private void SearchSurfacesButton(object sender, EventArgs e)
-	{
-		if (Surfaces_search.ShowDialog() == DialogResult.OK)
-		{
-			Surfaces_path.Text = Surfaces_search.FileName;
-		}
-	}
-
-	private void OpenElementAndNpcgen(object sender, EventArgs e)
-	{
-		if (File.Exists(Npcgen_textbox.Text) && File.Exists(Elements_textbox.Text))
-		{
-			Read = new NpcGen();
-			BinaryReader binaryReader = new BinaryReader(File.Open(Npcgen_textbox.Text, FileMode.Open));
-			Read.ReadNpcgen(binaryReader);
-			binaryReader.Close();
-			Element = new Elementsdata(Elements_textbox.Text);
-			Text = Npcgen_textbox.Text + "  -  Version " + Read.File_version + "  -  Npcgen Editor By Luka v1.7.4 and Updated by Haly";
-			NpcMobsGrid.ScrollBars = ScrollBars.None;
-			ResourcesGrid.ScrollBars = ScrollBars.None;
-			DynamicGrid.ScrollBars = ScrollBars.None;
-			TriggersGrid.ScrollBars = ScrollBars.None;
-			new Thread((ThreadStart)delegate
-			{
-				ChooseFromElementsForm = new MobsNpcsForm(this, Element.ExistenceLists, Element.ResourcesList, Element.MonsterdAmount, Element.NpcsAmount);
-				ChooseFromElementsForm.RefreshLanguage(Language);
-			}).Start();
-			NpcMobsGrid.Rows.Clear();
-			ResourcesGrid.Rows.Clear();
-			DynamicGrid.Rows.Clear();
-			TriggersGrid.Rows.Clear();
-			ErrorsGrid.Rows.Clear();
-			MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount + Read.TriggersAmount;
-			SortNpcGen();
-			SortDynamicObjects();
-			SortTriggers();
-			NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
-			ResourcesGrid.ScrollBars = ScrollBars.Vertical;
-			DynamicGrid.ScrollBars = ScrollBars.Vertical;
-			TriggersGrid.ScrollBars = ScrollBars.Vertical;
-			if (Language == 1)
-			{
-				ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
-				ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
-				DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
-				TriggersTab.Text = $"Тригеры 1/{Read.TriggersAmount}";
-			}
-			else
-			{
-				ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
-				ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
-				DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
-				TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
-			}
-			if (Read.File_version <= 6)
-			{
-				if (Language == 1)
-				{
-					MessageBox.Show("Обратите внимание,в этой версии триггеры не были доступны,но их можно редактировать для конвертирования в другую версию!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-				}
-				else if (Language == 2)
-				{
-					MessageBox.Show("Make attention,triggers didn't exist in this file version,but you can edit them for converting to another version!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-				}
-			}
-			string text = "Проверить файл на ошибки?";
-			if (Language == 2)
-			{
-				text = "Do you want to check file on errors?";
-			}
-			DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-			if (dialogResult == DialogResult.Yes)
-			{
-				SearchErrorsButton_Click(null, null);
-				MainTabControl.SelectedIndex = 5;
-			}
-		}
-		else if (Language == 1)
-		{
-			MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else if (Language == 2)
-		{
-			MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	public void SortTriggers()
-	{
-		for (int i = 0; i < Read.TriggersAmount; i++)
-		{
-			TriggersGrid.Rows.Add(i + 1, Read.TriggersList[i].Id, Read.TriggersList[i].GmID, Read.TriggersList[i].TriggerName);
-		}
-		if (TriggersGrid.Rows.Count != 0)
-		{
-			TriggersGrid.CurrentCell = TriggersGrid.Rows[0].Cells[1];
-		}
-		TriggersGrid_CurrentCellChanged(null, null);
-	}
-
-	public void SortNpcGen()
-	{
-		for (int k = 0; k < Read.NpcMobsAmount; k++)
-		{
-			int[] Id_joined2 = new int[Read.NpcMobList[k].Amount_in_group];
-			string[] array = new string[Read.NpcMobList[k].Amount_in_group];
-			int j;
-			for (j = 0; j < Read.NpcMobList[k].Amount_in_group; j++)
-			{
-				Id_joined2[j] = Read.NpcMobList[k].MobDops[j].Id;
-				int num = Element.ExistenceLists.FindIndex((NpcMonster e) => e.Id == Id_joined2[j]);
-				if (num != -1)
-				{
-					array[j] = Element.ExistenceLists[num].Name;
-				}
-				else
-				{
-					array[j] = "?";
-				}
-			}
-			NpcMobsGrid.Rows.Add(k + 1, string.Join(",", Id_joined2), string.Join(",", array));
-			if (Read.NpcMobList[k].Type == 1)
-			{
-				NpcMobsGrid.Rows[k].Cells[1].Style.ForeColor = Color.FromArgb(251, 251, 107);
-				NpcMobsGrid.Rows[k].Cells[2].Style.ForeColor = Color.FromArgb(251, 251, 107);
-			}
-			MainProgressBar.Value++;
-		}
-		ExistenceGrid_CellChanged(null, null);
-		for (int l = 0; l < Read.ResourcesAmount; l++)
-		{
-			int[] Id_joined = new int[Read.ResourcesList[l].Amount_in_group];
-			string[] array2 = new string[Read.ResourcesList[l].Amount_in_group];
-			int i;
-			for (i = 0; i < Read.ResourcesList[l].Amount_in_group; i++)
-			{
-				Id_joined[i] = Read.ResourcesList[l].ResExtra[i].Id;
-				int num2 = Element.ResourcesList.FindIndex((NpcMonster e) => e.Id == Id_joined[i]);
-				if (num2 != -1)
-				{
-					array2[i] = Element.ResourcesList[num2].Name;
-				}
-				else
-				{
-					array2[i] = "?";
-				}
-			}
-			ResourcesGrid.Rows.Add(l + 1, string.Join(",", Id_joined), string.Join(",", array2));
-			MainProgressBar.Value++;
-		}
-		MainProgressBar.Value = 0;
-		if (ResourcesGrid.Rows.Count != 0)
-		{
-			ResourcesGrid.CurrentCell = ResourcesGrid.Rows[0].Cells[1];
-		}
-		if (ResourcesGroupGrid.Rows.Count != 0)
-		{
-			ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[0].Cells[1];
-		}
-	}
-
-	public void SortDynamicObjects()
-	{
-		for (int i = 0; i < Read.DynobjectAmount; i++)
-		{
-			DynamicGrid.Rows.Add(i + 1, Read.DynamicsList[i].Id, GetDynamicName(Read.DynamicsList[i].Id), Read.DynamicsList[i].TriggerId);
-		}
-		if (DynamicGrid.Rows.Count != 0)
-		{
-			DynamicGrid.CurrentCell = DynamicGrid.Rows[0].Cells[1];
-			DynamicGrid_CurrentCellChanged(null, null);
-		}
-	}
-
-	public string GetDynamicName(int Id)
-	{
-		string result = "?";
-		if (Language == 1)
-		{
-			int num = DynamicsListRu.FindIndex((DefaultInformation z) => z.Id == Id);
-			if (num != -1)
-			{
-				result = DynamicsListRu[num].Name;
-			}
-		}
-		else if (Language == 2)
-		{
-			int num2 = DynamicsListEn.FindIndex((DefaultInformation z) => z.Id == Id);
-			if (num2 != -1)
-			{
-				result = DynamicsListEn[num2].Name;
-			}
-		}
-		return result;
-	}
-
-	private void Open_surfaces_Click(object sender, EventArgs e)
-	{
-		if (File.Exists(Surfaces_path.Text))
-		{
-			try
-			{
-				PckFile = new ArchiveEngine(Surfaces_path.Text);
-				PckFile.ReadFileTable(PckFile.PckFile);
-				Maps = new List<GameMapInfo>();
-				List<PCKFileEntry> list = PckFile.Files.Where((PCKFileEntry z) => z.Path.Contains("minimaps") && !z.Path.Contains("surfaces\\minimaps\\world")).ToList();
-				List<string> list2 = new List<string>();
-				foreach (PCKFileEntry item in list)
-				{
-					GameMapInfo map = new GameMapInfo();
-					List<string> st = item.Path.Split('\\').ToList();
-					map.MapName = st.ElementAt(st.Count - 2);
-					st.RemoveAt(st.Count - 1);
-					map.MapPath = string.Join("\\", st);
-					if (list2.FindIndex((string v) => v == string.Join("\\", st)) == -1)
-					{
-						map.MapFragments = (from z in list.Where((PCKFileEntry z) => z.Path.Contains(map.MapPath)).ToList()
-							orderby z.Path
-							select z).ToList();
-						Maps.Add(map);
-						list2.Add(map.MapPath);
-					}
-				}
-				if (Maps.Count != 0)
-				{
-					GameMapInfo map2 = new GameMapInfo
-					{
-						MapName = "World",
-						MapPath = "surfaces\\maps\\"
-					};
-					map2.MapFragments = PckFile.Files.Where((PCKFileEntry z) => z.Path.Contains(map2.MapPath)).ToList();
-					Maps.Add(map2);
-					Maps_combobox.Items.Clear();
-					for (int i = 0; i < Maps.Count; i++)
-					{
-						Maps_combobox.Items.Add(Maps[i].MapName);
-					}
-					Maps_combobox.SelectedIndex = Maps_combobox.Items.Count - 1;
-				}
-				return;
-			}
-			catch
-			{
-				if (Language == 1)
-				{
-					MessageBox.Show("Загружен неверный файл!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-				}
-				else if (Language == 2)
-				{
-					MessageBox.Show("Loaded wrong file!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-				}
-				PckFile = null;
-				Maps_combobox.Items.Clear();
-				Maps = null;
-				MapForm = null;
-				return;
-			}
-		}
-		if (Language == 1)
-		{
-			MessageBox.Show("Указанный surfaces.pck не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else if (Language == 2)
-		{
-			MessageBox.Show("Selected surfaces.pck doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	private void SaveFile_Click(object sender, EventArgs e)
-	{
-		if (File.Exists(Npcgen_textbox.Text))
-		{
-			BinaryWriter binaryWriter = new BinaryWriter(File.Create(Npcgen_textbox.Text));
-			Read.WriteNpcgen(binaryWriter, Read.File_version);
-			binaryWriter.Close();
-			if (Language == 1)
-			{
-				MessageBox.Show("Файл успешно сохранен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else if (Language == 2)
-			{
-				MessageBox.Show("File has been successfully saved!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-		else if (Language == 1)
-		{
-			MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else if (Language == 2)
-		{
-			MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	private void ConvertAndSaveButton_Click(object sender, EventArgs e)
-	{
-		if (Read != null && Npcgen_save_dialog.ShowDialog() == DialogResult.OK)
-		{
-			BinaryWriter binaryWriter = new BinaryWriter(File.Create(Npcgen_save_dialog.FileName));
-			Read.WriteNpcgen(binaryWriter, Convert.ToInt32(ConvertComboboxVersion.SelectedItem));
-			binaryWriter.Close();
-			if (Language == 1)
-			{
-				MessageBox.Show("Файл успешно сохранен!!", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else if (Language == 2)
-			{
-				MessageBox.Show("File has been successfully saved!!", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void ShowOnMapsButton_Click(object sender, EventArgs e)
-	{
-		if (Maps != null)
-		{
-			int SelectedIndex = Maps_combobox.SelectedIndex;
-			Thread thread = new Thread((ThreadStart)delegate
-			{
-				LinkMaps(Maps[SelectedIndex].MapFragments, Maps[SelectedIndex].MapName);
-			});
-			thread.Start();
-		}
-	}
-
-	private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-	{
-		XmlTextWriter xmlTextWriter = new XmlTextWriter(string.Format(Application.StartupPath + "\\Npcgen Editor Settings.xml"), Encoding.UTF8)
-		{
-			Formatting = Formatting.Indented,
-			IndentChar = '\t',
-			Indentation = 1,
-			QuoteChar = '\''
-		};
-		xmlTextWriter.WriteStartDocument();
-		xmlTextWriter.WriteStartElement("root");
-		xmlTextWriter.WriteStartAttribute("ProductName");
-		xmlTextWriter.WriteString("NpcGen Editor By Luka and Updated by Haly");
-		xmlTextWriter.WriteEndAttribute();
-		xmlTextWriter.WriteStartElement("Settings");
-		xmlTextWriter.WriteElementString("Version", "1.5");
-		xmlTextWriter.WriteElementString("Language", Language.ToString());
-		xmlTextWriter.WriteElementString("Interface_Color", InterfaceColor.ToString());
-		if (!string.IsNullOrWhiteSpace(Elements_textbox.Text))
-		{
-			xmlTextWriter.WriteElementString("ElementPath", Elements_textbox.Text);
-		}
-		else
-		{
-			xmlTextWriter.WriteElementString("ElementPath", "Not Loaded");
-		}
-		if (!string.IsNullOrWhiteSpace(Npcgen_textbox.Text))
-		{
-			xmlTextWriter.WriteElementString("NpcgenPath", Npcgen_textbox.Text);
-		}
-		else
-		{
-			xmlTextWriter.WriteElementString("NpcgenPath", "Not Loaded");
-		}
-		if (!string.IsNullOrWhiteSpace(Surfaces_path.Text))
-		{
-			xmlTextWriter.WriteElementString("SurfacesPath", Surfaces_path.Text);
-		}
-		else
-		{
-			xmlTextWriter.WriteElementString("SurfacesPath", "Not Loaded");
-		}
-		if (DefaultMobButton_combobox.SelectedIndex == -1)
-		{
-			DefaultMobButton_combobox.SelectedIndex = 0;
-		}
-		if (ExtraMobButton_combobox.SelectedIndex == -1)
-		{
-			ExtraMobButton_combobox.SelectedIndex = 0;
-		}
-		if (DefaultResourceButton_combobox.SelectedIndex == -1)
-		{
-			DefaultResourceButton_combobox.SelectedIndex = 0;
-		}
-		if (ExtraResourceButton_combobox.SelectedIndex == -1)
-		{
-			ExtraResourceButton_combobox.SelectedIndex = 0;
-		}
-		if (DefaultDynamicsButton_combobox.SelectedIndex == -1)
-		{
-			DefaultDynamicsButton_combobox.SelectedIndex = 0;
-		}
-		if (ExtraDynamicsButton_combobox.SelectedIndex == -1)
-		{
-			ExtraDynamicsButton_combobox.SelectedIndex = 0;
-		}
-		xmlTextWriter.WriteElementString("ClientVersion", Version_combobox.SelectedIndex.ToString());
-		xmlTextWriter.WriteElementString("MobsOrNpcsHotKey", $"{DefaultMobButton_combobox.SelectedIndex}+{ExtraMobButton_combobox.SelectedIndex}");
-		xmlTextWriter.WriteElementString("ResourcesHotKey", $"{DefaultResourceButton_combobox.SelectedIndex}+{ExtraResourceButton_combobox.SelectedIndex}");
-		xmlTextWriter.WriteElementString("DynamicsHotKey", $"{DefaultDynamicsButton_combobox.SelectedIndex}+{ExtraDynamicsButton_combobox.SelectedIndex}");
-		xmlTextWriter.WriteEndElement();
-		xmlTextWriter.WriteStartElement("Existence_properties");
-		xmlTextWriter.WriteElementString("Existence_ID", AddMonsterId.Value.ToString());
-		xmlTextWriter.WriteElementString("Existence_Amount", AddMonsterAmount.Value.ToString());
-		xmlTextWriter.WriteElementString("Existence_RespawnTime", AddMonsterRespawnTime.Value.ToString());
-		xmlTextWriter.WriteElementString("Existence_Trigger", AddMonsterTrigger.Value.ToString());
-		xmlTextWriter.WriteElementString("Existence_Location", AddintExistenceType.SelectedIndex.ToString());
-		xmlTextWriter.WriteElementString("Existence_Type", AddMonsterType.SelectedIndex.ToString());
-		xmlTextWriter.WriteEndElement();
-		xmlTextWriter.WriteStartElement("Resources_properties");
-		xmlTextWriter.WriteElementString("Resources_ID", AddResourceID.Value.ToString());
-		xmlTextWriter.WriteElementString("Resources_Amount", AddResourceAmount.Value.ToString());
-		xmlTextWriter.WriteElementString("Resources_RespawnTime", AddResourceRespawnTime.Value.ToString());
-		xmlTextWriter.WriteElementString("Resources_Trigger", AddResourcesTrigger.Value.ToString());
-		xmlTextWriter.WriteEndElement();
-		xmlTextWriter.WriteStartElement("Dynamics_properties");
-		xmlTextWriter.WriteElementString("Dynamics_Trigger", AddDynamicsID.Value.ToString());
-		xmlTextWriter.WriteElementString("Dynamics_ID", AddDynamicsTrigger.Value.ToString());
-		xmlTextWriter.WriteEndElement();
-		xmlTextWriter.WriteEndDocument();
-		xmlTextWriter.Close();
-	}
-
-	private void Form1_Load(object sender, EventArgs e)
-	{
-		DynamicsListRu = new List<DefaultInformation>();
-		DynamicsListEn = new List<DefaultInformation>();
-		try
-		{
-			if (File.Exists(Application.StartupPath + "\\DynObjectInfo.RU"))
-			{
-				StreamReader streamReader = new StreamReader(Application.StartupPath + "\\DynObjectInfo.RU");
-				do
-				{
-					string[] array = streamReader.ReadLine().Split(new string[1] { "->" }, StringSplitOptions.None);
-					DefaultInformation item = new DefaultInformation
-					{
-						Id = Convert.ToInt32(array[0]),
-						Name = array[1]
-					};
-					DynamicsListRu.Add(item);
-				}
-				while (!streamReader.EndOfStream);
-			}
-			if (File.Exists(Application.StartupPath + "\\DynObjectInfo.EN"))
-			{
-				StreamReader streamReader2 = new StreamReader(Application.StartupPath + "\\DynObjectInfo.EN");
-				do
-				{
-					string[] array2 = streamReader2.ReadLine().Split(new string[1] { "->" }, StringSplitOptions.None);
-					DefaultInformation item2 = new DefaultInformation
-					{
-						Id = Convert.ToInt32(array2[0]),
-						Name = array2[1]
-					};
-					DynamicsListEn.Add(item2);
-				}
-				while (!streamReader2.EndOfStream);
-			}
-		}
-		catch
-		{
-		}
-		ConvertComboboxVersion.SelectedIndex = 0;
-		try
-		{
-			if (File.Exists(Application.StartupPath + "\\Npcgen Editor Settings.xml"))
-			{
-				using XmlTextReader xmlTextReader = new XmlTextReader(string.Format(Application.StartupPath + "\\Npcgen Editor Settings.xml"));
-				xmlTextReader.ReadToFollowing("Language");
-				int num = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
-				if (num == 2)
-				{
-					English.Checked = true;
-					ChangeLanguage(English, null);
-				}
-				xmlTextReader.ReadToFollowing("Interface_Color");
-				int num2 = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
-				if (num2 == 2)
-				{
-					Dark.Checked = true;
-					InterfaceColorChanged(Dark, null);
-				}
-				xmlTextReader.ReadToFollowing("ElementPath");
-				Elements_textbox.Text = xmlTextReader.ReadElementContentAsString();
-				xmlTextReader.ReadToFollowing("NpcgenPath");
-				Npcgen_textbox.Text = xmlTextReader.ReadElementContentAsString();
-				xmlTextReader.ReadToFollowing("SurfacesPath");
-				Surfaces_path.Text = xmlTextReader.ReadElementContentAsString();
-				xmlTextReader.ReadToFollowing("ClientVersion");
-				Version_combobox.SelectedIndex = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("MobsOrNpcsHotKey");
-				string[] array3 = xmlTextReader.ReadElementContentAsString().Split('+');
-				DefaultMobButton_combobox.SelectedIndex = Convert.ToInt32(array3[0]);
-				ExtraMobButton_combobox.SelectedIndex = Convert.ToInt32(array3[1]);
-				xmlTextReader.ReadToFollowing("ResourcesHotKey");
-				string[] array4 = xmlTextReader.ReadElementContentAsString().Split('+');
-				DefaultResourceButton_combobox.SelectedIndex = Convert.ToInt32(array4[0]);
-				ExtraResourceButton_combobox.SelectedIndex = Convert.ToInt32(array4[1]);
-				xmlTextReader.ReadToFollowing("DynamicsHotKey");
-				string[] array5 = xmlTextReader.ReadElementContentAsString().Split('+');
-				DefaultDynamicsButton_combobox.SelectedIndex = Convert.ToInt32(array5[0]);
-				ExtraDynamicsButton_combobox.SelectedIndex = Convert.ToInt32(array5[1]);
-				DefaultMobButton_combobox_SelectedIndexChanged(DefaultMobButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(ExtraMobButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(DefaultResourceButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(ExtraResourceButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(DefaultDynamicsButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(ExtraDynamicsButton_combobox, null);
-				xmlTextReader.ReadToFollowing("Existence_ID");
-				AddMonsterId.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Existence_Amount");
-				AddMonsterAmount.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Existence_RespawnTime");
-				AddMonsterRespawnTime.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Existence_Trigger");
-				AddMonsterTrigger.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Existence_Location");
-				int num3 = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
-				if (num3 < 0)
-				{
-					num3 = 0;
-				}
-				AddintExistenceType.SelectedIndex = num3;
-				xmlTextReader.ReadToFollowing("Existence_Type");
-				int num4 = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
-				if (num4 < 0)
-				{
-					num4 = 0;
-				}
-				AddMonsterType.SelectedIndex = num4;
-				xmlTextReader.ReadToFollowing("Resources_ID");
-				AddResourceID.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Resources_Amount");
-				AddResourceAmount.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Resources_RespawnTime");
-				AddResourceRespawnTime.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Resources_Trigger");
-				AddResourcesTrigger.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Dynamics_Trigger");
-				AddDynamicsID.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-				xmlTextReader.ReadToFollowing("Dynamics_ID");
-				AddDynamicsTrigger.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
-			}
-			else
-			{
-				AddintExistenceType.SelectedIndex = 0;
-				AddMonsterType.SelectedIndex = 0;
-				Version_combobox.SelectedIndex = 0;
-				DefaultMobButton_combobox.SelectedIndex = 0;
-				ExtraMobButton_combobox.SelectedIndex = 1;
-				DefaultResourceButton_combobox.SelectedIndex = 0;
-				ExtraResourceButton_combobox.SelectedIndex = 2;
-				DefaultDynamicsButton_combobox.SelectedIndex = 0;
-				ExtraDynamicsButton_combobox.SelectedIndex = 3;
-				DefaultMobButton_combobox_SelectedIndexChanged(DefaultMobButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(ExtraMobButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(DefaultResourceButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(ExtraResourceButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(DefaultDynamicsButton_combobox, null);
-				DefaultMobButton_combobox_SelectedIndexChanged(ExtraDynamicsButton_combobox, null);
-			}
-		}
-		catch
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Ошибка при загрузке настроек", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else
-			{
-				MessageBox.Show("Error when reading options", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-		LoadedMapConfigs = new List<MapLoadedInformation>();
-		if (File.Exists(Application.StartupPath + "\\Maps.conf"))
-		{
-			StreamReader streamReader3 = new StreamReader(Application.StartupPath + "\\Maps.conf");
-			do
-			{
-				string[] array6 = streamReader3.ReadLine().Split(new string[1] { "->" }, StringSplitOptions.None);
-				MapLoadedInformation mapLoadedInformation = new MapLoadedInformation
-				{
-					Name = array6[0]
-				};
-				string[] array7 = array6[1].Split(new string[1] { "," }, StringSplitOptions.RemoveEmptyEntries);
-				int.TryParse(array7[0], out mapLoadedInformation.Width);
-				int.TryParse(array7[1], out mapLoadedInformation.Height);
-				LoadedMapConfigs.Add(mapLoadedInformation);
-			}
-			while (!streamReader3.EndOfStream);
-		}
-	}
-
-	private void InformationButton_Click(object sender, EventArgs e)
-	{
-		MessageBox.Show("Perfect world: Npcgen.data Editor \rVersion: v1.7.4\rSkype:Luka007789\r                                         27.10.2023\r                                              © Luka and Updated by Haly", "Npcgen Editor By Luka and Updated by Haly", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-	}
-
-	private void UpObjects(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		DataGridView dataGridView = null;
-		int selectedIndex = MainTabControl.SelectedIndex;
-		if (MainTabControl.SelectedIndex == 0)
-		{
-			dataGridView = NpcMobsGrid;
-		}
-		else if (MainTabControl.SelectedIndex == 1)
-		{
-			dataGridView = ResourcesGrid;
-		}
-		else if (MainTabControl.SelectedIndex == 2)
-		{
-			dataGridView = DynamicGrid;
-		}
-		else if (MainTabControl.SelectedIndex == 3)
-		{
-			dataGridView = TriggersGrid;
-		}
-		List<DataGridViewRow> list = (from DataGridViewRow i in dataGridView.SelectedRows
-			orderby i.Index
-			select i).ToList();
-		List<DataGridViewRow> list2 = (from DataGridViewRow i in dataGridView.SelectedRows
-			orderby i.Index
-			select i).ToList();
-		if (list.Count == 0 || list[0].Index == 0)
-		{
-			return;
-		}
-		AllowCellChanging = false;
-		foreach (DataGridViewRow item5 in list)
-		{
-			int index = item5.Index;
-			int num = item5.Index - 1;
-			dataGridView.Rows.Remove(item5);
-			dataGridView.Rows.Insert(num, item5);
-			switch (selectedIndex)
-			{
-			case 0:
-			{
-				ClassDefaultMonsters item4 = Read.NpcMobList[index];
-				Read.NpcMobList.RemoveAt(index);
-				Read.NpcMobList.Insert(num, item4);
-				break;
-			}
-			case 1:
-			{
-				ClassDefaultResources item3 = Read.ResourcesList[index];
-				Read.ResourcesList.RemoveAt(index);
-				Read.ResourcesList.Insert(num, item3);
-				break;
-			}
-			case 2:
-			{
-				ClassDynamicObject item2 = Read.DynamicsList[index];
-				Read.DynamicsList.RemoveAt(index);
-				Read.DynamicsList.Insert(num, item2);
-				break;
-			}
-			case 3:
-			{
-				ClassTrigger item = Read.TriggersList[index];
-				Read.TriggersList.RemoveAt(index);
-				Read.TriggersList.Insert(num, item);
-				break;
-			}
-			}
-		}
-		AllowCellChanging = true;
-		dataGridView.CurrentCell = dataGridView.Rows[list[list.Count() - 1].Index].Cells[1];
-		foreach (DataGridViewRow item6 in list2)
-		{
-			dataGridView.Rows[item6.Index].Selected = true;
-		}
-	}
-
-	private void DownObjects(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		DataGridView dataGridView = null;
-		int selectedIndex = MainTabControl.SelectedIndex;
-		if (MainTabControl.SelectedIndex == 0)
-		{
-			dataGridView = NpcMobsGrid;
-		}
-		else if (MainTabControl.SelectedIndex == 1)
-		{
-			dataGridView = ResourcesGrid;
-		}
-		else if (MainTabControl.SelectedIndex == 2)
-		{
-			dataGridView = DynamicGrid;
-		}
-		else if (MainTabControl.SelectedIndex == 3)
-		{
-			dataGridView = TriggersGrid;
-		}
-		List<DataGridViewRow> list = (from DataGridViewRow i in dataGridView.SelectedRows
-			orderby i.Index descending
-			select i).ToList();
-		List<DataGridViewRow> list2 = (from DataGridViewRow i in dataGridView.SelectedRows
-			orderby i.Index descending
-			select i).ToList();
-		if (list.Count == 0 || list[0].Index == dataGridView.Rows.Count - 1)
-		{
-			return;
-		}
-		AllowCellChanging = false;
-		foreach (DataGridViewRow item5 in list)
-		{
-			int index = item5.Index;
-			int num = item5.Index + 1;
-			dataGridView.Rows.Remove(item5);
-			dataGridView.Rows.Insert(num, item5);
-			switch (selectedIndex)
-			{
-			case 0:
-			{
-				ClassDefaultMonsters item4 = Read.NpcMobList[index];
-				Read.NpcMobList.RemoveAt(index);
-				Read.NpcMobList.Insert(num, item4);
-				break;
-			}
-			case 1:
-			{
-				ClassDefaultResources item3 = Read.ResourcesList[index];
-				Read.ResourcesList.RemoveAt(index);
-				Read.ResourcesList.Insert(num, item3);
-				break;
-			}
-			case 2:
-			{
-				ClassDynamicObject item2 = Read.DynamicsList[index];
-				Read.DynamicsList.RemoveAt(index);
-				Read.DynamicsList.Insert(num, item2);
-				break;
-			}
-			case 3:
-			{
-				ClassTrigger item = Read.TriggersList[index];
-				Read.TriggersList.RemoveAt(index);
-				Read.TriggersList.Insert(num, item);
-				break;
-			}
-			}
-		}
-		AllowCellChanging = true;
-		dataGridView.CurrentCell = dataGridView.Rows[list[list.Count() - 1].Index].Cells[1];
-		foreach (DataGridViewRow item6 in list2)
-		{
-			dataGridView.Rows[item6.Index].Selected = true;
-		}
-	}
-
-	private void GridsKeyDown(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.W && Control.ModifierKeys == Keys.Shift)
-		{
-			UpObjects(null, null);
-		}
-		if (e.KeyCode == Keys.S && Control.ModifierKeys == Keys.Shift)
-		{
-			DownObjects(null, null);
-		}
-	}
-
-	private void MoveToTrigger_Click(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			int TriggerId = 0;
-			if (MainTabControl.SelectedIndex == 0)
-			{
-				int.TryParse(Trigger.Text, out TriggerId);
-			}
-			else if (MainTabControl.SelectedIndex == 1)
-			{
-				int.TryParse(RTriggerID.Text, out TriggerId);
-			}
-			else if (MainTabControl.SelectedIndex == 2)
-			{
-				int.TryParse(DTrigger_id.Text, out TriggerId);
-			}
-			int num = Read.TriggersList.FindIndex((ClassTrigger z) => z.Id == TriggerId);
-			if (num != -1)
-			{
-				TriggersGrid.CurrentCell = TriggersGrid.Rows[num].Cells[1];
-				MainTabControl.SelectedIndex = 3;
-			}
-			else if (Language == 1)
-			{
-				MessageBox.Show("Операция не удалась!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else if (Language == 2)
-			{
-				MessageBox.Show("Invalid action!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void LineUpX_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		if (MainTabControl.SelectedIndex == 0)
-		{
-			foreach (int item in NpcRowCollection)
-			{
-				Read.NpcMobList[item].X_position = Read.NpcMobList[NpcRowIndex].X_position;
-			}
-			return;
-		}
-		if (MainTabControl.SelectedIndex == 1)
-		{
-			foreach (int item2 in ResourcesRowCollection)
-			{
-				Read.ResourcesList[item2].X_position = Read.ResourcesList[NpcRowIndex].X_position;
-			}
-			return;
-		}
-		if (MainTabControl.SelectedIndex != 2)
-		{
-			return;
-		}
-		foreach (int item3 in DynamicsRowCollection)
-		{
-			Read.DynamicsList[item3].X_position = Read.DynamicsList[NpcRowIndex].X_position;
-		}
-	}
-
-	private void LineUpZ_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		if (MainTabControl.SelectedIndex == 0)
-		{
-			foreach (int item in NpcRowCollection)
-			{
-				Read.NpcMobList[item].Z_position = Read.NpcMobList[NpcRowIndex].Z_position;
-			}
-			return;
-		}
-		if (MainTabControl.SelectedIndex == 1)
-		{
-			foreach (int item2 in ResourcesRowCollection)
-			{
-				Read.ResourcesList[item2].Z_position = Read.ResourcesList[NpcRowIndex].Z_position;
-			}
-			return;
-		}
-		if (MainTabControl.SelectedIndex != 2)
-		{
-			return;
-		}
-		foreach (int item3 in DynamicsRowCollection)
-		{
-			Read.DynamicsList[item3].Z_position = Read.DynamicsList[NpcRowIndex].Z_position;
-		}
-	}
-
-	private void ChangeLanguage(object sender, EventArgs e)
-	{
-		int selectedIndex = ExistenceLocating.SelectedIndex;
-		int selectedIndex2 = ExistenceType.SelectedIndex;
-		int selectedIndex3 = AddintExistenceType.SelectedIndex;
-		int selectedIndex4 = AddMonsterType.SelectedIndex;
-		int selectedIndex5 = TStartWeekDay.SelectedIndex;
-		int selectedIndex6 = TStopWeekDay.SelectedIndex;
-		int selectedIndex7 = Agression.SelectedIndex;
-		int selectedIndex8 = Path_type.SelectedIndex;
-		Control control = sender as Control;
-		if (control.Name == "Russian")
-		{
-			Language = 1;
-			OpenFiles.Text = "Открыть";
-			Open_surfaces.Text = "Открыть";
-			ButtonShowMap.Text = "Показать карту";
-			if (Read == null)
-			{
-				ExistenceTab.Text = "Мобы и Нипы";
-				ResourcesTab.Text = "Ресурсы";
-				DynObjectsTab.Text = "Динамические Объекты";
-				TriggersTab.Text = "Тригеры";
-			}
-			else
-			{
-				ExistenceTab.Text = $"Мобы и Нипы {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
-				ResourcesTab.Text = $"Ресурсы {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
-				DynObjectsTab.Text = $"Динамические Объекты {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
-				TriggersTab.Text = $"Тригеры {TriggersRowCollection.Count}/{Read.TriggersAmount}";
-			}
-			OptionsTab.Text = "Настройки и сохранение";
-			SearchTab.Text = "Поиск";
-			ErrorsTab.Text = "Ошибки";
-			ExistenceLocating.Items.Clear();
-			ComboBox.ObjectCollection items = ExistenceLocating.Items;
-			object[] items2 = new string[2] { "Наземный", "Свободный" };
-			items.AddRange(items2);
-			ExistenceLocating.SelectedIndex = selectedIndex;
-			AddintExistenceType.Items.Clear();
-			ComboBox.ObjectCollection items3 = AddintExistenceType.Items;
-			items2 = new string[2] { "Наземный", "Свободный" };
-			items3.AddRange(items2);
-			AddintExistenceType.SelectedIndex = selectedIndex3;
-			ExistenceType.Items.Clear();
-			ComboBox.ObjectCollection items4 = ExistenceType.Items;
-			items2 = new string[2] { "Моб", "Нпс" };
-			items4.AddRange(items2);
-			ExistenceType.SelectedIndex = selectedIndex2;
-			AddMonsterType.Items.Clear();
-			ComboBox.ObjectCollection items5 = AddMonsterType.Items;
-			items2 = new string[2] { "Моб", "Нпс" };
-			items5.AddRange(items2);
-			AddMonsterType.SelectedIndex = selectedIndex4;
-			MainGroupBox.Text = "Основное";
-			groupBox1.Text = "Мобы|Нипы";
-			groupBox3.Text = "Основное";
-			groupBox7.Text = "Основное";
-			groupBox9.Text = "Изображение";
-			groupBox8.Text = "Настройки для добавления новых существ";
-			label3.Text = "Расположе:";
-			label3.Location = new Point(2, 14);
-			label9.Text = "Поворот X:";
-			label9.Location = new Point(5, 106);
-			label10.Text = "Поворот Y:";
-			label10.Location = new Point(5, 131);
-			label11.Text = "Поворот Z:";
-			label11.Location = new Point(5, 154);
-			label14.Text = "Разброс X:";
-			label14.Location = new Point(6, 178);
-			label13.Text = "Разброс Y:";
-			label13.Location = new Point(6, 201);
-			label12.Text = "Разброс Z:";
-			label12.Location = new Point(6, 224);
-			label15.Text = "Тип:";
-			label15.Location = new Point(215, 12);
-			label5.Text = "В группе:";
-			label5.Location = new Point(186, 39);
-			label16.Text = "Тип группы:";
-			label16.Location = new Point(172, 62);
-			label18.Text = "Триггер:";
-			label18.Location = new Point(191, 109);
-			label19.Text = "Врем.Жизни:";
-			label19.Location = new Point(165, 132);
-			label20.Text = "Макс.колво:";
-			label20.Location = new Point(169, 155);
-			ExistenceAutoRevive.Text = "Мгновенный респавн";
-			ExistenceAutoRevive.Location = new Point(201, 200);
-			ExistenceInitGen.Text = "Активировать генератор";
-			ExistenceInitGen.Location = new Point(184, 178);
-			ExistenceCloneButton.Text = "Клонировать";
-			ExistenceRemoveButton.Text = "Удалить";
-			ExistenceGroupCloneButton.Text = "Клонировать";
-			ExistenceGroupRemoveButton.Text = "Удалить";
-			label22.Text = "Количество:";
-			label22.Location = new Point(32, 37);
-			label23.Text = "Время респавна:";
-			label23.Location = new Point(5, 60);
-			label24.Text = "Кол-во смертей:";
-			label24.Location = new Point(8, 83);
-			label25.Text = "Агрессия:";
-			label25.Location = new Point(49, 106);
-			label26.Text = "Тип пути:";
-			label26.Location = new Point(51, 130);
-			label27.Text = "Скорость:";
-			label27.Location = new Point(45, 154);
-			label28.Text = "Путь:";
-			label28.Location = new Point(72, 177);
-			label29.Text = "Оффсет воды:";
-			label29.Location = new Point(16, 201);
-			label30.Text = "Оффсет повор:";
-			label30.Location = new Point(196, 14);
-			label31.Text = "Просит помощь:";
-			label31.Location = new Point(193, 60);
-			label32.Text = "Нужна помощь:";
-			label32.Location = new Point(199, 83);
-			label33.Text = "Показ трупа(Сек):";
-			label33.Location = new Point(184, 107);
-			label35.Text = "Группа:";
-			label35.Location = new Point(245, 37);
-			ExistenceInsertCordsFromGame.Text = "Вставить координаты с игры";
-			label67.Text = "ID триггера:";
-			label67.Location = new Point(89, 18);
-			label68.Text = "Расположение:";
-			label68.Location = new Point(62, 39);
-			label66.Text = "Тип существа:";
-			label66.Location = new Point(70, 62);
-			label65.Text = "ID создаваемого существа:";
-			label65.Location = new Point(8, 89);
-			label64.Text = "Количество существ:";
-			label64.Location = new Point(42, 112);
-			label63.Text = "Время респавна:";
-			label63.Location = new Point(62, 135);
-			ResourcesCloneButton.Text = "Клонировать";
-			ResourcesRemoveButton.Text = "Удалить";
-			label43.Text = "Разброс X:";
-			label43.Location = new Point(8, 82);
-			label42.Text = "Разброс Z:";
-			label42.Location = new Point(9, 105);
-			label45.Text = "Наклон 1:";
-			label45.Location = new Point(14, 128);
-			label44.Text = "Наклон 2:";
-			label44.Location = new Point(14, 151);
-			label41.Text = "Поворот:";
-			label41.Location = new Point(16, 174);
-			label51.Text = "В группе:";
-			label51.Location = new Point(189, 15);
-			label37.Text = "Триггер:";
-			label37.Location = new Point(192, 60);
-			groupBox11.Text = "Настройки для добавления новых ресурсов";
-			label75.Text = "ID триггера:";
-			label75.Location = new Point(90, 18);
-			label57.Text = "ID создаваемого ресурса:";
-			label57.Location = new Point(18, 42);
-			label56.Text = "Количество ресурсов:";
-			label56.Location = new Point(40, 65);
-			label54.Text = "Время респавна:";
-			label54.Location = new Point(65, 88);
-			ResourcesInsertCordsFromGame.Text = "Вставить координаты с игры";
-			ResourcesGroupCloneButton.Text = "Клонировать";
-			ResourcesGroupRemoveButton.Text = "Удалить";
-			groupBox5.Text = "Ресурсы";
-			ResourcesInitGen.Text = "Активировать генератор";
-			ResourcesInitGen.Location = new Point(187, 107);
-			ResourcesAutoRevive.Text = "Мгновенный респавн";
-			ResourcesAutoRevive.Location = new Point(204, 129);
-			label59.Text = "Количество:";
-			label59.Location = new Point(224, 41);
-			label58.Text = "Время респа:";
-			label58.Location = new Point(218, 67);
-			label55.Text = "Тип:";
-			label55.Location = new Point(272, 93);
-			label53.Text = "Над землей:";
-			label53.Location = new Point(224, 119);
-			DynObjectsCloneButton.Text = "Клонировать";
-			DynObjectsRemoveButton.Text = "Удалить";
-			label72.Text = "Наклон 1:";
-			label72.Location = new Point(4, 107);
-			label71.Text = "Наклон 2:";
-			label71.Location = new Point(184, 38);
-			label70.Text = "Поворот:";
-			label70.Location = new Point(187, 61);
-			label73.Text = "Триггер:";
-			label73.Location = new Point(192, 83);
-			label74.Text = "Увеличение:";
-			label74.Location = new Point(167, 107);
-			groupBox10.Text = "Настройки для добавления Дин.Объектов";
-			label61.Text = "ID Дин.Объекта:";
-			label61.Location = new Point(69, 18);
-			label40.Text = "ID триггера:";
-			label40.Location = new Point(89, 43);
-			DynObjectsInsertCordsFromGame.Text = "Вставить координаты с игры";
-			TriggersCloneButton.Text = "Клонировать";
-			TriggersRemoveButton.Text = "Удалить";
-			groupBox12.Text = "Основное";
-			groupBox16.Text = "Запуск";
-			groupBox17.Text = "Выключение";
-			groupBox13.Text = "Используется в существах";
-			groupBox14.Text = "Используется в ресурсах";
-			groupBox15.Text = "Используется в дин.объектах";
-			GotoNpcMobsContacts.Text = "Перейти к выбранному";
-			GotoResourcesContacts.Text = "Перейти к выбранному";
-			GotoDynamicsContacts.Text = "Перейти к выбранному";
-			label89.Text = "ID Триггера:";
-			label89.Location = new Point(71, 16);
-			label79.Text = "ID в панели ГМ:";
-			label79.Location = new Point(50, 39);
-			label99.Text = "Название:";
-			label99.Location = new Point(81, 61);
-			label83.Text = "Задержка включения:";
-			label83.Location = new Point(14, 84);
-			label84.Text = "Задержка выключения:";
-			label84.Location = new Point(5, 106);
-			TAutoStart.Text = "Запускать автоматически";
-			label85.Text = "Продолжительность:";
-			label85.Location = new Point(7, 147);
-			TStartBySchedule.Text = "Запускать по графику";
-			TStartBySchedule.Location = new Point(178, 170);
-			TStopBySchedule.Text = "Выключать по графику";
-			TStopBySchedule.Location = new Point(174, 190);
-			label86.Text = "Год:";
-			label86.Location = new Point(55, 16);
-			label87.Text = "Месяц:";
-			label87.Location = new Point(38, 40);
-			label88.Text = "День недели:";
-			label88.Location = new Point(1, 65);
-			label90.Text = "День:";
-			label90.Location = new Point(168, 15);
-			label91.Text = "Час:";
-			label91.Location = new Point(177, 41);
-			label92.Text = "Минута:";
-			label92.Location = new Point(154, 65);
-			label97.Text = "Год:";
-			label97.Location = new Point(55, 16);
-			label96.Text = "Месяц:";
-			label96.Location = new Point(38, 40);
-			label98.Text = "День недели:";
-			label98.Location = new Point(1, 65);
-			label94.Text = "Час:";
-			label94.Location = new Point(177, 41);
-			label95.Text = "День:";
-			label95.Location = new Point(168, 15);
-			label93.Text = "Минута:";
-			label93.Location = new Point(154, 65);
-			label52.Text = "Версия клиента для захвата координат из игры:";
-			groupBox6.Text = "Горячие клавиши";
-			label50.Text = "Существо:";
-			label50.Location = new Point(20, 19);
-			label77.Text = "Ресурс:";
-			label77.Location = new Point(37, 46);
-			label101.Text = "Дин.Объект:";
-			label101.Location = new Point(7, 73);
-			SaveFile.Text = "Сохранить Npcgen.data";
-			ConvertComboboxVersion.Location = new Point(335, 435);
-			ConvertAndSaveButton.Text = "Конвертировать в     версию и сохранить";
-			TStartWeekDay.Items.Clear();
-			ComboBox.ObjectCollection items6 = TStartWeekDay.Items;
-			items2 = new string[8] { "Все", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
-			items6.AddRange(items2);
-			TStartWeekDay.SelectedIndex = selectedIndex5;
-			TStopWeekDay.Items.Clear();
-			ComboBox.ObjectCollection items7 = TStopWeekDay.Items;
-			items2 = new string[8] { "Все", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
-			items7.AddRange(items2);
-			TStopWeekDay.SelectedIndex = selectedIndex6;
-			DeleteEmptyTrigger.Text = "Удалить пустые триггеры";
-			MoveToTrigger.Text = "Перейти к триггеру";
-			toolStripMenuItem1.Text = "Переместить";
-			UpExistence.Text = "Выше   Shift+W";
-			DownExistence.Text = "Ниже    Shift+S";
-			toolStripMenuItem4.Text = "Переместить";
-			UpTrigger.Text = "Выше   Shift+W";
-			DownTrigger.Text = "Ниже    Shift+S";
-			Agression.Items[0] = "Нет";
-			Agression.Items[1] = "Агрессивный";
-			Agression.Items[2] = "Защита";
-			Path_type.Items[0] = "Нет";
-			Path_type.Items[1] = "Обычный";
-			Path_type.Items[2] = "Зацикленный";
-			LineUpX.Text = "Выстроить в ряд по X";
-			LineUpZ.Text = "Выстроить в ряд по Z";
-			groupBox18.Text = "Поиск в существах";
-			groupBox19.Text = "Поиск в ресурсах";
-			groupBox20.Text = "Поиск в Дин.Объектах";
-			groupBox21.Text = "Поиск в Триггерах";
-			MoveToSelected.Text = "Перейти к выбранному";
-			ExistenceSearchName_Radio.Text = "Название";
-			ExistenceSearchName_Radio.Location = new Point(1, 43);
-			ExistenceSearchTrigger_Radio.Text = "Триггер";
-			ExistenceSearchTrigger_Radio.Location = new Point(10, 64);
-			ExistenceSearchPath_Radio.Text = "Путь";
-			ExistenceSearchPath_Radio.Location = new Point(27, 86);
-			ExistenceSearchButton.Text = "Найти";
-			ResourceSearchName_Radio.Text = "Название";
-			ResourceSearchName_Radio.Location = new Point(1, 43);
-			ResourceSearchTrigger_Radio.Text = "Триггер";
-			ResourceSearchTrigger_Radio.Location = new Point(10, 64);
-			ResourceSearchButton.Text = "Найти";
-			DynamicSearchName_Radio.Text = "Название";
-			DynamicSearchName_Radio.Location = new Point(1, 43);
-			DynamicSearchTrigger_Radio.Text = "Триггер";
-			DynamicSearchTrigger_Radio.Location = new Point(10, 64);
-			DynamicSearchButton.Text = "Найти";
-			TriggerSearchName_Radio.Text = "Название";
-			TriggerSearchName_Radio.Location = new Point(1, 64);
-			TriggerSearchButton.Text = "Найти";
-			SearchErrorsButton.Text = "Найти ошибки";
-			RemoveAllErrors.Text = "Удалить все объекты";
-			ExportExistence.Text = "Экспорт";
-			ImportExistence.Text = "Импорт";
-			LineUpExistenceDropDown.Text = "Выстроить";
-			ToolStripLineUpX.Text = "По Х";
-			ToolStripLineUpZ.Text = "По Z";
-			MoveExistenceDropDown.Text = "Переместить";
-			MoveUpToolStripMenuItem.Text = "Выше   Shift+W";
-			MoveDownToolStripMenuItem.Text = "Ниже    Shift+S";
-			ExportResources.Text = "Экспорт";
-			ImportResources.Text = "Импорт";
-			LineUpResource.Text = "Выстроить";
-			ResourcesOnX.Text = "По X";
-			ResourcesOnZ.Text = "По Z";
-			MoveResources.Text = "Переместить";
-			ResourceUp.Text = "Выше   Shift+W";
-			ResourceDown.Text = "Ниже Shift+S";
-			toolStripButton3.Text = "Экспорт";
-			toolStripButton4.Text = "Импорт";
-			toolStripDropDownButton3.Text = "Выстроить";
-			toolStripMenuItem7.Text = "По X";
-			toolStripMenuItem8.Text = "По Z";
-			toolStripDropDownButton4.Text = "Переместить";
-			toolStripMenuItem9.Text = "Выше   Shift+W";
-			toolStripMenuItem10.Text = "Ниже Shift+S";
-			toolStripButton5.Text = "Экспорт";
-			toolStripButton6.Text = "Импорт";
-			toolStripDropDownButton6.Text = "Переместить";
-			toolStripMenuItem13.Text = "Выше   Shift+W";
-			toolStripMenuItem14.Text = "Ниже Shift+S";
-			toolStripButton7.Text = "Очистить";
-			экспортToolStripMenuItem.Text = "Экспорт";
-			импортToolStripMenuItem.Text = "Импорт";
-			toolStripMenuItem11.Text = "Импорт";
-			toolStripMenuItem12.Text = "Экспорт";
-			DynamicForm = new DynamicObjectsForm(DynamicsListRu, this);
-			DynamicForm.LanguageChange(1);
-		}
-		else if (control.Name == "English")
-		{
-			Language = 2;
-			OpenFiles.Text = "Open";
-			Open_surfaces.Text = "Open";
-			ButtonShowMap.Text = "Show map";
-			if (Read == null)
-			{
-				ExistenceTab.Text = "Mobs and Npcs";
-				ResourcesTab.Text = "Resources";
-				DynObjectsTab.Text = "Dynamic Objects";
-				TriggersTab.Text = "Triggers";
-			}
-			else
-			{
-				ExistenceTab.Text = $"Mobs and Npcs {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
-				ResourcesTab.Text = $"Resources {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
-				DynObjectsTab.Text = $"Dynamic Objects {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
-				TriggersTab.Text = $"Triggers {TriggersRowCollection.Count}/{Read.TriggersAmount}";
-			}
-			OptionsTab.Text = "Options and saving";
-			SearchTab.Text = "Search";
-			ErrorsTab.Text = "Errors";
-			ExistenceLocating.Items.Clear();
-			ComboBox.ObjectCollection items8 = ExistenceLocating.Items;
-			object[] items2 = new string[2] { "Ground", "Free" };
-			items8.AddRange(items2);
-			ExistenceLocating.SelectedIndex = selectedIndex;
-			AddintExistenceType.Items.Clear();
-			ComboBox.ObjectCollection items9 = AddintExistenceType.Items;
-			items2 = new string[2] { "Ground", "Free" };
-			items9.AddRange(items2);
-			AddintExistenceType.SelectedIndex = selectedIndex3;
-			ExistenceType.Items.Clear();
-			ComboBox.ObjectCollection items10 = ExistenceType.Items;
-			items2 = new string[2] { "Mob", "Npc" };
-			items10.AddRange(items2);
-			ExistenceType.SelectedIndex = selectedIndex2;
-			AddMonsterType.Items.Clear();
-			ComboBox.ObjectCollection items11 = AddMonsterType.Items;
-			items2 = new string[2] { "Mob", "Npc" };
-			items11.AddRange(items2);
-			AddMonsterType.SelectedIndex = selectedIndex4;
-			MainGroupBox.Text = "Default";
-			groupBox8.Text = "Options for adding new existence";
-			groupBox1.Text = "Mobs|Npcs";
-			label3.Text = "Location:";
-			label3.Location = new Point(21, 14);
-			label9.Text = "Rotation X:";
-			label9.Location = new Point(11, 106);
-			label10.Text = "Rotation Y:";
-			label10.Location = new Point(11, 131);
-			label11.Text = "Rotation Z:";
-			label11.Location = new Point(11, 154);
-			label14.Text = "Scatter X:";
-			label14.Location = new Point(18, 178);
-			label13.Text = "Scatter Y:";
-			label13.Location = new Point(18, 201);
-			label12.Text = "Scatter Z:";
-			label12.Location = new Point(18, 224);
-			label15.Text = "Type:";
-			label15.Location = new Point(210, 12);
-			label5.Text = "In group:";
-			label5.Location = new Point(192, 39);
-			label16.Text = "Group type:";
-			label16.Location = new Point(178, 62);
-			label18.Text = "Trigger:";
-			label18.Location = new Point(197, 109);
-			label19.Text = "Life time:";
-			label19.Location = new Point(189, 132);
-			label20.Text = "Max amount:";
-			label20.Location = new Point(168, 155);
-			ExistenceAutoRevive.Text = "Instant respawn";
-			ExistenceAutoRevive.Location = new Point(235, 201);
-			ExistenceInitGen.Text = "Activate generator";
-			ExistenceInitGen.Location = new Point(223, 178);
-			ResourcesInitGen.Text = "Activate generator";
-			ResourcesInitGen.Location = new Point(226, 107);
-			ResourcesAutoRevive.Text = "Instant respawn";
-			ResourcesAutoRevive.Location = new Point(238, 129);
-			ExistenceCloneButton.Text = "Clone";
-			ExistenceRemoveButton.Text = "Delete";
-			ExistenceGroupCloneButton.Text = "Clone";
-			ExistenceGroupRemoveButton.Text = "Delete";
-			label22.Text = "Amount:";
-			label22.Location = new Point(59, 37);
-			label23.Text = "Respawn time:";
-			label23.Location = new Point(22, 60);
-			label24.Text = "Death amount:";
-			label24.Location = new Point(23, 83);
-			label25.Text = "Agression:";
-			label25.Location = new Point(47, 106);
-			label26.Text = "Path type:";
-			label26.Location = new Point(51, 130);
-			label27.Text = "Speed:";
-			label27.Location = new Point(65, 154);
-			label28.Text = "Type:";
-			label28.Location = new Point(75, 177);
-			label29.Text = "Water offset:";
-			label29.Location = new Point(37, 201);
-			label30.Text = "Turn offset:";
-			label30.Location = new Point(228, 14);
-			label31.Text = "Ask help:";
-			label31.Location = new Point(239, 60);
-			label32.Text = "Need help:";
-			label32.Location = new Point(227, 83);
-			label33.Text = "Corpse(sec):";
-			label33.Location = new Point(219, 107);
-			label35.Text = "Group:";
-			label35.Location = new Point(251, 37);
-			ExistenceInsertCordsFromGame.Text = "Insert Coordinates from game";
-			label67.Text = "Trigger ID:";
-			label67.Location = new Point(101, 18);
-			label68.Text = "Location:";
-			label68.Location = new Point(100, 39);
-			label66.Text = "Existence type:";
-			label66.Location = new Point(68, 62);
-			label65.Text = "Existence ID:";
-			label65.Location = new Point(86, 89);
-			label64.Text = "Existence amount:";
-			label64.Location = new Point(62, 112);
-			label63.Text = "Respawn time:";
-			label63.Location = new Point(79, 135);
-			groupBox3.Text = "Default";
-			ResourcesCloneButton.Text = "Clone";
-			ResourcesRemoveButton.Text = "Delete";
-			label43.Text = "Spread X:";
-			label43.Location = new Point(15, 82);
-			label42.Text = "Spread Z:";
-			label42.Location = new Point(16, 105);
-			label45.Text = "Incline 1:";
-			label45.Location = new Point(20, 128);
-			label44.Text = "Incline 2:";
-			label44.Location = new Point(20, 151);
-			label41.Text = "Rotation:";
-			label41.Location = new Point(20, 174);
-			label51.Text = "In group:";
-			label51.Location = new Point(194, 15);
-			label37.Text = "Trigger:";
-			label37.Location = new Point(200, 60);
-			groupBox11.Text = "Options for adding new resources";
-			label75.Text = "Trigger ID:";
-			label75.Location = new Point(101, 18);
-			label57.Text = "Resource ID:";
-			label57.Location = new Point(87, 42);
-			label56.Text = "Resources amount:";
-			label56.Location = new Point(58, 65);
-			label54.Text = "Respawn time:";
-			label54.Location = new Point(80, 88);
-			label53.Text = "Above ground:";
-			label53.Location = new Point(218, 119);
-			ResourcesInsertCordsFromGame.Text = "Insert Coordinates from game";
-			ResourcesGroupCloneButton.Text = "Clone";
-			ResourcesGroupRemoveButton.Text = "Delete";
-			groupBox5.Text = "Resources";
-			label59.Text = "Amount:";
-			label59.Location = new Point(251, 41);
-			label58.Text = "Respa. time:";
-			label58.Location = new Point(227, 67);
-			label55.Text = "Type:";
-			label55.Location = new Point(267, 93);
-			DynObjectsCloneButton.Text = "Clone";
-			DynObjectsRemoveButton.Text = "Delete";
-			groupBox7.Text = "Default";
-			groupBox9.Text = "Image";
-			label72.Text = "Incline 1:";
-			label72.Location = new Point(11, 107);
-			label71.Text = "Incline 2:";
-			label71.Location = new Point(192, 38);
-			label70.Text = "Rotation:";
-			label70.Location = new Point(190, 61);
-			label73.Text = "Trigger:";
-			label73.Location = new Point(198, 83);
-			label74.Text = "Scale:";
-			label74.Location = new Point(206, 107);
-			groupBox10.Text = "Options for adding new dyn.Objects";
-			label61.Text = "Dyn.Object ID:";
-			label61.Location = new Point(81, 18);
-			label40.Text = "Trigger ID:";
-			label40.Location = new Point(100, 43);
-			DynObjectsInsertCordsFromGame.Text = "Insert Coordinates from game";
-			TriggersCloneButton.Text = "Clone";
-			TriggersRemoveButton.Text = "Delete";
-			groupBox12.Text = "Default";
-			groupBox16.Text = "Start schedule";
-			groupBox17.Text = "Stop schedule";
-			groupBox13.Text = "Using in existence";
-			groupBox14.Text = "Using in resources";
-			groupBox15.Text = "Using in Dyn.Objects";
-			GotoNpcMobsContacts.Text = "Move to selected";
-			GotoResourcesContacts.Text = "Move to selected";
-			GotoDynamicsContacts.Text = "Move to selected";
-			label89.Text = "Trigger ID:";
-			label89.Location = new Point(85, 16);
-			label79.Text = "ID in GM console:";
-			label79.Location = new Point(44, 39);
-			label99.Text = "Name:";
-			label99.Location = new Point(103, 61);
-			label83.Text = "Start delay:";
-			label83.Location = new Point(80, 84);
-			label84.Text = "Stop delay:";
-			label84.Location = new Point(81, 106);
-			TAutoStart.Text = "Start automatically";
-			label85.Text = "During:";
-			label85.Location = new Point(95, 147);
-			TStartBySchedule.Text = "Start on schedule";
-			TStartBySchedule.Location = new Point(209, 170);
-			TStopBySchedule.Text = "Stop on schedule";
-			TStopBySchedule.Location = new Point(209, 190);
-			label86.Text = "Year:";
-			label86.Location = new Point(52, 16);
-			label87.Text = "Month:";
-			label87.Location = new Point(41, 40);
-			label88.Text = "Week day:";
-			label88.Location = new Point(20, 65);
-			label90.Text = "Day:";
-			label90.Location = new Point(177, 15);
-			label91.Text = "Hour:";
-			label91.Location = new Point(171, 41);
-			label92.Text = "Minute:";
-			label92.Location = new Point(160, 65);
-			label97.Text = "Year:";
-			label97.Location = new Point(50, 16);
-			label96.Text = "Month:";
-			label96.Location = new Point(40, 40);
-			label98.Text = "Week day:";
-			label98.Location = new Point(22, 65);
-			label95.Text = "Day:";
-			label95.Location = new Point(177, 15);
-			label94.Text = "Hour:";
-			label94.Location = new Point(171, 41);
-			label93.Text = "Minute:";
-			label93.Location = new Point(160, 65);
-			label52.Text = "Client version for catching coordinates from game:";
-			groupBox6.Text = "Hot keys";
-			label50.Text = "Existence:";
-			label50.Location = new Point(24, 19);
-			label77.Text = "Resource:";
-			label77.Location = new Point(23, 46);
-			label101.Text = "Dyn.object:";
-			label101.Location = new Point(18, 73);
-			SaveFile.Text = "Save Npcgen.data";
-			ConvertComboboxVersion.Location = new Point(274, 435);
-			ConvertAndSaveButton.Text = "Convert to               version and save";
-			TStartWeekDay.Items.Clear();
-			ComboBox.ObjectCollection items12 = TStartWeekDay.Items;
-			items2 = new string[8] { "All", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-			items12.AddRange(items2);
-			TStartWeekDay.SelectedIndex = selectedIndex5;
-			TStopWeekDay.Items.Clear();
-			ComboBox.ObjectCollection items13 = TStopWeekDay.Items;
-			items2 = new string[8] { "All", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-			items13.AddRange(items2);
-			TStopWeekDay.SelectedIndex = selectedIndex6;
-			DeleteEmptyTrigger.Text = "Delete empty triggers";
-			MoveToTrigger.Text = "Move to trigger";
-			toolStripMenuItem1.Text = "Move";
-			UpExistence.Text = "Up           Shift+W";
-			DownExistence.Text = "Down      Shift+S";
-			toolStripMenuItem4.Text = "Move";
-			UpTrigger.Text = "Up           Shift+W";
-			DownTrigger.Text = "Down      Shift+S";
-			Agression.Items[0] = "No";
-			Agression.Items[1] = "Aggressive";
-			Agression.Items[2] = "Defend";
-			Path_type.Items[0] = "No";
-			Path_type.Items[1] = "Default";
-			Path_type.Items[2] = "Cycle";
-			LineUpX.Text = "Line up on X";
-			LineUpZ.Text = "Line up on Z";
-			groupBox18.Text = "Search in existence";
-			groupBox19.Text = "Search in resources";
-			groupBox20.Text = "Search in Dyn.Objects";
-			groupBox21.Text = "Search in triggers";
-			MoveToSelected.Text = "Move to selected";
-			ExistenceSearchName_Radio.Text = "Name";
-			ExistenceSearchName_Radio.Location = new Point(22, 43);
-			ExistenceSearchTrigger_Radio.Text = "Trigger";
-			ExistenceSearchTrigger_Radio.Location = new Point(17, 64);
-			ExistenceSearchPath_Radio.Text = "Path";
-			ExistenceSearchPath_Radio.Location = new Point(28, 86);
-			ExistenceSearchButton.Text = "Search";
-			ResourceSearchName_Radio.Text = "Name";
-			ResourceSearchName_Radio.Location = new Point(22, 43);
-			ResourceSearchTrigger_Radio.Text = "Trigger";
-			ResourceSearchTrigger_Radio.Location = new Point(17, 64);
-			ResourceSearchButton.Text = "Search";
-			DynamicSearchName_Radio.Text = "Name";
-			DynamicSearchName_Radio.Location = new Point(22, 43);
-			DynamicSearchTrigger_Radio.Text = "Trigger";
-			DynamicSearchTrigger_Radio.Location = new Point(17, 64);
-			DynamicSearchButton.Text = "Search";
-			TriggerSearchName_Radio.Text = "Name";
-			TriggerSearchName_Radio.Location = new Point(22, 64);
-			TriggerSearchButton.Text = "Search";
-			SearchErrorsButton.Text = "Search errors";
-			RemoveAllErrors.Text = "Remove all objects";
-			ExportExistence.Text = "Export";
-			ImportExistence.Text = "Import";
-			LineUpExistenceDropDown.Text = "Line up";
-			ToolStripLineUpX.Text = "On Х";
-			ToolStripLineUpZ.Text = "On Z";
-			MoveExistenceDropDown.Text = "Move objects";
-			MoveUpToolStripMenuItem.Text = "Up           Shift+W";
-			MoveDownToolStripMenuItem.Text = "Down      Shift+S";
-			ExportResources.Text = "Export";
-			ImportResources.Text = "Import";
-			LineUpResource.Text = "Line up";
-			ResourcesOnX.Text = "On X";
-			ResourcesOnZ.Text = "On Z";
-			MoveResources.Text = "Move objects";
-			ResourceUp.Text = "Up           Shift+W";
-			ResourceDown.Text = "Down      Shift+S";
-			toolStripButton3.Text = "Export";
-			toolStripButton4.Text = "Import";
-			toolStripDropDownButton3.Text = "Line up";
-			toolStripMenuItem7.Text = "On X";
-			toolStripMenuItem8.Text = "On Z";
-			toolStripDropDownButton4.Text = "Move objects";
-			toolStripMenuItem9.Text = "Up   Shift+W";
-			toolStripMenuItem10.Text = "Down Shift+S";
-			toolStripButton5.Text = "Export";
-			toolStripButton6.Text = "Import";
-			toolStripDropDownButton6.Text = "Move objects";
-			toolStripMenuItem13.Text = "Up   Shift+W";
-			toolStripMenuItem14.Text = "Down Shift+S";
-			toolStripButton7.Text = "Clear";
-			экспортToolStripMenuItem.Text = "Export";
-			импортToolStripMenuItem.Text = "Import";
-			toolStripMenuItem11.Text = "Import";
-			toolStripMenuItem12.Text = "Export";
-			DynamicForm = new DynamicObjectsForm(DynamicsListEn, this);
-			DynamicForm.LanguageChange(2);
-		}
-		if (Read != null)
-		{
-			DynamicGrid.Rows.Clear();
-			SortDynamicObjects();
-		}
-		if (ChooseFromElementsForm != null)
-		{
-			ChooseFromElementsForm.RefreshLanguage(Language);
-		}
-	}
-
-	private void NpcMobsGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
-	{
-		if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
-		{
-			string caption = Convert.ToString(NpcMobsGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-			toolTip1.SetToolTip(NpcMobsGrid, caption);
-		}
-	}
-
-	private void ExistenceGrid_CellChanged(object sender, EventArgs e)
-	{
-		if (!AllowCellChanging)
-		{
-			return;
-		}
-		NpcsGroupGrid.Rows.Clear();
-		NpcRowCollection = (from DataGridViewRow q in NpcMobsGrid.SelectedRows
-			select q.Index into r
-			orderby r descending
-			select r).ToList();
-		if (NpcMobsGrid.CurrentRow != null)
-		{
-			NpcRowIndex = NpcMobsGrid.CurrentRow.Index;
-			if (NpcRowIndex != -1)
-			{
-				ExistenceLocating.SelectedIndex = Read.NpcMobList[NpcRowIndex].Location;
-				Group_amount_textbox.Text = Read.NpcMobList[NpcRowIndex].Amount_in_group.ToString();
-				X_position.Text = Read.NpcMobList[NpcRowIndex].X_position.ToString();
-				Y_position.Text = Read.NpcMobList[NpcRowIndex].Y_position.ToString();
-				Z_position.Text = Read.NpcMobList[NpcRowIndex].Z_position.ToString();
-				X_rotate.Text = Read.NpcMobList[NpcRowIndex].X_direction.ToString();
-				Y_rotate.Text = Read.NpcMobList[NpcRowIndex].Y_direction.ToString();
-				Z_rotate.Text = Read.NpcMobList[NpcRowIndex].Z_direction.ToString();
-				X_scatter.Text = Read.NpcMobList[NpcRowIndex].X_random.ToString();
-				Y_scatter.Text = Read.NpcMobList[NpcRowIndex].Y_random.ToString();
-				Z_scatter.Text = Read.NpcMobList[NpcRowIndex].Z_random.ToString();
-				ExistenceType.SelectedIndex = Read.NpcMobList[NpcRowIndex].Type;
-				Group_type.Text = Read.NpcMobList[NpcRowIndex].iGroupType.ToString();
-				ExistenceInitGen.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].BInitGen);
-				ExistenceAutoRevive.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].bAutoRevive);
-				BValicOnce.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].BValicOnce);
-				dwGenId.Text = Read.NpcMobList[NpcRowIndex].dwGenId.ToString();
-				Trigger.Text = Read.NpcMobList[NpcRowIndex].Trigger_id.ToString();
-				Life_time.Text = Read.NpcMobList[NpcRowIndex].Life_time.ToString();
-				IMaxNuml.Text = Read.NpcMobList[NpcRowIndex].MaxRespawnTime.ToString();
-				int i;
-				for (i = 0; i < Read.NpcMobList[NpcRowIndex].Amount_in_group; i++)
-				{
-					string text = "?";
-					int num = Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Read.NpcMobList[NpcRowIndex].MobDops[i].Id);
-					if (num != -1)
-					{
-						text = Element.ExistenceLists[num].Name;
-					}
-					NpcsGroupGrid.Rows.Add(i + 1, Read.NpcMobList[NpcRowIndex].MobDops[i].Id, text);
-					if (Read.NpcMobList[i].Type == 1)
-					{
-						NpcsGroupGrid.Rows[i].Cells[1].Style.ForeColor = Color.FromArgb(251, 251, 107);
-						NpcsGroupGrid.Rows[i].Cells[2].Style.ForeColor = Color.FromArgb(251, 251, 107);
-					}
-				}
-			}
-			if (MapForm != null && MainProgressBar.Value == 0 && NpcRowCollection.Count != 0 && MapForm.Visible)
-			{
-				MapForm.GetCoordinates(GetPoint(1));
-			}
-			UnderExistenceGrid_CellChanged(null, null);
-		}
-		if (Language == 1)
-		{
-			ExistenceTab.Text = $"Мобы и Нипы {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
-		}
-		else
-		{
-			ExistenceTab.Text = $"Mobs and Npcs {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
-		}
-	}
-
-	private void UnderExistenceGrid_CellChanged(object sender, EventArgs e)
-	{
-		if (NpcsGroupGrid.CurrentRow != null && NpcsGroupGrid.CurrentRow.Index != -1)
-		{
-			UnderNpcRowCollection = (from DataGridViewRow b in NpcsGroupGrid.SelectedRows
-				select b.Index).ToList();
-			NpcGroupIndex = NpcsGroupGrid.CurrentRow.Index;
-			Id_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Id;
-			Amount_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Amount;
-			Respawn_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Respawn;
-			DeathAmount_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Dead_amount;
-			Agression.SelectedIndex = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Agression;
-			Path_type.SelectedIndex = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Path_type;
-			Path_speed.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Speed;
-			Path_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Path;
-			Water_numeric.Value = Convert.ToDecimal(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].fOffsetWater);
-			Turn_numeric.Value = Convert.ToDecimal(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].fOffsetTrn);
-			Group_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Group;
-			AskHelp_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Group_help_sender;
-			NeedHelp_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Group_help_Needer;
-			bNeedHelp.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bNeedHelp);
-			bFaction.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bFaction);
-			bFac_Helper.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bFac_Helper);
-			bFac_Accept.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bFac_Accept);
-			Deadtime_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Dead_time;
-			RefreshLower_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].RefreshLower;
-		}
-	}
-
-	private void NpcAndMobsDefaultLeave(object sender, EventArgs e)
-	{
-		if (NpcRowCollection == null || Read == null)
-		{
-			return;
-		}
-		Control control = sender as Control;
-		float result2;
-		int result;
-		switch (control.Name)
-		{
-		case "ExistenceLocating":
-		{
-			foreach (int item in NpcRowCollection)
-			{
-				Read.NpcMobList[item].Location = ExistenceLocating.SelectedIndex;
-			}
-			break;
-		}
-		case "X_position":
-			float.TryParse(X_position.Text, out result2);
-			{
-				foreach (int item2 in NpcRowCollection)
-				{
-					Read.NpcMobList[item2].X_position = result2;
-				}
-				break;
-			}
-		case "Y_position":
-			float.TryParse(Y_position.Text, out result2);
-			{
-				foreach (int item3 in NpcRowCollection)
-				{
-					Read.NpcMobList[item3].Y_position = result2;
-				}
-				break;
-			}
-		case "Z_position":
-			float.TryParse(Z_position.Text, out result2);
-			{
-				foreach (int item4 in NpcRowCollection)
-				{
-					Read.NpcMobList[item4].Z_position = result2;
-				}
-				break;
-			}
-		case "X_rotate":
-			float.TryParse(X_rotate.Text, out result2);
-			{
-				foreach (int item5 in NpcRowCollection)
-				{
-					Read.NpcMobList[item5].X_direction = result2;
-				}
-				break;
-			}
-		case "Y_rotate":
-			float.TryParse(Y_rotate.Text, out result2);
-			{
-				foreach (int item6 in NpcRowCollection)
-				{
-					Read.NpcMobList[item6].Y_direction = result2;
-				}
-				break;
-			}
-		case "Z_rotate":
-			float.TryParse(Z_rotate.Text, out result2);
-			{
-				foreach (int item7 in NpcRowCollection)
-				{
-					Read.NpcMobList[item7].Z_direction = result2;
-				}
-				break;
-			}
-		case "X_scatter":
-			float.TryParse(X_scatter.Text, out result2);
-			{
-				foreach (int item8 in NpcRowCollection)
-				{
-					Read.NpcMobList[item8].X_random = result2;
-				}
-				break;
-			}
-		case "Y_scatter":
-			float.TryParse(Y_scatter.Text, out result2);
-			{
-				foreach (int item9 in NpcRowCollection)
-				{
-					Read.NpcMobList[item9].Y_random = result2;
-				}
-				break;
-			}
-		case "Z_scatter":
-			float.TryParse(Z_scatter.Text, out result2);
-			{
-				foreach (int item10 in NpcRowCollection)
-				{
-					Read.NpcMobList[item10].Z_random = result2;
-				}
-				break;
-			}
-		case "ExistenceType":
-		{
-			foreach (int item11 in NpcRowCollection)
-			{
-				Read.NpcMobList[item11].Type = ExistenceType.SelectedIndex;
-				if (ExistenceType.SelectedIndex == 1)
-				{
-					NpcMobsGrid.Rows[item11].Cells[1].Style.ForeColor = Color.FromArgb(251, 251, 107);
-					NpcMobsGrid.Rows[item11].Cells[2].Style.ForeColor = Color.FromArgb(251, 251, 107);
-				}
-				else
-				{
-					NpcMobsGrid.Rows[item11].Cells[1].Style.ForeColor = Color.FromArgb(77, 255, 143);
-					NpcMobsGrid.Rows[item11].Cells[2].Style.ForeColor = Color.White;
-				}
-			}
-			break;
-		}
-		case "Group_type":
-			int.TryParse(Group_type.Text, out result);
-			{
-				foreach (int item12 in NpcRowCollection)
-				{
-					Read.NpcMobList[item12].iGroupType = result;
-				}
-				break;
-			}
-		case "ExistenceInitGen":
-		{
-			foreach (int item13 in NpcRowCollection)
-			{
-				Read.NpcMobList[item13].BInitGen = Convert.ToByte(ExistenceInitGen.Checked);
-			}
-			break;
-		}
-		case "ExistenceAutoRevive":
-		{
-			foreach (int item14 in NpcRowCollection)
-			{
-				Read.NpcMobList[item14].bAutoRevive = Convert.ToByte(ExistenceAutoRevive.Checked);
-			}
-			break;
-		}
-		case "BValicOnce":
-		{
-			foreach (int item15 in NpcRowCollection)
-			{
-				Read.NpcMobList[item15].BValicOnce = Convert.ToByte(BValicOnce.Checked);
-			}
-			break;
-		}
-		case "dwGenId":
-			int.TryParse(dwGenId.Text, out result);
-			{
-				foreach (int item16 in NpcRowCollection)
-				{
-					Read.NpcMobList[item16].dwGenId = result;
-				}
-				break;
-			}
-		case "Trigger":
-			int.TryParse(Trigger.Text, out result);
-			{
-				foreach (int item17 in NpcRowCollection)
-				{
-					Read.NpcMobList[item17].Trigger_id = result;
-				}
-				break;
-			}
-		case "Life_time":
-			int.TryParse(Life_time.Text, out result);
-			{
-				foreach (int item18 in NpcRowCollection)
-				{
-					Read.NpcMobList[item18].Life_time = result;
-				}
-				break;
-			}
-		case "IMaxNuml":
-			int.TryParse(IMaxNuml.Text, out result);
-			{
-				foreach (int item19 in NpcRowCollection)
-				{
-					Read.NpcMobList[item19].MaxRespawnTime = result;
-				}
-				break;
-			}
-		}
-	}
-
-	private void NpcAndMobsDefault_EnterPress(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.Return)
-		{
-			NpcAndMobsDefaultLeave(sender, null);
-		}
-	}
-
-	private void UnderNpcAndMobs_Leave(object sender, EventArgs e)
-	{
-		if (NpcRowCollection == null || Read == null)
-		{
-			return;
-		}
-		Control control = sender as Control;
-		switch (control.Name)
-		{
-		case "Id_numeric":
-		{
-			foreach (int item in NpcRowCollection)
-			{
-				foreach (int item2 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item].Amount_in_group >= item2 + 1)
-					{
-						Read.NpcMobList[item].MobDops[item2].Id = Convert.ToInt32(Id_numeric.Value);
-						NpcsGroupGrid.Rows[item2].Cells[1].Value = Convert.ToInt32(Id_numeric.Value);
-						int num = Element.ExistenceLists.FindIndex((NpcMonster c) => c.Id == Convert.ToInt32(Id_numeric.Value));
-						if (num != -1)
-						{
-							NpcsGroupGrid.Rows[item2].Cells[2].Value = Element.ExistenceLists[num].Name;
-						}
-						else
-						{
-							NpcsGroupGrid.Rows[item2].Cells[2].Value = "?";
-						}
-					}
-				}
-				RefreshRowNpcAndMobs(item);
-			}
-			break;
-		}
-		case "Amount_numeric":
-		{
-			foreach (int item3 in NpcRowCollection)
-			{
-				foreach (int item4 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item3].Amount_in_group >= item4 + 1)
-					{
-						Read.NpcMobList[item3].MobDops[item4].Amount = Convert.ToInt32(Amount_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "Respawn_numeric":
-		{
-			foreach (int item5 in NpcRowCollection)
-			{
-				foreach (int item6 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item5].Amount_in_group >= item6 + 1)
-					{
-						Read.NpcMobList[item5].MobDops[item6].Respawn = Convert.ToInt32(Respawn_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "DeathAmount_numeric":
-		{
-			foreach (int item7 in NpcRowCollection)
-			{
-				foreach (int item8 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item7].Amount_in_group >= item8 + 1)
-					{
-						Read.NpcMobList[item7].MobDops[item8].Dead_amount = Convert.ToInt32(DeathAmount_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "Agression":
-		{
-			foreach (int item9 in NpcRowCollection)
-			{
-				foreach (int item10 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item9].Amount_in_group >= item10 + 1)
-					{
-						Read.NpcMobList[item9].MobDops[item10].Agression = Agression.SelectedIndex;
-					}
-				}
-			}
-			break;
-		}
-		case "Path_type":
-		{
-			foreach (int item11 in NpcRowCollection)
-			{
-				foreach (int item12 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item11].Amount_in_group >= item12 + 1)
-					{
-						Read.NpcMobList[item11].MobDops[item12].Path_type = Path_type.SelectedIndex;
-					}
-				}
-			}
-			break;
-		}
-		case "Path_speed":
-		{
-			foreach (int item13 in NpcRowCollection)
-			{
-				foreach (int item14 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item13].Amount_in_group >= item14 + 1)
-					{
-						Read.NpcMobList[item13].MobDops[item14].Speed = Convert.ToInt32(Path_speed.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "Path_numeric":
-		{
-			foreach (int item15 in NpcRowCollection)
-			{
-				foreach (int item16 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item15].Amount_in_group >= item16 + 1)
-					{
-						Read.NpcMobList[item15].MobDops[item16].Path = Convert.ToInt32(Path_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "Water_numeric":
-		{
-			foreach (int item17 in NpcRowCollection)
-			{
-				foreach (int item18 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item17].Amount_in_group >= item18 + 1)
-					{
-						Read.NpcMobList[item17].MobDops[item18].fOffsetWater = Convert.ToSingle(Water_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "Turn_numeric":
-		{
-			foreach (int item19 in NpcRowCollection)
-			{
-				foreach (int item20 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item19].Amount_in_group >= item20 + 1)
-					{
-						Read.NpcMobList[item19].MobDops[item20].fOffsetTrn = Convert.ToSingle(Turn_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "Group_numeric":
-		{
-			foreach (int item21 in NpcRowCollection)
-			{
-				foreach (int item22 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item21].Amount_in_group >= item22 + 1)
-					{
-						Read.NpcMobList[item21].MobDops[item22].Group = Convert.ToInt32(Group_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "AskHelp_numeric":
-		{
-			foreach (int item23 in NpcRowCollection)
-			{
-				foreach (int item24 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item23].Amount_in_group >= item24 + 1)
-					{
-						Read.NpcMobList[item23].MobDops[item24].Group_help_sender = Convert.ToInt32(AskHelp_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "NeedHelp_numeric":
-		{
-			foreach (int item25 in NpcRowCollection)
-			{
-				foreach (int item26 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item25].Amount_in_group >= item26 + 1)
-					{
-						Read.NpcMobList[item25].MobDops[item26].Group_help_Needer = Convert.ToInt32(NeedHelp_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "bNeedHelp":
-		{
-			foreach (int item27 in NpcRowCollection)
-			{
-				foreach (int item28 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item27].Amount_in_group >= item28 + 1)
-					{
-						Read.NpcMobList[item27].MobDops[item28].bNeedHelp = Convert.ToByte(bNeedHelp.Checked);
-					}
-				}
-			}
-			break;
-		}
-		case "bFac_Accept":
-		{
-			foreach (int item29 in NpcRowCollection)
-			{
-				foreach (int item30 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item29].Amount_in_group >= item30 + 1)
-					{
-						Read.NpcMobList[item29].MobDops[item30].bFac_Accept = Convert.ToByte(bFac_Accept.Checked);
-					}
-				}
-			}
-			break;
-		}
-		case "bFac_Helper":
-		{
-			foreach (int item31 in NpcRowCollection)
-			{
-				foreach (int item32 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item31].Amount_in_group >= item32 + 1)
-					{
-						Read.NpcMobList[item31].MobDops[item32].bFac_Helper = Convert.ToByte(bFac_Helper.Checked);
-					}
-				}
-			}
-			break;
-		}
-		case "bFaction":
-		{
-			foreach (int item33 in NpcRowCollection)
-			{
-				foreach (int item34 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item33].Amount_in_group >= item34 + 1)
-					{
-						Read.NpcMobList[item33].MobDops[item34].bFaction = Convert.ToByte(bFaction.Checked);
-					}
-				}
-			}
-			break;
-		}
-		case "Deadtime_numeric":
-		{
-			foreach (int item35 in NpcRowCollection)
-			{
-				foreach (int item36 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item35].Amount_in_group >= item36 + 1)
-					{
-						Read.NpcMobList[item35].MobDops[item36].Dead_time = Convert.ToInt32(Deadtime_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "RefreshLower_numeric":
-		{
-			foreach (int item37 in NpcRowCollection)
-			{
-				foreach (int item38 in UnderNpcRowCollection)
-				{
-					if (Read.NpcMobList[item37].Amount_in_group >= item38 + 1)
-					{
-						Read.NpcMobList[item37].MobDops[item38].RefreshLower = Convert.ToInt32(RefreshLower_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		}
-	}
-
-	private void UnderNpcAndMobs_EnterPress(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.Return)
-		{
-			UnderNpcAndMobs_Leave(sender, null);
-		}
-	}
-
-	private void CloneNpcAndMobFull(object sender, EventArgs e)
-	{
-		if (NpcMobsGrid.Rows.Count > 0)
-		{
-			NpcMobsGrid.ScrollBars = ScrollBars.None;
-			NpcRowCollection = NpcRowCollection.OrderBy((int z) => z).ToList();
-			foreach (int item3 in NpcRowCollection)
-			{
-				Read.NpcMobsAmount++;
-				ClassDefaultMonsters classDefaultMonsters = new ClassDefaultMonsters
-				{
-					Amount_in_group = Read.NpcMobList[item3].Amount_in_group,
-					bAutoRevive = Read.NpcMobList[item3].bAutoRevive,
-					BInitGen = Read.NpcMobList[item3].BInitGen,
-					BValicOnce = Read.NpcMobList[item3].BValicOnce,
-					dwGenId = Read.NpcMobList[item3].dwGenId,
-					iGroupType = Read.NpcMobList[item3].iGroupType,
-					MaxRespawnTime = Read.NpcMobList[item3].MaxRespawnTime,
-					Type = Read.NpcMobList[item3].Type,
-					Life_time = Read.NpcMobList[item3].Life_time,
-					Trigger_id = Read.NpcMobList[item3].Trigger_id,
-					Location = Read.NpcMobList[item3].Location,
-					X_direction = Read.NpcMobList[item3].X_direction,
-					X_position = Read.NpcMobList[item3].X_position,
-					X_random = Read.NpcMobList[item3].X_random,
-					Y_direction = Read.NpcMobList[item3].Y_direction,
-					Y_position = Read.NpcMobList[item3].Y_position,
-					Y_random = Read.NpcMobList[item3].Y_random,
-					Z_direction = Read.NpcMobList[item3].Z_direction,
-					Z_position = Read.NpcMobList[item3].Z_position,
-					Z_random = Read.NpcMobList[item3].Z_random,
-					MobDops = new List<ClassExtraMonsters>()
-				};
-				for (int i = 0; i < Read.NpcMobList[item3].Amount_in_group; i++)
-				{
-					ClassExtraMonsters item = new ClassExtraMonsters
-					{
-						Agression = Read.NpcMobList[item3].MobDops[i].Agression,
-						Amount = Read.NpcMobList[item3].MobDops[i].Amount,
-						bFac_Accept = Read.NpcMobList[item3].MobDops[i].bFac_Accept,
-						bFac_Helper = Read.NpcMobList[item3].MobDops[i].bFac_Helper,
-						bFaction = Read.NpcMobList[item3].MobDops[i].bFaction,
-						bNeedHelp = Read.NpcMobList[item3].MobDops[i].bNeedHelp,
-						Dead_amount = Read.NpcMobList[item3].MobDops[i].Dead_amount,
-						Dead_time = Read.NpcMobList[item3].MobDops[i].Dead_time,
-						fOffsetTrn = Read.NpcMobList[item3].MobDops[i].fOffsetTrn,
-						fOffsetWater = Read.NpcMobList[item3].MobDops[i].fOffsetWater,
-						Group = Read.NpcMobList[item3].MobDops[i].Group,
-						Group_help_Needer = Read.NpcMobList[item3].MobDops[i].Group_help_Needer,
-						Group_help_sender = Read.NpcMobList[item3].MobDops[i].Group_help_sender,
-						Id = Read.NpcMobList[item3].MobDops[i].Id,
-						Path = Read.NpcMobList[item3].MobDops[i].Path,
-						Path_type = Read.NpcMobList[item3].MobDops[i].Path_type,
-						RefreshLower = Read.NpcMobList[item3].MobDops[i].RefreshLower,
-						Respawn = Read.NpcMobList[item3].MobDops[i].Respawn,
-						Speed = Read.NpcMobList[item3].MobDops[i].Speed
-					};
-					classDefaultMonsters.MobDops.Add(item);
-				}
-				Read.NpcMobList.Add(classDefaultMonsters);
-				NpcMobsGrid.Rows.Add(NpcMobsGrid.Rows.Count, NpcMobsGrid.Rows[item3].Cells[1].Value, NpcMobsGrid.Rows[item3].Cells[2].Value);
-			}
-			NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
-			List<int> npcRowCollection = NpcRowCollection;
-			NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
-			for (int j = 1; j <= npcRowCollection.Count; j++)
-			{
-				NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - j].Selected = true;
-			}
-			ExistenceGrid_CellChanged(null, null);
-		}
-		else if (Read != null)
-		{
-			Read.NpcMobsAmount++;
-			ClassDefaultMonsters classDefaultMonsters2 = new ClassDefaultMonsters
-			{
-				Location = 0,
-				Type = 0,
-				Amount_in_group = 1,
-				MobDops = new List<ClassExtraMonsters>()
-			};
-			ClassExtraMonsters item2 = new ClassExtraMonsters
-			{
-				Id = 16,
-				Amount = 1,
-				Respawn = 30
-			};
-			classDefaultMonsters2.MobDops.Add(item2);
-			Read.NpcMobList.Add(classDefaultMonsters2);
-			if (Language == 1)
-			{
-				NpcMobsGrid.Rows.Add(1, 16, "Зеленый мотыль");
-			}
-			else
-			{
-				NpcMobsGrid.Rows.Add(1, 16, "Green WaterBeetle");
-			}
-			ExistenceGrid_CellChanged(null, null);
-		}
-		if (Language == 1)
-		{
-			ExistenceTab.Text = $"Мобы и Нипы {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
-		}
-		else
-		{
-			ExistenceTab.Text = $"Mobs and Npcs {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
-		}
-	}
-
-	private void RemoveNpcAndMobFull(object sender, EventArgs e)
-	{
-		if (Read == null || NpcRowCollection.Count == 0)
-		{
-			return;
-		}
-		string text = "Вы уверены,что хотите удалить выбранные объекты?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete selected objects?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		int num = NpcRowCollection.Min();
-		NpcMobsGrid.ScrollBars = ScrollBars.None;
-		ErrorsGrid.ScrollBars = ScrollBars.None;
-		AllowCellChanging = false;
-		NpcMobsGrid.ClearSelection();
-		MainProgressBar.Maximum = NpcRowCollection.Count;
-		Read.NpcMobsAmount -= NpcRowCollection.Count;
-		foreach (int i in NpcRowCollection)
-		{
-			List<IntDictionary> Matched = (from f in ErrorExistenceCollection
-				where f.GridIndex == i
-				orderby f.ErrorInex descending
-				select f).ToList();
-			foreach (IntDictionary item in Matched)
-			{
-				ErrorsGrid.Rows.RemoveAt(item.ErrorInex);
-				ErrorExistenceCollection.RemoveAt(item.ErrorInex);
-			}
-			ErrorExistenceCollection.Where((IntDictionary b) => b.GridIndex > i).ToList().ForEach(delegate(IntDictionary s)
-			{
-				s.ErrorInex -= Matched.Count;
-			});
-			ErrorExistenceCollection.Where((IntDictionary a) => a.GridIndex > i).ToList().ForEach(delegate(IntDictionary s)
-			{
-				s.GridIndex--;
-			});
-			ErrorResourcesCollection.ForEach(delegate(IntDictionary s)
-			{
-				s.ErrorInex -= Matched.Count;
-			});
-			ErrorDynamicsCollection.ForEach(delegate(IntDictionary s)
-			{
-				s.ErrorInex -= Matched.Count;
-			});
-			Read.NpcMobList.RemoveAt(i);
-			NpcMobsGrid.Rows.RemoveAt(i);
-			MainProgressBar.Value++;
-		}
-		if (ErrorsGrid.Rows.Count != 0)
-		{
-			for (int j = 0; j < ErrorExistenceCollection.Count; j++)
-			{
-				ErrorsGrid.Rows[j].Cells[0].Value = j + 1;
-				ErrorsGrid.Rows[j].Cells[1].Value = ErrorExistenceCollection[j].GridIndex + 1;
-			}
-			int num2 = ((ErrorResourcesCollection.Count != 0) ? ErrorResourcesCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
-			for (int k = num2; k <= num2; k++)
-			{
-				ErrorsGrid.Rows[k].Cells[0].Value = k + 1;
-			}
-			int num3 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
-			for (int l = num3; l <= num3; l++)
-			{
-				ErrorsGrid.Rows[l].Cells[0].Value = l + 1;
-			}
-		}
-		AllowCellChanging = true;
-		MainProgressBar.Value = 0;
-		NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
-		ErrorsGrid.ScrollBars = ScrollBars.Vertical;
-		if (NpcMobsGrid.Rows.Count > num)
-		{
-			NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[num].Cells[1];
-			NpcMobsGrid.FirstDisplayedScrollingRowIndex = num;
-		}
-		else if (NpcMobsGrid.Rows.Count != 0)
-		{
-			NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
-			NpcMobsGrid.FirstDisplayedScrollingRowIndex = NpcMobsGrid.Rows.Count - 1;
-		}
-		ExistenceGrid_CellChanged(null, null);
-		for (int m = 0; m < NpcMobsGrid.Rows.Count; m++)
-		{
-			NpcMobsGrid.Rows[m].Cells[0].Value = m + 1;
-		}
-		if (Language == 1)
-		{
-			ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
-		}
-		else
-		{
-			ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
-		}
-	}
-
-	private void Id_numeric_DoubleClick(object sender, EventArgs e)
-	{
-		if (ChooseFromElementsForm == null)
-		{
-			return;
-		}
-		ChooseFromElementsForm.SetAction = 1;
-		ChooseFromElementsForm.SetWindow = 1;
-		int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == Convert.ToInt32(Id_numeric.Value));
-		if (num != -1)
-		{
-			if (num >= Element.MonsterdAmount)
-			{
-				ChooseFromElementsForm.FindRow(num - Element.MonsterdAmount, "Npc");
-			}
-			else
-			{
-				ChooseFromElementsForm.FindRow(num, "Mob");
-			}
-		}
-		else if (Language == 1)
-		{
-			MessageBox.Show("ID не найдено в elements.data!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else if (Language == 2)
-		{
-			MessageBox.Show("ID not found in elements.data!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		ChooseFromElementsForm.ShowDialog(this);
-	}
-
-	private void CloneNpcinGroupButton_Click(object sender, EventArgs e)
-	{
-		if (NpcMobsGrid.Rows.Count > 0 && NpcsGroupGrid.Rows.Count > 0)
-		{
-			UnderNpcRowCollection = UnderNpcRowCollection.OrderBy((int z) => z).ToList();
-			foreach (int item2 in UnderNpcRowCollection)
-			{
-				Read.NpcMobList[NpcRowIndex].Amount_in_group++;
-				ClassExtraMonsters item = new ClassExtraMonsters
-				{
-					Agression = Read.NpcMobList[NpcRowIndex].MobDops[item2].Agression,
-					Amount = Read.NpcMobList[NpcRowIndex].MobDops[item2].Agression,
-					bFac_Accept = Read.NpcMobList[NpcRowIndex].MobDops[item2].bFac_Accept,
-					bFac_Helper = Read.NpcMobList[NpcRowIndex].MobDops[item2].bFac_Helper,
-					bFaction = Read.NpcMobList[NpcRowIndex].MobDops[item2].bFaction,
-					bNeedHelp = Read.NpcMobList[NpcRowIndex].MobDops[item2].bNeedHelp,
-					Dead_amount = Read.NpcMobList[NpcRowIndex].MobDops[item2].Dead_amount,
-					Dead_time = Read.NpcMobList[NpcRowIndex].MobDops[item2].Dead_time,
-					fOffsetTrn = Read.NpcMobList[NpcRowIndex].MobDops[item2].fOffsetTrn,
-					fOffsetWater = Read.NpcMobList[NpcRowIndex].MobDops[item2].fOffsetWater,
-					Group = Read.NpcMobList[NpcRowIndex].MobDops[item2].Group,
-					Group_help_Needer = Read.NpcMobList[NpcRowIndex].MobDops[item2].Group_help_Needer,
-					Group_help_sender = Read.NpcMobList[NpcRowIndex].MobDops[item2].Group_help_sender,
-					Id = Read.NpcMobList[NpcRowIndex].MobDops[item2].Id,
-					Path = Read.NpcMobList[NpcRowIndex].MobDops[item2].Path,
-					Path_type = Read.NpcMobList[NpcRowIndex].MobDops[item2].Path_type,
-					RefreshLower = Read.NpcMobList[NpcRowIndex].MobDops[item2].RefreshLower,
-					Respawn = Read.NpcMobList[NpcRowIndex].MobDops[item2].Respawn,
-					Speed = Read.NpcMobList[NpcRowIndex].MobDops[item2].Speed
-				};
-				Read.NpcMobList[NpcRowIndex].MobDops.Add(item);
-				NpcsGroupGrid.Rows.Add(Read.NpcMobList[NpcRowIndex].Amount_in_group, NpcsGroupGrid.Rows[item2].Cells[1].Value, NpcsGroupGrid.Rows[item2].Cells[2].Value);
-			}
-			RefreshRowNpcAndMobs(NpcRowIndex);
-			NpcsGroupGrid.ClearSelection();
-			for (int i = 1; i <= UnderNpcRowCollection.Count; i++)
-			{
-				NpcsGroupGrid.Rows[NpcsGroupGrid.Rows.Count - i].Selected = true;
-			}
-			NpcsGroupGrid.CurrentCell = NpcsGroupGrid.Rows[NpcsGroupGrid.Rows.Count - 1].Cells[1];
-			NpcsGroupGrid.FirstDisplayedScrollingRowIndex = NpcsGroupGrid.Rows.Count - 1;
-		}
-		else
-		{
-			ClassExtraMonsters classExtraMonsters = new ClassExtraMonsters();
-			Read.NpcMobList[NpcRowIndex].Amount_in_group++;
-			classExtraMonsters.Id = 16;
-			classExtraMonsters.Amount = 1;
-			classExtraMonsters.Respawn = 60;
-			Read.NpcMobList[NpcRowIndex].MobDops.Add(classExtraMonsters);
-			if (Language == 1)
-			{
-				NpcsGroupGrid.Rows.Add(1, 16, "Зеленый мотыль");
-			}
-			else if (Language == 2)
-			{
-				NpcsGroupGrid.Rows.Add(1, 16, "Green WaterBeetle");
-			}
-			RefreshRowNpcAndMobs(NpcRowIndex);
-			UnderExistenceGrid_CellChanged(null, null);
-		}
-	}
-
-	private void DeleteNpcinGroupButton_Click(object sender, EventArgs e)
-	{
-		if (UnderNpcRowCollection == null || NpcMobsGrid.Rows.Count <= 0 || NpcsGroupGrid.Rows.Count <= 0)
-		{
-			return;
-		}
-		string text = "Вы уверены,что хотите удалить выбранные объекты?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete selected objects?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		UnderNpcRowCollection = UnderNpcRowCollection.OrderByDescending((int z) => z).ToList();
-		int num = UnderNpcRowCollection.Min();
-		NpcsGroupGrid.ClearSelection();
-		foreach (int item in UnderNpcRowCollection)
-		{
-			Read.NpcMobList[NpcRowIndex].Amount_in_group--;
-			Read.NpcMobList[NpcRowIndex].MobDops.RemoveAt(item);
-			NpcsGroupGrid.Rows.RemoveAt(item);
-		}
-		RefreshRowNpcAndMobs(NpcRowIndex);
-		if (NpcsGroupGrid.Rows.Count > num)
-		{
-			NpcsGroupGrid.CurrentCell = NpcsGroupGrid.Rows[num].Cells[1];
-			NpcsGroupGrid.FirstDisplayedScrollingRowIndex = num;
-		}
-		else if (NpcsGroupGrid.Rows.Count != 0)
-		{
-			NpcsGroupGrid.CurrentCell = NpcsGroupGrid.Rows[NpcsGroupGrid.Rows.Count - 1].Cells[1];
-			NpcsGroupGrid.FirstDisplayedScrollingRowIndex = NpcsGroupGrid.Rows.Count - 1;
-		}
-		UnderExistenceGrid_CellChanged(null, null);
-	}
-
-	public void RefreshRowNpcAndMobs(int index)
-	{
-		int[] Id_joined = new int[Read.NpcMobList[index].Amount_in_group];
-		string[] array = new string[Read.NpcMobList[index].Amount_in_group];
-		int i;
-		for (i = 0; i < Read.NpcMobList[index].Amount_in_group; i++)
-		{
-			Id_joined[i] = Read.NpcMobList[index].MobDops[i].Id;
-			int num = Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Id_joined[i]);
-			if (num != -1)
-			{
-				array[i] = Element.ExistenceLists[num].Name;
-			}
-			else
-			{
-				array[i] = "?";
-			}
-		}
-		NpcMobsGrid.Rows[index].Cells[1].Value = string.Join(",", Id_joined);
-		NpcMobsGrid.Rows[index].Cells[2].Value = string.Join(",", array);
-	}
-
-	private void InsertCordsFromGame_Click(object sender, EventArgs e)
-	{
-		ClassPosition coordinates = GetCoordinates();
-		if (coordinates != null)
-		{
-			X_position.Text = coordinates.PosX.ToString();
-			Y_position.Text = coordinates.PosY.ToString();
-			Z_position.Text = coordinates.PosZ.ToString();
-			X_rotate.Text = coordinates.DirX.ToString();
-			Y_rotate.Text = coordinates.DirY.ToString();
-			Z_rotate.Text = coordinates.DirZ.ToString();
-			NpcAndMobsDefaultLeave(X_position, null);
-			NpcAndMobsDefaultLeave(Y_position, null);
-			NpcAndMobsDefaultLeave(Z_position, null);
-			NpcAndMobsDefaultLeave(X_rotate, null);
-			NpcAndMobsDefaultLeave(Y_rotate, null);
-			NpcAndMobsDefaultLeave(Z_rotate, null);
-		}
-	}
-
-	private void ResourcesGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
-	{
-		if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
-		{
-			string caption = Convert.ToString(ResourcesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-			toolTip1.SetToolTip(ResourcesGrid, caption);
-		}
-	}
-
-	private void ResourcesGrid_CurrentCellChanged(object sender, EventArgs e)
-	{
-		if (AllowCellChanging)
-		{
-			ResourcesRowCollection = (from DataGridViewRow f in ResourcesGrid.SelectedRows
-				select f.Index into t
-				orderby t descending
-				select t).ToList();
-			if (ResourcesGrid.CurrentRow != null)
-			{
-				ResourcesRowIndex = ResourcesGrid.CurrentRow.Index;
-				if (ResourcesRowIndex != -1)
-				{
-					RX_position.Text = Read.ResourcesList[ResourcesRowIndex].X_position.ToString();
-					RY_position.Text = Read.ResourcesList[ResourcesRowIndex].Y_position.ToString();
-					RZ_position.Text = Read.ResourcesList[ResourcesRowIndex].Z_position.ToString();
-					RX_Random.Text = Read.ResourcesList[ResourcesRowIndex].X_Random.ToString();
-					RZ_Random.Text = Read.ResourcesList[ResourcesRowIndex].Z_Random.ToString();
-					RInCline1.Text = Read.ResourcesList[ResourcesRowIndex].InCline1.ToString();
-					RInCline2.Text = Read.ResourcesList[ResourcesRowIndex].InCline2.ToString();
-					RRotation.Text = Read.ResourcesList[ResourcesRowIndex].Rotation.ToString();
-					RGroup_amount_textbox.Text = Read.ResourcesList[ResourcesRowIndex].Amount_in_group.ToString();
-					RdwGenID.Text = Read.ResourcesList[ResourcesRowIndex].dwGenID.ToString();
-					RTriggerID.Text = Read.ResourcesList[ResourcesRowIndex].Trigger_id.ToString();
-					RIMaxNuml.Text = Read.ResourcesList[ResourcesRowIndex].IMaxNum.ToString();
-					ResourcesInitGen.Checked = Convert.ToBoolean(Read.ResourcesList[ResourcesRowIndex].bInitGen);
-					ResourcesAutoRevive.Checked = Convert.ToBoolean(Read.ResourcesList[ResourcesRowIndex].bAutoRevive);
-					RBValidOnce.Checked = Convert.ToBoolean(Read.ResourcesList[ResourcesRowIndex].bValidOnce);
-					ResourcesGroupGrid.Rows.Clear();
-					int i;
-					for (i = 0; i < Read.ResourcesList[ResourcesRowIndex].Amount_in_group; i++)
-					{
-						string text = "?";
-						int num = Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Read.ResourcesList[ResourcesRowIndex].ResExtra[i].Id);
-						if (num != -1)
-						{
-							text = Element.ResourcesList[num].Name;
-						}
-						ResourcesGroupGrid.Rows.Add(i + 1, Read.ResourcesList[ResourcesRowIndex].ResExtra[i].Id, text);
-					}
-					if (MapForm != null && MainProgressBar.Value == 0 && ResourcesRowCollection.Count != 0 && MapForm.Visible)
-					{
-						MapForm.GetCoordinates(GetPoint(2));
-					}
-					ResourcesGroupGrid_CurrentCellChanged(null, null);
-				}
-			}
-		}
-		if (Language == 1)
-		{
-			ResourcesTab.Text = $"Ресурсы {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
-		}
-		else
-		{
-			ResourcesTab.Text = $"Resources {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
-		}
-	}
-
-	private void ResourcesGroupGrid_CurrentCellChanged(object sender, EventArgs e)
-	{
-		if (ResourcesGroupGrid.CurrentRow == null || ResourcesGroupGrid.CurrentRow.Index == -1)
-		{
-			return;
-		}
-		UnderResourcesRowCollection = new List<int>(ResourcesGroupGrid.SelectedRows.Count);
-		foreach (DataGridViewRow selectedRow in ResourcesGroupGrid.SelectedRows)
-		{
-			UnderResourcesRowCollection.Add(selectedRow.Index);
-		}
-		ResourcesGroupIndex = ResourcesGroupGrid.CurrentRow.Index;
-		RId_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].Id;
-		RAmount_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].Amount;
-		RRespawn_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].Respawntime;
-		RType_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].ResourceType;
-		RfHeiOff_numeric.Value = Convert.ToDecimal(Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].fHeiOff);
-	}
-
-	private void ResourcesDefault_EnterPress(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.Return)
-		{
-			ResourcesDefaultLeave(sender, null);
-		}
-	}
-
-	private void ResourcesDefaultLeave(object sender, EventArgs e)
-	{
-		Control control = sender as Control;
-		float result3;
-		byte result2;
-		int result;
-		switch (control.Name)
-		{
-		case "RX_position":
-			float.TryParse(RX_position.Text, out result3);
-			{
-				foreach (int item in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item].X_position = result3;
-				}
-				break;
-			}
-		case "RY_position":
-			float.TryParse(RY_position.Text, out result3);
-			{
-				foreach (int item2 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item2].Y_position = result3;
-				}
-				break;
-			}
-		case "RZ_position":
-			float.TryParse(RZ_position.Text, out result3);
-			{
-				foreach (int item3 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item3].Z_position = result3;
-				}
-				break;
-			}
-		case "RX_Random":
-			float.TryParse(RX_Random.Text, out result3);
-			{
-				foreach (int item4 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item4].X_Random = result3;
-				}
-				break;
-			}
-		case "RZ_Random":
-			float.TryParse(RZ_Random.Text, out result3);
-			{
-				foreach (int item5 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item5].Z_Random = result3;
-				}
-				break;
-			}
-		case "RInCline1":
-			byte.TryParse(RInCline1.Text, out result2);
-			{
-				foreach (int item6 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item6].InCline1 = result2;
-				}
-				break;
-			}
-		case "RInCline2":
-			byte.TryParse(RInCline2.Text, out result2);
-			{
-				foreach (int item7 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item7].InCline2 = result2;
-				}
-				break;
-			}
-		case "RRotation":
-			byte.TryParse(RRotation.Text, out result2);
-			{
-				foreach (int item8 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item8].Rotation = result2;
-				}
-				break;
-			}
-		case "RdwGenID":
-			int.TryParse(RdwGenID.Text, out result);
-			{
-				foreach (int item9 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item9].dwGenID = result;
-				}
-				break;
-			}
-		case "RTriggerID":
-			int.TryParse(RTriggerID.Text, out result);
-			{
-				foreach (int item10 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item10].Trigger_id = result;
-				}
-				break;
-			}
-		case "RIMaxNuml":
-			int.TryParse(RIMaxNuml.Text, out result);
-			{
-				foreach (int item11 in ResourcesRowCollection)
-				{
-					Read.ResourcesList[item11].IMaxNum = result;
-				}
-				break;
-			}
-		case "ResourcesInitGen":
-		{
-			foreach (int item12 in ResourcesRowCollection)
-			{
-				Read.ResourcesList[item12].bInitGen = Convert.ToByte(ResourcesInitGen.Checked);
-			}
-			break;
-		}
-		case "ResourcesAutoRevive":
-		{
-			foreach (int item13 in ResourcesRowCollection)
-			{
-				Read.ResourcesList[item13].bAutoRevive = Convert.ToByte(ResourcesAutoRevive.Checked);
-			}
-			break;
-		}
-		case "RBValidOnce":
-		{
-			foreach (int item14 in ResourcesRowCollection)
-			{
-				Read.ResourcesList[item14].bValidOnce = Convert.ToByte(RBValidOnce.Checked);
-			}
-			break;
-		}
-		}
-	}
-
-	private void UnderResources_EnterPress(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.Return)
-		{
-			UnderResourcesLeave(sender, null);
-		}
-	}
-
-	private void UnderResourcesLeave(object sender, EventArgs e)
-	{
-		Control control = sender as Control;
-		if (UnderResourcesRowCollection == null)
-		{
-			return;
-		}
-		switch (control.Name)
-		{
-		case "RId_numeric":
-		{
-			foreach (int item in ResourcesRowCollection)
-			{
-				foreach (int item2 in UnderResourcesRowCollection)
-				{
-					if (Read.ResourcesList[item].Amount_in_group >= item2 + 1)
-					{
-						Read.ResourcesList[item].ResExtra[item2].Id = Convert.ToInt32(RId_numeric.Value);
-						ResourcesGroupGrid.Rows[item2].Cells[1].Value = Convert.ToInt32(RId_numeric.Value);
-						int num = Element.ResourcesList.FindIndex((NpcMonster c) => c.Id == Convert.ToInt32(RId_numeric.Value));
-						if (num != -1)
-						{
-							ResourcesGroupGrid.Rows[item2].Cells[2].Value = Element.ResourcesList[num].Name;
-						}
-						else
-						{
-							ResourcesGroupGrid.Rows[item2].Cells[2].Value = "?";
-						}
-					}
-				}
-				RefreshResourcesRow(item);
-			}
-			break;
-		}
-		case "RAmount_numeric":
-		{
-			foreach (int item3 in ResourcesRowCollection)
-			{
-				foreach (int item4 in UnderResourcesRowCollection)
-				{
-					if (Read.ResourcesList[item3].Amount_in_group >= item4 + 1)
-					{
-						Read.ResourcesList[item3].ResExtra[item4].Amount = Convert.ToInt32(RAmount_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "RRespawn_numeric":
-		{
-			foreach (int item5 in ResourcesRowCollection)
-			{
-				foreach (int item6 in UnderResourcesRowCollection)
-				{
-					if (Read.ResourcesList[item5].Amount_in_group >= item6 + 1)
-					{
-						Read.ResourcesList[item5].ResExtra[item6].Respawntime = Convert.ToInt32(RRespawn_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "RType_numeric":
-		{
-			foreach (int item7 in ResourcesRowCollection)
-			{
-				foreach (int item8 in UnderResourcesRowCollection)
-				{
-					if (Read.ResourcesList[item7].Amount_in_group >= item8 + 1)
-					{
-						Read.ResourcesList[item7].ResExtra[item8].ResourceType = Convert.ToInt32(RType_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		case "RfHeiOff_numeric":
-		{
-			foreach (int item9 in ResourcesRowCollection)
-			{
-				foreach (int item10 in UnderResourcesRowCollection)
-				{
-					if (Read.ResourcesList[item9].Amount_in_group >= item10 + 1)
-					{
-						Read.ResourcesList[item9].ResExtra[item10].fHeiOff = Convert.ToSingle(RfHeiOff_numeric.Value);
-					}
-				}
-			}
-			break;
-		}
-		}
-	}
-
-	public void RefreshResourcesRow(int index)
-	{
-		int[] Id_joined = new int[Read.ResourcesList[index].Amount_in_group];
-		string[] array = new string[Read.ResourcesList[index].Amount_in_group];
-		int i;
-		for (i = 0; i < Read.ResourcesList[index].Amount_in_group; i++)
-		{
-			Id_joined[i] = Read.ResourcesList[index].ResExtra[i].Id;
-			int num = Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Id_joined[i]);
-			if (num != -1)
-			{
-				array[i] = Element.ResourcesList[num].Name;
-			}
-			else
-			{
-				array[i] = "?";
-			}
-		}
-		ResourcesGrid.Rows[index].Cells[1].Value = string.Join(",", Id_joined);
-		ResourcesGrid.Rows[index].Cells[2].Value = string.Join(",", array);
-	}
-
-	private void CloneResurcesFull_Click(object sender, EventArgs e)
-	{
-		if (ResourcesGrid.Rows.Count > 0)
-		{
-			ResourcesGrid.ScrollBars = ScrollBars.None;
-			ResourcesRowCollection = ResourcesRowCollection.OrderBy((int z) => z).ToList();
-			foreach (int item3 in ResourcesRowCollection)
-			{
-				Read.ResourcesAmount++;
-				ClassDefaultResources classDefaultResources = new ClassDefaultResources
-				{
-					Amount_in_group = Read.ResourcesList[item3].Amount_in_group,
-					X_position = Read.ResourcesList[item3].X_position,
-					Y_position = Read.ResourcesList[item3].Y_position,
-					Z_position = Read.ResourcesList[item3].Z_position,
-					bAutoRevive = Read.ResourcesList[item3].bAutoRevive,
-					bInitGen = Read.ResourcesList[item3].bInitGen,
-					bValidOnce = Read.ResourcesList[item3].bValidOnce,
-					dwGenID = Read.ResourcesList[item3].dwGenID,
-					IMaxNum = Read.ResourcesList[item3].IMaxNum,
-					Trigger_id = Read.ResourcesList[item3].Trigger_id,
-					InCline1 = Read.ResourcesList[item3].InCline1,
-					X_Random = Read.ResourcesList[item3].X_Random,
-					InCline2 = Read.ResourcesList[item3].InCline2,
-					Z_Random = Read.ResourcesList[item3].Z_Random,
-					Rotation = Read.ResourcesList[item3].Rotation,
-					ResExtra = new List<ClassExtraResources>()
-				};
-				for (int i = 0; i < Read.ResourcesList[item3].Amount_in_group; i++)
-				{
-					ClassExtraResources item = new ClassExtraResources
-					{
-						Id = Read.ResourcesList[item3].ResExtra[i].Id,
-						ResourceType = Read.ResourcesList[item3].ResExtra[i].ResourceType,
-						Respawntime = Read.ResourcesList[item3].ResExtra[i].Respawntime,
-						Amount = Read.ResourcesList[item3].ResExtra[i].Amount,
-						fHeiOff = Read.ResourcesList[item3].ResExtra[i].fHeiOff
-					};
-					classDefaultResources.ResExtra.Add(item);
-				}
-				Read.ResourcesList.Add(classDefaultResources);
-				ResourcesGrid.Rows.Add(Read.ResourcesAmount, ResourcesGrid.Rows[item3].Cells[1].Value, ResourcesGrid.Rows[item3].Cells[2].Value);
-			}
-			ResourcesGrid.ScrollBars = ScrollBars.Vertical;
-			List<int> resourcesRowCollection = ResourcesRowCollection;
-			ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
-			for (int j = 1; j <= resourcesRowCollection.Count; j++)
-			{
-				ResourcesGrid.Rows[ResourcesGrid.Rows.Count - j].Selected = true;
-			}
-			ResourcesGrid_CurrentCellChanged(null, null);
-		}
-		else
-		{
-			Read.ResourcesAmount++;
-			ClassDefaultResources classDefaultResources2 = new ClassDefaultResources
-			{
-				Amount_in_group = 1,
-				ResExtra = new List<ClassExtraResources>()
-			};
-			ClassExtraResources item2 = new ClassExtraResources
-			{
-				Id = 3074,
-				Amount = 1,
-				Respawntime = 60,
-				ResourceType = 80
-			};
-			classDefaultResources2.ResExtra.Add(item2);
-			Read.ResourcesList.Add(classDefaultResources2);
-			if (Language == 1)
-			{
-				ResourcesGrid.Rows.Add(1, 3074, "Высохший древесный корень");
-			}
-			else
-			{
-				ResourcesGrid.Rows.Add(1, 3074, "Withered root");
-			}
-			ResourcesGrid_CurrentCellChanged(null, null);
-		}
-		if (Language == 1)
-		{
-			ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
-		}
-		else
-		{
-			ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
-		}
-	}
-
-	private void RemoveResourceFull_Click(object sender, EventArgs e)
-	{
-		if (Read == null || ResourcesRowCollection.Count == 0)
-		{
-			return;
-		}
-		string text = "Вы уверены,что хотите удалить выбранные объекты?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete selected objects?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		int num = ResourcesRowCollection.Min();
-		ResourcesGrid.ScrollBars = ScrollBars.None;
-		ErrorsGrid.ScrollBars = ScrollBars.None;
-		AllowCellChanging = false;
-		ResourcesGrid.ClearSelection();
-		MainProgressBar.Maximum = ResourcesRowCollection.Count;
-		Read.ResourcesAmount -= ResourcesRowCollection.Count;
-		foreach (int j in ResourcesRowCollection)
-		{
-			List<IntDictionary> Matched = (from f in ErrorResourcesCollection
-				where f.GridIndex == j
-				orderby f.ErrorInex descending
-				select f).ToList();
-			foreach (IntDictionary item in Matched)
-			{
-				ErrorsGrid.Rows.RemoveAt(item.ErrorInex);
-				ErrorResourcesCollection.RemoveAt(ErrorResourcesCollection.FindIndex((IntDictionary t) => t.ErrorInex == item.ErrorInex));
-			}
-			ErrorResourcesCollection.Where((IntDictionary b) => b.GridIndex > j).ToList().ForEach(delegate(IntDictionary s)
-			{
-				s.ErrorInex -= Matched.Count;
-			});
-			ErrorResourcesCollection.Where((IntDictionary a) => a.GridIndex > j).ToList().ForEach(delegate(IntDictionary s)
-			{
-				s.GridIndex--;
-			});
-			ErrorDynamicsCollection.ForEach(delegate(IntDictionary s)
-			{
-				s.ErrorInex -= Matched.Count;
-			});
-			Read.ResourcesList.RemoveAt(j);
-			ResourcesGrid.Rows.RemoveAt(j);
-			MainProgressBar.Value++;
-		}
-		if (ErrorsGrid.Rows.Count != 0)
-		{
-			int num2 = ((ErrorResourcesCollection.Count != 0) ? ErrorResourcesCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
-			int num3 = ((ErrorResourcesCollection.Count != 0) ? ErrorResourcesCollection.Max((IntDictionary f) => f.ErrorInex) : 0);
-			int i;
-			for (i = num2; i <= num3; i++)
-			{
-				ErrorsGrid.Rows[i].Cells[0].Value = i + 1;
-				ErrorsGrid.Rows[i].Cells[1].Value = ErrorResourcesCollection.Find((IntDictionary f) => f.ErrorInex == i).GridIndex + 1;
-			}
-			int num4 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
-			for (int k = num4; k <= num4; k++)
-			{
-				ErrorsGrid.Rows[k].Cells[0].Value = k + 1;
-			}
-		}
-		AllowCellChanging = true;
-		MainProgressBar.Value = 0;
-		ResourcesGrid.ScrollBars = ScrollBars.Vertical;
-		ErrorsGrid.ScrollBars = ScrollBars.Vertical;
-		if (ResourcesGrid.Rows.Count > num)
-		{
-			ResourcesGrid.CurrentCell = ResourcesGrid.Rows[num].Cells[1];
-			ResourcesGrid.FirstDisplayedScrollingRowIndex = num;
-		}
-		else if (ResourcesGrid.Rows.Count != 0)
-		{
-			ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
-			ResourcesGrid.FirstDisplayedScrollingRowIndex = ResourcesGrid.Rows.Count - 1;
-		}
-		ResourcesGrid_CurrentCellChanged(null, null);
-		for (int l = 0; l < ResourcesGrid.Rows.Count; l++)
-		{
-			ResourcesGrid.Rows[l].Cells[0].Value = l + 1;
-		}
-		if (Language == 1)
-		{
-			ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
-		}
-		else
-		{
-			ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
-		}
-	}
-
-	private void CloneResourcesInGroup_Click(object sender, EventArgs e)
-	{
-		if (ResourcesGrid.Rows.Count <= 0)
-		{
-			return;
-		}
-		if (ResourcesGroupGrid.Rows.Count > 0)
-		{
-			UnderResourcesRowCollection = UnderResourcesRowCollection.OrderBy((int z) => z).ToList();
-			foreach (int item2 in UnderResourcesRowCollection)
-			{
-				Read.ResourcesList[ResourcesRowIndex].Amount_in_group++;
-				ClassExtraResources item = new ClassExtraResources
-				{
-					Id = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].Id,
-					Amount = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].Amount,
-					ResourceType = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].ResourceType,
-					Respawntime = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].Respawntime,
-					fHeiOff = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].fHeiOff
-				};
-				Read.ResourcesList[ResourcesRowIndex].ResExtra.Add(item);
-				ResourcesGroupGrid.Rows.Add(Read.ResourcesList[ResourcesRowIndex].Amount_in_group, ResourcesGroupGrid.Rows[item2].Cells[1].Value, ResourcesGroupGrid.Rows[item2].Cells[2].Value);
-			}
-			RefreshResourcesRow(ResourcesRowIndex);
-			ResourcesGroupGrid.ClearSelection();
-			for (int i = 1; i <= UnderResourcesRowCollection.Count; i++)
-			{
-				ResourcesGroupGrid.Rows[ResourcesGroupGrid.Rows.Count - i].Selected = true;
-			}
-			ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[ResourcesGroupGrid.Rows.Count - 1].Cells[1];
-			ResourcesGroupGrid.FirstDisplayedScrollingRowIndex = ResourcesGroupGrid.Rows.Count - 1;
-		}
-		else
-		{
-			ClassExtraResources classExtraResources = new ClassExtraResources();
-			Read.ResourcesList[ResourcesRowIndex].Amount_in_group++;
-			classExtraResources.Id = 3074;
-			classExtraResources.Amount = 1;
-			classExtraResources.Respawntime = 60;
-			classExtraResources.ResourceType = 80;
-			Read.ResourcesList[ResourcesRowIndex].ResExtra.Add(classExtraResources);
-			if (Language == 1)
-			{
-				ResourcesGroupGrid.Rows.Add(1, 3074, "Высохший древесный корень");
-			}
-			else
-			{
-				ResourcesGroupGrid.Rows.Add(1, 3074, "Withered root");
-			}
-			RefreshResourcesRow(ResourcesRowIndex);
-			ResourcesGroupGrid_CurrentCellChanged(null, null);
-		}
-	}
-
-	private void RemoveResourcesInGroup_Click(object sender, EventArgs e)
-	{
-		UnderResourcesRowCollection = UnderResourcesRowCollection.OrderByDescending((int z) => z).ToList();
-		if (UnderResourcesRowCollection.Count == 0 || ResourcesGrid.Rows.Count <= 0 || ResourcesGroupGrid.Rows.Count <= 0)
-		{
-			return;
-		}
-		string text = "Вы уверены,что хотите удалить выбранные ресурсы?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete selected resources?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		int num = UnderResourcesRowCollection.Min();
-		ResourcesGroupGrid.ClearSelection();
-		foreach (int item in UnderResourcesRowCollection)
-		{
-			Read.ResourcesList[ResourcesRowIndex].Amount_in_group--;
-			Read.ResourcesList[ResourcesRowIndex].ResExtra.RemoveAt(item);
-			ResourcesGroupGrid.Rows.RemoveAt(item);
-		}
-		RefreshResourcesRow(ResourcesRowIndex);
-		if (ResourcesGroupGrid.Rows.Count > num)
-		{
-			ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[num].Cells[1];
-			ResourcesGroupGrid.FirstDisplayedScrollingRowIndex = num;
-		}
-		else if (ResourcesGroupGrid.Rows.Count != 0)
-		{
-			ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[ResourcesGroupGrid.Rows.Count - 1].Cells[1];
-			ResourcesGroupGrid.FirstDisplayedScrollingRowIndex = ResourcesGroupGrid.Rows.Count - 1;
-		}
-		ResourcesGroupGrid_CurrentCellChanged(null, null);
-	}
-
-	private void RId_numeric_DoubleClick(object sender, EventArgs e)
-	{
-		if (ChooseFromElementsForm != null)
-		{
-			ChooseFromElementsForm.SetAction = 2;
-			ChooseFromElementsForm.SetWindow = 1;
-			int num = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == Convert.ToInt32(RId_numeric.Value));
-			if (num != -1)
-			{
-				ChooseFromElementsForm.FindRow(num, "Resource");
-			}
-			ChooseFromElementsForm.ShowDialog(this);
-		}
-	}
-
-	private void RInsterCordsFromGame_Click(object sender, EventArgs e)
-	{
-		ClassPosition coordinates = GetCoordinates();
-		if (coordinates != null)
-		{
-			RX_position.Text = coordinates.PosX.ToString();
-			RY_position.Text = coordinates.PosY.ToString();
-			RZ_position.Text = coordinates.PosZ.ToString();
-			ResourcesDefaultLeave(RX_position, null);
-			ResourcesDefaultLeave(RY_position, null);
-			ResourcesDefaultLeave(RZ_position, null);
-		}
-	}
-
-	private void DynamicGrid_CurrentCellChanged(object sender, EventArgs e)
-	{
-		if (AllowCellChanging)
-		{
-			DynamicsRowCollection = (from DataGridViewRow f in DynamicGrid.SelectedRows
-				select f.Index into v
-				orderby v descending
-				select v).ToList();
-			if (DynamicGrid.CurrentRow != null)
-			{
-				DynamicRowIndex = DynamicGrid.CurrentRow.Index;
-				if (DynamicRowIndex != -1)
-				{
-					DId_numeric.Text = Read.DynamicsList[DynamicRowIndex].Id.ToString();
-					Label_DynamicName.Text = DynamicGrid.Rows[DynamicRowIndex].Cells[2].Value.ToString();
-					DX_position.Text = Read.DynamicsList[DynamicRowIndex].X_position.ToString();
-					DY_position.Text = Read.DynamicsList[DynamicRowIndex].Y_position.ToString();
-					DZ_position.Text = Read.DynamicsList[DynamicRowIndex].Z_position.ToString();
-					DIncline1.Text = Read.DynamicsList[DynamicRowIndex].InCline1.ToString();
-					DIncline2.Text = Read.DynamicsList[DynamicRowIndex].InCline2.ToString();
-					DRotation.Text = Read.DynamicsList[DynamicRowIndex].Rotation.ToString();
-					DTrigger_id.Text = Read.DynamicsList[DynamicRowIndex].TriggerId.ToString();
-					DScale.Text = Read.DynamicsList[DynamicRowIndex].Scale.ToString();
-					string text = $"{Application.StartupPath}\\DynamicObjects\\d{DynamicGrid.Rows[DynamicRowIndex].Cells[1].Value}.jpg";
-					if (File.Exists(text))
-					{
-						DynamicPictureBox.Image = Image.FromFile(text);
-					}
-					if (MapForm != null && MainProgressBar.Value == 0 && DynamicsRowCollection.Count != 0 && MapForm.Visible)
-					{
-						MapForm.GetCoordinates(GetPoint(3));
-					}
-				}
-			}
-		}
-		if (Language == 1)
-		{
-			DynObjectsTab.Text = $"Динамические Объекты {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
-		}
-		else
-		{
-			DynObjectsTab.Text = $"Dynamic Objects {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
-		}
-	}
-
-	private void IdFind(object sender, EventArgs e)
-	{
-		if (!string.IsNullOrWhiteSpace(DId_numeric.Text))
-		{
-			Label_DynamicName.Text = GetDynamicName(Convert.ToInt32(DId_numeric.Text));
-			string text = $"{Application.StartupPath}\\DynamicObjects\\d{Convert.ToInt32(DId_numeric.Text)}.jpg";
-			if (File.Exists(text))
-			{
-				DynamicPictureBox.Image = Image.FromFile(text);
-			}
-			if (Label_DynamicName.Text == "?")
-			{
-				DynamicPictureBox.Image = null;
-			}
-		}
-	}
-
-	private void DynamicsLeave(object sender, EventArgs e)
-	{
-		Control control = sender as Control;
-		if (DynamicsRowCollection == null)
-		{
-			return;
-		}
-		int result2;
-		float result3;
-		byte result;
-		switch (control.Name)
-		{
-		case "DId_numeric":
-			int.TryParse(DId_numeric.Text, out result2);
-			{
-				foreach (int item in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item].Id = result2;
-					DynamicGrid.Rows[item].Cells[1].Value = result2;
-					DynamicGrid.Rows[item].Cells[2].Value = Label_DynamicName.Text;
-				}
-				break;
-			}
-		case "DX_position":
-			float.TryParse(DX_position.Text, out result3);
-			{
-				foreach (int item2 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item2].X_position = result3;
-				}
-				break;
-			}
-		case "DY_position":
-			float.TryParse(DY_position.Text, out result3);
-			{
-				foreach (int item3 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item3].Y_position = result3;
-				}
-				break;
-			}
-		case "DZ_position":
-			float.TryParse(DZ_position.Text, out result3);
-			{
-				foreach (int item4 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item4].Z_position = result3;
-				}
-				break;
-			}
-		case "DIncline1":
-			byte.TryParse(DIncline1.Text, out result);
-			{
-				foreach (int item5 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item5].InCline1 = result;
-				}
-				break;
-			}
-		case "DIncline2":
-			byte.TryParse(DIncline2.Text, out result);
-			{
-				foreach (int item6 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item6].InCline2 = result;
-				}
-				break;
-			}
-		case "DRotation":
-			byte.TryParse(DRotation.Text, out result);
-			{
-				foreach (int item7 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item7].Rotation = result;
-				}
-				break;
-			}
-		case "DTrigger_id":
-			int.TryParse(DTrigger_id.Text, out result2);
-			{
-				foreach (int item8 in DynamicsRowCollection)
-				{
-					DynamicGrid.Rows[item8].Cells[3].Value = result2;
-					Read.DynamicsList[item8].TriggerId = result2;
-				}
-				break;
-			}
-		case "DScale":
-			byte.TryParse(DScale.Text, out result);
-			{
-				foreach (int item9 in DynamicsRowCollection)
-				{
-					Read.DynamicsList[item9].Scale = result;
-				}
-				break;
-			}
-		}
-	}
-
-	private void DynamicsKeyDown(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.Return)
-		{
-			DynamicsLeave(sender, null);
-		}
-	}
-
-	private void DClone_button_Click(object sender, EventArgs e)
-	{
-		if (DynamicGrid.Rows.Count > 0)
-		{
-			DynamicGrid.ScrollBars = ScrollBars.None;
-			DynamicsRowCollection = DynamicsRowCollection.OrderBy((int z) => z).ToList();
-			foreach (int item3 in DynamicsRowCollection)
-			{
-				Read.DynobjectAmount++;
-				ClassDynamicObject item = new ClassDynamicObject
-				{
-					Id = Read.DynamicsList[item3].Id,
-					InCline1 = Read.DynamicsList[item3].InCline1,
-					InCline2 = Read.DynamicsList[item3].InCline2,
-					Rotation = Read.DynamicsList[item3].Rotation,
-					Scale = Read.DynamicsList[item3].Scale,
-					TriggerId = Read.DynamicsList[item3].TriggerId,
-					X_position = Read.DynamicsList[item3].X_position,
-					Y_position = Read.DynamicsList[item3].Y_position,
-					Z_position = Read.DynamicsList[item3].Z_position
-				};
-				Read.DynamicsList.Add(item);
-				DynamicGrid.Rows.Add(Read.DynobjectAmount, DynamicGrid.Rows[item3].Cells[1].Value, DynamicGrid.Rows[item3].Cells[2].Value, DynamicGrid.Rows[item3].Cells[3].Value);
-			}
-			DynamicGrid.ScrollBars = ScrollBars.Vertical;
-			List<int> dynamicsRowCollection = DynamicsRowCollection;
-			DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
-			for (int i = 1; i <= dynamicsRowCollection.Count; i++)
-			{
-				DynamicGrid.Rows[DynamicGrid.Rows.Count - i].Selected = true;
-			}
-			DynamicGrid_CurrentCellChanged(null, null);
-		}
-		else
-		{
-			Read.DynobjectAmount++;
-			ClassDynamicObject item2 = new ClassDynamicObject
-			{
-				Id = 16
-			};
-			Read.DynamicsList.Add(item2);
-			if (Language == 1)
-			{
-				DynamicGrid.Rows.Add(1, 9, "Ворота", 0);
-			}
-			else
-			{
-				DynamicGrid.Rows.Add(1, 9, "Gates", 0);
-			}
-			DynamicGrid_CurrentCellChanged(null, null);
-		}
-		if (Language == 1)
-		{
-			DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
-		}
-		else
-		{
-			DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
-		}
-	}
-
-	private void DDelete_button_Click(object sender, EventArgs e)
-	{
-		if (Read == null || DynamicsRowCollection.Count == 0)
-		{
-			return;
-		}
-		string text = "Вы уверены,что хотите удалить выбранные объекты?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete selected objects?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		int num = DynamicsRowCollection.Min();
-		DynamicGrid.ScrollBars = ScrollBars.None;
-		ErrorsGrid.ScrollBars = ScrollBars.None;
-		AllowCellChanging = false;
-		DynamicGrid.ClearSelection();
-		MainProgressBar.Maximum = DynamicsRowCollection.Count;
-		Read.DynobjectAmount -= DynamicsRowCollection.Count;
-		foreach (int j in DynamicsRowCollection)
-		{
-			List<IntDictionary> Matched = (from f in ErrorDynamicsCollection
-				where f.GridIndex == j
-				orderby f.ErrorInex descending
-				select f).ToList();
-			foreach (IntDictionary item in Matched)
-			{
-				ErrorsGrid.Rows.RemoveAt(item.ErrorInex);
-				ErrorDynamicsCollection.RemoveAt(ErrorDynamicsCollection.FindIndex((IntDictionary t) => t.ErrorInex == item.ErrorInex));
-			}
-			ErrorDynamicsCollection.Where((IntDictionary b) => b.GridIndex > j).ToList().ForEach(delegate(IntDictionary s)
-			{
-				s.ErrorInex -= Matched.Count;
-			});
-			ErrorDynamicsCollection.Where((IntDictionary a) => a.GridIndex > j).ToList().ForEach(delegate(IntDictionary s)
-			{
-				s.GridIndex--;
-			});
-			Read.DynamicsList.RemoveAt(j);
-			DynamicGrid.Rows.RemoveAt(j);
-			MainProgressBar.Value++;
-		}
-		if (ErrorsGrid.Rows.Count != 0)
-		{
-			int num2 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
-			int num3 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Max((IntDictionary f) => f.ErrorInex) : 0);
-			int i;
-			for (i = num2; i <= num3; i++)
-			{
-				ErrorsGrid.Rows[i].Cells[0].Value = i + 1;
-				ErrorsGrid.Rows[i].Cells[1].Value = ErrorDynamicsCollection.Find((IntDictionary f) => f.ErrorInex == i).GridIndex + 1;
-			}
-		}
-		AllowCellChanging = true;
-		MainProgressBar.Value = 0;
-		DynamicGrid.ScrollBars = ScrollBars.Vertical;
-		ErrorsGrid.ScrollBars = ScrollBars.Vertical;
-		if (DynamicGrid.Rows.Count > num)
-		{
-			DynamicGrid.CurrentCell = DynamicGrid.Rows[num].Cells[1];
-			DynamicGrid.FirstDisplayedScrollingRowIndex = num;
-		}
-		else if (DynamicGrid.Rows.Count != 0)
-		{
-			DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
-			DynamicGrid.FirstDisplayedScrollingRowIndex = DynamicGrid.Rows.Count - 1;
-		}
-		DynamicGrid_CurrentCellChanged(null, null);
-		for (int k = 0; k < DynamicGrid.Rows.Count; k++)
-		{
-			DynamicGrid.Rows[k].Cells[0].Value = k + 1;
-		}
-		if (Language == 1)
-		{
-			DynObjectsTab.Text = $"Динамические объекты 1/{Read.DynobjectAmount}";
-		}
-		else
-		{
-			DynObjectsTab.Text = $"Dynamic objects 1/{Read.DynobjectAmount}";
-		}
-	}
-
-	private void DInsterCordsFromGame_Click(object sender, EventArgs e)
-	{
-		ClassPosition coordinates = GetCoordinates();
-		if (coordinates != null)
-		{
-			DX_position.Text = coordinates.PosX.ToString();
-			DY_position.Text = coordinates.PosY.ToString();
-			DZ_position.Text = coordinates.PosZ.ToString();
-			DynamicsLeave(DX_position, null);
-			DynamicsLeave(DY_position, null);
-			DynamicsLeave(DZ_position, null);
-		}
-	}
-
-	private void TriggerUsingInMobsAndNpcsGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
-	{
-		if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
-		{
-			string caption = Convert.ToString(MUTrigger.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-			toolTip1.SetToolTip(MUTrigger, caption);
-		}
-	}
-
-	private void TriggersGrid_CurrentCellChanged(object sender, EventArgs e)
-	{
-		if (AllowCellChanging)
-		{
-			TriggersRowCollection = (from DataGridViewRow f in TriggersGrid.SelectedRows
-				select f.Index into v
-				orderby v descending
-				select v).ToList();
-			if (TriggersGrid.CurrentRow != null)
-			{
-				TriggersRowIndex = TriggersGrid.CurrentRow.Index;
-				if (TriggersRowIndex != -1)
-				{
-					TId_textbox.Text = Read.TriggersList[TriggersRowIndex].Id.ToString();
-					TGmId_textbox.Text = Read.TriggersList[TriggersRowIndex].GmID.ToString();
-					TName_textbox.Text = Read.TriggersList[TriggersRowIndex].TriggerName.ToString();
-					TWaitStart_textbox.Text = Read.TriggersList[TriggersRowIndex].WaitWhileStart.ToString();
-					TWaitStop_textbox.Text = Read.TriggersList[TriggersRowIndex].WaitWhileStop.ToString();
-					TAutoStart.Checked = Convert.ToBoolean(Read.TriggersList[TriggersRowIndex].AutoStart);
-					TDuration.Text = Read.TriggersList[TriggersRowIndex].Duration.ToString();
-					TStartBySchedule.Checked = Convert.ToBoolean(Read.TriggersList[TriggersRowIndex].DontStartOnSchedule);
-					TStopBySchedule.Checked = Convert.ToBoolean(Read.TriggersList[TriggersRowIndex].DontStopOnSchedule);
-					TStartYear.Text = Read.TriggersList[TriggersRowIndex].StartYear.ToString();
-					TStartMonth.Text = Read.TriggersList[TriggersRowIndex].StartMonth.ToString();
-					TStartWeekDay.SelectedIndex = Read.TriggersList[TriggersRowIndex].StartWeekDay + 1;
-					TStartDay.Text = Read.TriggersList[TriggersRowIndex].StartDay.ToString();
-					TStartHour.Text = Read.TriggersList[TriggersRowIndex].StartHour.ToString();
-					TStartMinute.Text = Read.TriggersList[TriggersRowIndex].StartMinute.ToString();
-					TStopYear.Text = Read.TriggersList[TriggersRowIndex].StopYear.ToString();
-					TStopMonth.Text = Read.TriggersList[TriggersRowIndex].StopMonth.ToString();
-					TStopWeekDay.SelectedIndex = Read.TriggersList[TriggersRowIndex].StopWeekDay + 1;
-					TStopDay.Text = Read.TriggersList[TriggersRowIndex].StopDay.ToString();
-					TStopHour.Text = Read.TriggersList[TriggersRowIndex].StopHour.ToString();
-					TStopMinute.Text = Read.TriggersList[TriggersRowIndex].StopMinute.ToString();
-					MUTrigger.ScrollBars = ScrollBars.None;
-					RUTrigger.ScrollBars = ScrollBars.None;
-					DUTrigger.ScrollBars = ScrollBars.None;
-					MonstersContact = Read.NpcMobList.Where((ClassDefaultMonsters z) => z.Trigger_id == Read.TriggersList[TriggersRowIndex].Id).ToList();
-					MUTrigger.Rows.Clear();
-					for (int i = 0; i < MonstersContact.Count; i++)
-					{
-						string text = Convert.ToString(NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[i])].Cells[1].Value);
-						string text2 = Convert.ToString(NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[i])].Cells[2].Value);
-						MUTrigger.Rows.Add(i + 1, text, text2);
-					}
-					ResourcesContact = Read.ResourcesList.Where((ClassDefaultResources z) => z.Trigger_id == Read.TriggersList[TriggersRowIndex].Id).ToList();
-					RUTrigger.Rows.Clear();
-					for (int j = 0; j < ResourcesContact.Count; j++)
-					{
-						string text3 = Convert.ToString(ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[j])].Cells[1].Value);
-						string text4 = Convert.ToString(ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[j])].Cells[2].Value);
-						RUTrigger.Rows.Add(j + 1, text3, text4);
-					}
-					DynamicsContact = Read.DynamicsList.Where((ClassDynamicObject z) => z.TriggerId == Read.TriggersList[TriggersRowIndex].Id).ToList();
-					DUTrigger.Rows.Clear();
-					for (int k = 0; k < DynamicsContact.Count; k++)
-					{
-						string text5 = Convert.ToString(DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[k])].Cells[1].Value);
-						string text6 = Convert.ToString(DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[k])].Cells[2].Value);
-						DUTrigger.Rows.Add(k + 1, text5, text6);
-					}
-					MUTrigger.ScrollBars = ScrollBars.Vertical;
-					RUTrigger.ScrollBars = ScrollBars.Vertical;
-					DUTrigger.ScrollBars = ScrollBars.Vertical;
-				}
-			}
-		}
-		if (Language == 1)
-		{
-			TriggersTab.Text = $"Триггеры {TriggersRowCollection.Count}/{Read.TriggersAmount}";
-		}
-		else
-		{
-			TriggersTab.Text = $"Triggers {TriggersRowCollection.Count}/{Read.TriggersAmount}";
-		}
-	}
-
-	private void TId_textbox_KeyDown(object sender, KeyEventArgs e)
-	{
-		if (e.KeyCode == Keys.Return)
-		{
-			TId_textbox_Leave(sender, new EventArgs());
-		}
-	}
-
-	private void TId_textbox_Leave(object sender, EventArgs e)
-	{
-		Control control = sender as Control;
-		int result;
-		switch (control.Name)
-		{
-		case "TId_textbox":
-			int.TryParse(TId_textbox.Text, out result);
-			{
-				foreach (int item in TriggersRowCollection)
-				{
-					Read.TriggersList[item].Id = result;
-					TriggersGrid.Rows[item].Cells[1].Value = result;
-				}
-				break;
-			}
-		case "TGmId_textbox":
-			int.TryParse(TGmId_textbox.Text, out result);
-			{
-				foreach (int item2 in TriggersRowCollection)
-				{
-					Read.TriggersList[item2].GmID = result;
-					TriggersGrid.Rows[item2].Cells[2].Value = result;
-				}
-				break;
-			}
-		case "TName_textbox":
-		{
-			foreach (int item3 in TriggersRowCollection)
-			{
-				Read.TriggersList[item3].TriggerName = TName_textbox.Text;
-				TriggersGrid.Rows[item3].Cells[3].Value = TName_textbox.Text;
-			}
-			break;
-		}
-		case "TWaitStart_textbox":
-			int.TryParse(TWaitStart_textbox.Text, out result);
-			{
-				foreach (int item4 in TriggersRowCollection)
-				{
-					Read.TriggersList[item4].WaitWhileStart = result;
-				}
-				break;
-			}
-		case "TWaitStop_textbox":
-			int.TryParse(TWaitStop_textbox.Text, out result);
-			{
-				foreach (int item5 in TriggersRowCollection)
-				{
-					Read.TriggersList[item5].WaitWhileStop = result;
-				}
-				break;
-			}
-		case "TDuration":
-			int.TryParse(TDuration.Text, out result);
-			{
-				foreach (int item6 in TriggersRowCollection)
-				{
-					Read.TriggersList[item6].Duration = result;
-				}
-				break;
-			}
-		case "TAutoStart":
-		{
-			foreach (int item7 in TriggersRowCollection)
-			{
-				Read.TriggersList[item7].AutoStart = Convert.ToByte(TAutoStart.Checked);
-			}
-			break;
-		}
-		case "TStartBySchedule":
-		{
-			foreach (int item8 in TriggersRowCollection)
-			{
-				Read.TriggersList[item8].DontStartOnSchedule = Convert.ToByte(TStartBySchedule.Checked);
-			}
-			break;
-		}
-		case "TStopBySchedule":
-		{
-			foreach (int item9 in TriggersRowCollection)
-			{
-				Read.TriggersList[item9].DontStopOnSchedule = Convert.ToByte(TStopBySchedule.Checked);
-			}
-			break;
-		}
-		case "TStartYear":
-			int.TryParse(TStartYear.Text, out result);
-			{
-				foreach (int item10 in TriggersRowCollection)
-				{
-					Read.TriggersList[item10].StartYear = result;
-				}
-				break;
-			}
-		case "TStartMonth":
-			int.TryParse(TStartMonth.Text, out result);
-			{
-				foreach (int item11 in TriggersRowCollection)
-				{
-					Read.TriggersList[item11].StartMonth = result;
-				}
-				break;
-			}
-		case "TStartWeekDay":
-		{
-			foreach (int item12 in TriggersRowCollection)
-			{
-				Read.TriggersList[item12].StartWeekDay = TStartWeekDay.SelectedIndex - 1;
-			}
-			break;
-		}
-		case "TStartDay":
-			int.TryParse(TStartDay.Text, out result);
-			{
-				foreach (int item13 in TriggersRowCollection)
-				{
-					Read.TriggersList[item13].StartDay = result;
-				}
-				break;
-			}
-		case "TStartHour":
-			int.TryParse(TStartHour.Text, out result);
-			{
-				foreach (int item14 in TriggersRowCollection)
-				{
-					Read.TriggersList[item14].StartHour = result;
-				}
-				break;
-			}
-		case "TStartMinute":
-			int.TryParse(TStartMinute.Text, out result);
-			{
-				foreach (int item15 in TriggersRowCollection)
-				{
-					Read.TriggersList[item15].StartMinute = result;
-				}
-				break;
-			}
-		case "TStopYear":
-			int.TryParse(TStopYear.Text, out result);
-			{
-				foreach (int item16 in TriggersRowCollection)
-				{
-					Read.TriggersList[item16].StopYear = result;
-				}
-				break;
-			}
-		case "TStopMonth":
-			int.TryParse(TStopMonth.Text, out result);
-			{
-				foreach (int item17 in TriggersRowCollection)
-				{
-					Read.TriggersList[item17].StopMonth = result;
-				}
-				break;
-			}
-		case "TStopWeekDay":
-		{
-			foreach (int item18 in TriggersRowCollection)
-			{
-				Read.TriggersList[item18].StopWeekDay = TStopWeekDay.SelectedIndex - 1;
-			}
-			break;
-		}
-		case "TStopDay":
-			int.TryParse(TStopDay.Text, out result);
-			{
-				foreach (int item19 in TriggersRowCollection)
-				{
-					Read.TriggersList[item19].StopDay = result;
-				}
-				break;
-			}
-		case "TStopHour":
-			int.TryParse(TStopHour.Text, out result);
-			{
-				foreach (int item20 in TriggersRowCollection)
-				{
-					Read.TriggersList[item20].StopHour = result;
-				}
-				break;
-			}
-		case "TStopMinute":
-			int.TryParse(TStopMinute.Text, out result);
-			{
-				foreach (int item21 in TriggersRowCollection)
-				{
-					Read.TriggersList[item21].StopMinute = result;
-				}
-				break;
-			}
-		}
-	}
-
-	private void CloneTrigger_Click(object sender, EventArgs e)
-	{
-		if (TriggersGrid.Rows.Count > 0)
-		{
-			TriggersGrid.ScrollBars = ScrollBars.None;
-			TriggersRowCollection = TriggersRowCollection.OrderBy((int z) => z).ToList();
-			foreach (int item2 in TriggersRowCollection)
-			{
-				Read.TriggersAmount++;
-				ClassTrigger classTrigger = new ClassTrigger
-				{
-					Id = Read.TriggersList.Max((ClassTrigger z) => z.Id) + 1,
-					GmID = Read.TriggersList.Max((ClassTrigger z) => z.GmID) + 1,
-					TriggerName = Read.TriggersList[item2].TriggerName,
-					AutoStart = Read.TriggersList[item2].AutoStart,
-					DontStartOnSchedule = Read.TriggersList[item2].DontStartOnSchedule,
-					DontStopOnSchedule = Read.TriggersList[item2].DontStopOnSchedule,
-					Duration = Read.TriggersList[item2].Duration,
-					StartDay = Read.TriggersList[item2].StartDay,
-					StartHour = Read.TriggersList[item2].StartHour,
-					StartMinute = Read.TriggersList[item2].StartMinute,
-					StartMonth = Read.TriggersList[item2].StartMonth,
-					StartWeekDay = Read.TriggersList[item2].StartWeekDay,
-					StartYear = Read.TriggersList[item2].StartYear,
-					StopDay = Read.TriggersList[item2].StopDay,
-					StopHour = Read.TriggersList[item2].StopHour,
-					StopMinute = Read.TriggersList[item2].StopMinute,
-					StopMonth = Read.TriggersList[item2].StopMonth,
-					StopWeekDay = Read.TriggersList[item2].StopWeekDay,
-					StopYear = Read.TriggersList[item2].StopYear,
-					WaitWhileStart = Read.TriggersList[item2].WaitWhileStart,
-					WaitWhileStop = Read.TriggersList[item2].WaitWhileStop
-				};
-				Read.TriggersList.Add(classTrigger);
-				TriggersGrid.Rows.Add(Read.TriggersAmount, classTrigger.Id, classTrigger.GmID, TriggersGrid.Rows[item2].Cells[3].Value);
-			}
-			TriggersGrid.ScrollBars = ScrollBars.Vertical;
-			List<int> triggersRowCollection = TriggersRowCollection;
-			TriggersGrid.CurrentCell = TriggersGrid.Rows[TriggersGrid.Rows.Count - 1].Cells[1];
-			for (int i = 1; i <= triggersRowCollection.Count; i++)
-			{
-				TriggersGrid.Rows[TriggersGrid.Rows.Count - i].Selected = true;
-			}
-			TriggersGrid_CurrentCellChanged(null, null);
-		}
-		else
-		{
-			Read.TriggersAmount++;
-			ClassTrigger item = new ClassTrigger
-			{
-				Id = 1,
-				GmID = 2,
-				TriggerName = "TriggerOne",
-				Duration = 60,
-				StartYear = -1,
-				StartMonth = -1,
-				StartWeekDay = -1,
-				StartDay = -1,
-				StartHour = -1,
-				StartMinute = -1,
-				StopYear = -1,
-				StopMonth = -1,
-				StopWeekDay = -1,
-				StopDay = -1,
-				StopHour = -1,
-				StopMinute = -1
-			};
-			Read.TriggersList.Add(item);
-			TriggersGrid.Rows.Add(1, 1, 2, "TriggerOne");
-			TriggersGrid_CurrentCellChanged(null, null);
-		}
-		if (Language == 1)
-		{
-			TriggersTab.Text = $"Триггеры 1/{Read.TriggersAmount}";
-		}
-		else
-		{
-			TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
-		}
-	}
-
-	private void DeleteTrigger_Click(object sender, EventArgs e)
-	{
-		if (TriggersRowCollection.Count == 0)
-		{
-			return;
-		}
-		string text = "Вы уверены,что хотите удалить выбранные триггера?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete selected triggers?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		TriggersRowCollection = TriggersRowCollection.OrderByDescending((int z) => z).ToList();
-		TriggersGrid.ScrollBars = ScrollBars.None;
-		int num = TriggersRowCollection.Min();
-		TriggersGrid.ClearSelection();
-		Read.TriggersAmount -= TriggersRowCollection.Count;
-		foreach (int item in TriggersRowCollection)
-		{
-			Read.TriggersList.RemoveAt(item);
-			TriggersGrid.Rows.RemoveAt(item);
-		}
-		TriggersGrid.ScrollBars = ScrollBars.Vertical;
-		if (TriggersGrid.Rows.Count > num)
-		{
-			TriggersGrid.CurrentCell = TriggersGrid.Rows[num].Cells[1];
-			TriggersGrid.FirstDisplayedScrollingRowIndex = num;
-		}
-		else if (TriggersGrid.Rows.Count != 0)
-		{
-			TriggersGrid.CurrentCell = TriggersGrid.Rows[TriggersGrid.Rows.Count - 1].Cells[1];
-			TriggersGrid.FirstDisplayedScrollingRowIndex = TriggersGrid.Rows.Count - 1;
-		}
-		if (TriggersGrid.Rows.Count == 0)
-		{
-			TriggersGrid.Rows.Clear();
-		}
-		TriggersGrid_CurrentCellChanged(null, null);
-		if (Language == 1)
-		{
-			TriggersTab.Text = $"Триггеры 1/{Read.TriggersAmount}";
-		}
-		else
-		{
-			TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
-		}
-	}
-
-	private void GotoNpcMobsContacts_Click(object sender, EventArgs e)
-	{
-		try
-		{
-			if (MUTrigger.SelectedRows.Count != 0)
-			{
-				NpcMobsGrid.ClearSelection();
-				NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[MUTrigger.SelectedRows[MUTrigger.SelectedRows.Count - 1].Index])].Cells[1];
-				for (int i = 0; i < MUTrigger.SelectedRows.Count; i++)
-				{
-					NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[MUTrigger.SelectedRows[i].Index])].Selected = true;
-				}
-				ExistenceGrid_CellChanged(null, null);
-				MainTabControl.SelectedIndex = 0;
-			}
-		}
-		catch
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Действие невозможно", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else
-			{
-				MessageBox.Show("Wrong action", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void GotoResourcesContacts_Click(object sender, EventArgs e)
-	{
-		try
-		{
-			if (RUTrigger.SelectedRows.Count != 0)
-			{
-				ResourcesGrid.ClearSelection();
-				ResourcesGrid.CurrentCell = ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[RUTrigger.SelectedRows[RUTrigger.SelectedRows.Count - 1].Index])].Cells[1];
-				for (int i = 0; i < RUTrigger.SelectedRows.Count; i++)
-				{
-					ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[RUTrigger.SelectedRows[i].Index])].Selected = true;
-				}
-				MainTabControl.SelectedIndex = 1;
-			}
-		}
-		catch
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Действие невозможно", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else
-			{
-				MessageBox.Show("Wrong action", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void GotoDynamicsContacts_Click(object sender, EventArgs e)
-	{
-		try
-		{
-			if (DUTrigger.SelectedRows.Count != 0)
-			{
-				DynamicGrid.ClearSelection();
-				DynamicGrid.CurrentCell = DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[DUTrigger.SelectedRows[DUTrigger.SelectedRows.Count - 1].Index])].Cells[1];
-				for (int i = 0; i < DUTrigger.SelectedRows.Count; i++)
-				{
-					DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[DUTrigger.SelectedRows[i].Index])].Selected = true;
-				}
-				MainTabControl.SelectedIndex = 2;
-			}
-		}
-		catch
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Действие невозможно", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else
-			{
-				MessageBox.Show("Wrong action", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void DeleteEmptyTrigger_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		List<int> list = new List<int>();
-		int i;
-		for (i = 0; i < Read.TriggersAmount; i++)
-		{
-			int num = Read.NpcMobList.FindIndex((ClassDefaultMonsters z) => z.Trigger_id == Read.TriggersList[i].Id);
-			int num2 = Read.ResourcesList.FindIndex((ClassDefaultResources z) => z.Trigger_id == Read.TriggersList[i].Id);
-			int num3 = Read.DynamicsList.FindIndex((ClassDynamicObject z) => z.TriggerId == Read.TriggersList[i].Id);
-			if (num == -1 && num2 == -1 && num3 == -1)
-			{
-				list.Add(Read.TriggersList.IndexOf(Read.TriggersList[i]));
-			}
-		}
-		TriggersGrid.ScrollBars = ScrollBars.None;
-		list = list.OrderByDescending((int z) => z).ToList();
-		string text = "Вы уверены,что хотите удалить неиспользуемые триггеры?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete empty triggers?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		foreach (int item in list)
-		{
-			Read.TriggersAmount--;
-			Read.TriggersList.RemoveAt(item);
-			TriggersGrid.Rows.RemoveAt(item);
-		}
-		TriggersGrid.ScrollBars = ScrollBars.Vertical;
-		if (Language == 1)
-		{
-			TriggersTab.Text = $"Триггеры 1/{Read.TriggersAmount}";
-		}
-		else
-		{
-			TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
-		}
-		if (Language == 1)
-		{
-			MessageBox.Show($"Удалено {list.Count} триггеров", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else
-		{
-			MessageBox.Show($"Deleted {list.Count} triggers", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	private void MUTrigger_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-	{
-		GotoNpcMobsContacts_Click(null, null);
-	}
-
-	private void RUTrigger_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-	{
-		GotoResourcesContacts_Click(null, null);
-	}
-
-	private void DUTrigger_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-	{
-		GotoDynamicsContacts_Click(null, null);
-	}
-
-	private void ExistenceSearchButton_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		Action = 1;
-		string text = "Существа";
-		if (Language == 2)
-		{
-			text = "Existence";
-		}
-		SearchMonsters = new List<int>();
-		SearchGrid.ScrollBars = ScrollBars.None;
-		SearchGrid.Rows.Clear();
-		if (ExistenceSearchId_Radio.Checked)
-		{
-			int.TryParse(ExistenceSearchId.Text, out var IdIndex3);
-			SearchMonsters = (from o in Read.NpcMobList.Select((ClassDefaultMonsters item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where o.Item.MobDops.Any((ClassExtraMonsters x) => x.Id == IdIndex3)
-				select o.Index).ToList();
-			for (int i = 0; i < SearchMonsters.Count(); i++)
-			{
-				SearchGrid.Rows.Add(i + 1, NpcMobsGrid.Rows[SearchMonsters[i]].Cells[1].Value, NpcMobsGrid.Rows[SearchMonsters[i]].Cells[2].Value, text);
-			}
-		}
-		else if (ExistenceSearchName_Radio.Checked)
-		{
-			int num = 1;
-			for (int j = 0; j < NpcMobsGrid.Rows.Count; j++)
-			{
-				if (NpcMobsGrid.Rows[j].Cells[2].Value.ToString().ToLower().Contains(ExistenceSearchName.Text.ToLower()))
-				{
-					SearchMonsters.Add(j);
-					SearchGrid.Rows.Add(num, NpcMobsGrid.Rows[j].Cells[1].Value, NpcMobsGrid.Rows[j].Cells[2].Value, text);
-					num++;
-				}
-			}
-		}
-		else if (ExistenceSearchTrigger_Radio.Checked)
-		{
-			int.TryParse(ExistenceSearchId.Text, out var IdIndex2);
-			SearchMonsters = (from z in Read.NpcMobList.Select((ClassDefaultMonsters item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where z.Item.Trigger_id == IdIndex2
-				select z into o
-				select o.Index).ToList();
-			for (int k = 0; k < SearchMonsters.Count; k++)
-			{
-				SearchGrid.Rows.Add(k + 1, NpcMobsGrid.Rows[SearchMonsters[k]].Cells[1].Value, NpcMobsGrid.Rows[SearchMonsters[k]].Cells[2].Value, text);
-			}
-		}
-		else if (ExistenceSearchPath_Radio.Checked)
-		{
-			int.TryParse(ExistenceSearchPath.Text, out var IdIndex);
-			SearchMonsters = (from o in Read.NpcMobList.Select((ClassDefaultMonsters item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where o.Item.MobDops.Any((ClassExtraMonsters x) => x.Path == IdIndex)
-				select o.Index).ToList();
-			for (int l = 0; l < SearchMonsters.Count; l++)
-			{
-				SearchGrid.Rows.Add(l + 1, NpcMobsGrid.Rows[SearchMonsters[l]].Cells[1].Value, NpcMobsGrid.Rows[SearchMonsters[l]].Cells[2].Value, text);
-			}
-		}
-		SearchGrid.ScrollBars = ScrollBars.Vertical;
-	}
-
-	private void ResourceSearchButton_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		Action = 2;
-		string text = "Ресерсы";
-		if (Language == 2)
-		{
-			text = "Resources";
-		}
-		SearchResources = new List<int>();
-		SearchGrid.ScrollBars = ScrollBars.None;
-		SearchGrid.Rows.Clear();
-		if (ResourceSearchId_Radio.Checked)
-		{
-			int.TryParse(ResourceSearchId.Text, out var IdIndex2);
-			SearchResources = (from o in Read.ResourcesList.Select((ClassDefaultResources item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where o.Item.ResExtra.Any((ClassExtraResources x) => x.Id == IdIndex2)
-				select o.Index).ToList();
-			for (int i = 0; i < SearchResources.Count(); i++)
-			{
-				SearchGrid.Rows.Add(i + 1, ResourcesGrid.Rows[SearchResources[i]].Cells[1].Value, ResourcesGrid.Rows[SearchResources[i]].Cells[2].Value, text);
-			}
-		}
-		else if (ResourceSearchName_Radio.Checked)
-		{
-			int num = 1;
-			for (int j = 0; j < ResourcesGrid.Rows.Count; j++)
-			{
-				if (ResourcesGrid.Rows[j].Cells[2].Value.ToString().ToLower().Contains(ResourceSearchName.Text.ToLower()))
-				{
-					SearchResources.Add(j);
-					SearchGrid.Rows.Add(num, ResourcesGrid.Rows[j].Cells[1].Value, ResourcesGrid.Rows[j].Cells[2].Value, text);
-					num++;
-				}
-			}
-		}
-		else if (ResourceSearchTrigger_Radio.Checked)
-		{
-			int.TryParse(ResourceSearchTrigger.Text, out var IdIndex);
-			SearchResources = (from z in Read.ResourcesList.Select((ClassDefaultResources item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where z.Item.Trigger_id == IdIndex
-				select z into o
-				select o.Index).ToList();
-			for (int k = 0; k < SearchResources.Count; k++)
-			{
-				SearchGrid.Rows.Add(k + 1, ResourcesGrid.Rows[SearchResources[k]].Cells[1].Value, ResourcesGrid.Rows[SearchResources[k]].Cells[2].Value, text);
-			}
-		}
-		SearchGrid.ScrollBars = ScrollBars.Vertical;
-	}
-
-	private void DynamicSearchButton_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		Action = 3;
-		string text = "Дин.Объекты";
-		if (Language == 2)
-		{
-			text = "Dyn.Objects";
-		}
-		SearchDynamics = new List<int>();
-		DynamicGrid.ScrollBars = ScrollBars.None;
-		SearchGrid.Rows.Clear();
-		if (DynamicSearchId_Radio.Checked)
-		{
-			int.TryParse(DynamicSearchId.Text, out var IdIndex2);
-			SearchDynamics = (from o in Read.DynamicsList.Select((ClassDynamicObject item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where o.Item.Id == IdIndex2
-				select o.Index).ToList();
-			for (int i = 0; i < SearchDynamics.Count(); i++)
-			{
-				SearchGrid.Rows.Add(i + 1, DynamicGrid.Rows[SearchDynamics[i]].Cells[1].Value, DynamicGrid.Rows[SearchDynamics[i]].Cells[2].Value, text);
-			}
-		}
-		else if (DynamicSearchName_Radio.Checked)
-		{
-			int num = 1;
-			for (int j = 0; j < DynamicGrid.Rows.Count; j++)
-			{
-				if (DynamicGrid.Rows[j].Cells[2].Value.ToString().ToLower().Contains(DynamicSearchName.Text.ToLower()))
-				{
-					SearchDynamics.Add(j);
-					SearchGrid.Rows.Add(num, DynamicGrid.Rows[j].Cells[1].Value, DynamicGrid.Rows[j].Cells[2].Value, text);
-					num++;
-				}
-			}
-		}
-		else if (DynamicSearchTrigger_Radio.Checked)
-		{
-			int.TryParse(DynamicSearchTrigger.Text, out var IdIndex);
-			SearchDynamics = (from z in Read.DynamicsList.Select((ClassDynamicObject item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where z.Item.TriggerId == IdIndex
-				select z into o
-				select o.Index).ToList();
-			for (int k = 0; k < SearchDynamics.Count; k++)
-			{
-				SearchGrid.Rows.Add(k + 1, DynamicGrid.Rows[SearchDynamics[k]].Cells[1].Value, DynamicGrid.Rows[SearchDynamics[k]].Cells[2].Value, text);
-			}
-		}
-		DynamicGrid.ScrollBars = ScrollBars.Vertical;
-	}
-
-	private void TriggerSearchButton_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		Action = 4;
-		string text = "Триггеры";
-		if (Language == 2)
-		{
-			text = "Triggers";
-		}
-		SearchTriggers = new List<int>();
-		SearchGrid.ScrollBars = ScrollBars.None;
-		SearchGrid.Rows.Clear();
-		if (TriggerSearchId_Radio.Checked)
-		{
-			int.TryParse(TriggerSearchID.Text, out var IdIndex2);
-			SearchTriggers = (from o in Read.TriggersList.Select((ClassTrigger item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where o.Item.Id == IdIndex2
-				select o.Index).ToList();
-			for (int i = 0; i < SearchTriggers.Count(); i++)
-			{
-				SearchGrid.Rows.Add(i + 1, TriggersGrid.Rows[SearchTriggers[i]].Cells[1].Value, TriggersGrid.Rows[SearchTriggers[i]].Cells[3].Value, text);
-			}
-		}
-		else if (TriggerSearchGmId_Radio.Checked)
-		{
-			int.TryParse(TriggerSearchGmID.Text, out var IdIndex);
-			SearchTriggers = (from z in Read.TriggersList.Select((ClassTrigger item, int index) => new
-				{
-					Item = item,
-					Index = index
-				})
-				where z.Item.GmID == IdIndex
-				select z into o
-				select o.Index).ToList();
-			for (int j = 0; j < SearchTriggers.Count; j++)
-			{
-				SearchGrid.Rows.Add(j + 1, TriggersGrid.Rows[SearchTriggers[j]].Cells[1].Value, TriggersGrid.Rows[SearchTriggers[j]].Cells[3].Value, text);
-			}
-		}
-		else if (TriggerSearchName_Radio.Checked)
-		{
-			int num = 1;
-			for (int k = 0; k < TriggersGrid.Rows.Count; k++)
-			{
-				if (TriggersGrid.Rows[k].Cells[3].Value.ToString().ToLower().Contains(TriggerSearchName.Text.ToLower()))
-				{
-					SearchTriggers.Add(k);
-					SearchGrid.Rows.Add(num, TriggersGrid.Rows[k].Cells[1].Value, TriggersGrid.Rows[k].Cells[3].Value, text);
-					num++;
-				}
-			}
-		}
-		SearchGrid.ScrollBars = ScrollBars.Vertical;
-	}
-
-	private void MoveToSelected_Click(object sender, EventArgs e)
-	{
-		try
-		{
-			if (Read == null)
-			{
-				return;
-			}
-			if (Action == 1 && SearchGrid.Rows.Count != 0)
-			{
-				NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[SearchMonsters[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
-				foreach (DataGridViewRow selectedRow in SearchGrid.SelectedRows)
-				{
-					NpcMobsGrid.Rows[SearchMonsters[selectedRow.Index]].Selected = true;
-				}
-				MainTabControl.SelectedIndex = 0;
-				ExistenceGrid_CellChanged(null, null);
-			}
-			else if (Action == 2 && SearchGrid.Rows.Count != 0)
-			{
-				ResourcesGrid.CurrentCell = ResourcesGrid.Rows[SearchResources[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
-				foreach (DataGridViewRow selectedRow2 in SearchGrid.SelectedRows)
-				{
-					ResourcesGrid.Rows[SearchResources[selectedRow2.Index]].Selected = true;
-				}
-				MainTabControl.SelectedIndex = 1;
-				ResourcesGrid_CurrentCellChanged(null, null);
-			}
-			else if (Action == 3 && SearchGrid.Rows.Count != 0)
-			{
-				DynamicGrid.CurrentCell = DynamicGrid.Rows[SearchDynamics[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
-				foreach (DataGridViewRow selectedRow3 in SearchGrid.SelectedRows)
-				{
-					DynamicGrid.Rows[SearchDynamics[selectedRow3.Index]].Selected = true;
-				}
-				MainTabControl.SelectedIndex = 2;
-				DynamicGrid_CurrentCellChanged(null, null);
-			}
-			else
-			{
-				if (Action != 4 || SearchGrid.Rows.Count == 0)
-				{
-					return;
-				}
-				TriggersGrid.CurrentCell = TriggersGrid.Rows[SearchTriggers[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
-				foreach (DataGridViewRow selectedRow4 in SearchGrid.SelectedRows)
-				{
-					TriggersGrid.Rows[SearchTriggers[selectedRow4.Index]].Selected = true;
-				}
-				MainTabControl.SelectedIndex = 3;
-				TriggersGrid_CurrentCellChanged(null, null);
-			}
-		}
-		catch
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Invalid operation!!...", "NpcGen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else
-			{
-				MessageBox.Show("Неверное действие!!...", "NpcGen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void TriggerSearchID_TextChanged(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			int.TryParse(TriggerSearchID.Text, out var Parsed);
-			int num = Read.TriggersList.FindIndex((ClassTrigger z) => z.Id == Parsed);
-			if (num != -1)
-			{
-				TriggerSearchName.Text = TriggersGrid.Rows[num].Cells[3].Value.ToString();
-			}
-		}
-	}
-
-	private void TriggerSearchGmID_TextChanged(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			int.TryParse(TriggerSearchGmID.Text, out var Parsed);
-			int num = Read.TriggersList.FindIndex((ClassTrigger z) => z.GmID == Parsed);
-			if (num != -1)
-			{
-				TriggerSearchName.Text = TriggersGrid.Rows[num].Cells[3].Value.ToString();
-			}
-		}
-	}
-
-	private void ExistenceSearchId_TextChanged(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			int.TryParse(ExistenceSearchId.Text, out var Parsed);
-			int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == Parsed);
-			if (num != -1)
-			{
-				ExistenceSearchName.Text = Element.ExistenceLists[num].Name;
-			}
-			else
-			{
-				ExistenceSearchName.Text = "";
-			}
-		}
-	}
-
-	private void ResourceSearchId_TextChanged(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			int.TryParse(ResourceSearchId.Text, out var Parsed);
-			int num = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == Parsed);
-			if (num != -1)
-			{
-				ResourceSearchName.Text = Element.ResourcesList[num].Name;
-			}
-			else
-			{
-				ResourceSearchName.Text = "";
-			}
-		}
-	}
-
-	private void DynamicSearchId_TextChanged(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		int.TryParse(DynamicSearchId.Text, out var Parsed);
-		if (Language == 1)
-		{
-			int num = DynamicsListRu.FindIndex((DefaultInformation z) => z.Id == Parsed);
-			if (num != -1)
-			{
-				DynamicSearchName.Text = DynamicsListRu[num].Name;
-			}
-			else
-			{
-				DynamicSearchName.Text = "";
-			}
-		}
-		else if (Language == 2)
-		{
-			int num2 = DynamicsListEn.FindIndex((DefaultInformation z) => z.Id == Parsed);
-			if (num2 != -1)
-			{
-				DynamicSearchName.Text = DynamicsListEn[num2].Name;
-			}
-			else
-			{
-				DynamicSearchName.Text = "";
-			}
-		}
-	}
-
-	private void MainTabControl_Click(object sender, EventArgs e)
-	{
-		Control control = sender as Control;
-		switch (control.Name)
-		{
-		case "ExistenceSearchId":
-			ExistenceSearchId_Radio.Checked = true;
-			break;
-		case "ExistenceSearchName":
-			ExistenceSearchName_Radio.Checked = true;
-			break;
-		case "ExistenceSearchTrigger":
-			ExistenceSearchTrigger_Radio.Checked = true;
-			break;
-		case "ExistenceSearchPath":
-			ExistenceSearchPath_Radio.Checked = true;
-			break;
-		case "ResourceSearchId":
-			ResourceSearchId_Radio.Checked = true;
-			break;
-		case "ResourceSearchName":
-			ResourceSearchName_Radio.Checked = true;
-			break;
-		case "ResourceSearchTrigger":
-			ResourceSearchTrigger_Radio.Checked = true;
-			break;
-		case "DynamicSearchId":
-			DynamicSearchId_Radio.Checked = true;
-			break;
-		case "DynamicSearchName":
-			DynamicSearchName_Radio.Checked = true;
-			break;
-		case "DynamicSearchTrigger":
-			DynamicSearchTrigger_Radio.Checked = true;
-			break;
-		case "TriggerSearchID":
-			TriggerSearchId_Radio.Checked = true;
-			break;
-		case "TriggerSearchGmID":
-			TriggerSearchGmId_Radio.Checked = true;
-			break;
-		case "TriggerSearchName":
-			TriggerSearchName_Radio.Checked = true;
-			break;
-		}
-	}
-
-	private void DId_numeric_DoubleClick(object sender, EventArgs e)
-	{
-		DynamicForm.SetWindow = 1;
-		DynamicForm.ShowDialog(this);
-	}
-
-	private void SearchGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-	{
-		MoveToSelected_Click(null, null);
-	}
-
-	private void SearchErrorsButton_Click(object sender, EventArgs e)
-	{
-		if (Read == null)
-		{
-			return;
-		}
-		ErrorExistenceCollection = new List<IntDictionary>();
-		ErrorResourcesCollection = new List<IntDictionary>();
-		ErrorDynamicsCollection = new List<IntDictionary>();
-		ErrorsLanguage = Language;
-		string text = "Мобы и Нпс";
-		string text2 = "Ресурсы";
-		string text3 = "Динамические объекты";
-		string text4 = "Количество объектов в группе не может быть равно 0";
-		string text5 = "Триггер не найден";
-		string text6 = "Неизвестный ID";
-		string text7 = "Количество объекта не может быть равно 0";
-		if (Language == 2)
-		{
-			text = "Mobs And Npcs";
-			text2 = "Resources";
-			text3 = "Dynamic Objects";
-			text4 = "Objects amount in group can't be equal to 0";
-			text5 = "Trigger not found";
-			text6 = "Unknown ID";
-			text7 = "Object amount can't be equal to 0";
-		}
-		MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount;
-		ErrorsGrid.ScrollBars = ScrollBars.None;
-		ErrorsGrid.Rows.Clear();
-		int num = 1;
-		int k;
-		for (k = 0; k < Read.NpcMobsAmount; k++)
-		{
-			if (Read.NpcMobList[k].Amount_in_group == 0)
-			{
-				ErrorsGrid.Rows.Add(num, k + 1, text, text4);
-				ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
-				num++;
-			}
-			if (Read.NpcMobList[k].Trigger_id != 0 && Read.TriggersList.FindIndex((ClassTrigger f) => f.Id == Read.NpcMobList[k].Trigger_id) == -1)
-			{
-				ErrorsGrid.Rows.Add(num, k + 1, text, text5);
-				ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
-				num++;
-			}
-			int z3;
-			for (z3 = 0; z3 < Read.NpcMobList[k].Amount_in_group; z3++)
-			{
-				if (Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Read.NpcMobList[k].MobDops[z3].Id) == -1)
-				{
-					ErrorsGrid.Rows.Add(num, k + 1, text, text6);
-					ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
-					num++;
-					break;
-				}
-			}
-			for (int l = 0; l < Read.NpcMobList[k].Amount_in_group; l++)
-			{
-				if (Read.NpcMobList[k].MobDops[l].Amount == 0)
-				{
-					ErrorsGrid.Rows.Add(num, k + 1, text, text7);
-					ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
-					num++;
-					break;
-				}
-			}
-			MainProgressBar.Value++;
-		}
-		int j;
-		for (j = 0; j < Read.ResourcesAmount; j++)
-		{
-			if (Read.ResourcesList[j].Amount_in_group == 0)
-			{
-				ErrorsGrid.Rows.Add(num, j + 1, text2, text4);
-				ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
-				num++;
-			}
-			if (Read.ResourcesList[j].Trigger_id != 0 && Read.TriggersList.FindIndex((ClassTrigger f) => f.Id == Read.ResourcesList[j].Trigger_id) == -1)
-			{
-				ErrorsGrid.Rows.Add(num, j + 1, text2, text5);
-				ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
-				num++;
-			}
-			int z2;
-			for (z2 = 0; z2 < Read.ResourcesList[j].Amount_in_group; z2++)
-			{
-				if (Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Read.ResourcesList[j].ResExtra[z2].Id) == -1)
-				{
-					ErrorsGrid.Rows.Add(num, j + 1, text2, text6);
-					ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
-					num++;
-					break;
-				}
-			}
-			for (int m = 0; m < Read.ResourcesList[j].Amount_in_group; m++)
-			{
-				if (Read.ResourcesList[j].ResExtra[m].Amount == 0)
-				{
-					ErrorsGrid.Rows.Add(num, j + 1, text2, text7);
-					ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
-					num++;
-					break;
-				}
-			}
-			MainProgressBar.Value++;
-		}
-		int i;
-		for (i = 0; i < Read.DynobjectAmount; i++)
-		{
-			if (Read.DynamicsList[i].TriggerId != 0 && Read.TriggersList.FindIndex((ClassTrigger z) => z.Id == Read.DynamicsList[i].TriggerId) == -1)
-			{
-				ErrorsGrid.Rows.Add(num, i + 1, text3, text5);
-				ErrorDynamicsCollection.Add(new IntDictionary(num - 1, i));
-				num++;
-			}
-			MainProgressBar.Value++;
-		}
-		MainProgressBar.Value = 0;
-		ErrorsGrid.ScrollBars = ScrollBars.Vertical;
-	}
-
-	private void ErrorsGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-	{
-		try
-		{
-			string text = ErrorsGrid.Rows[e.RowIndex].Cells[2].Value.ToString();
-			if (text == "Мобы и Нпс" || text == "Mobs And Npcs")
-			{
-				NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[Convert.ToInt32(ErrorsGrid.Rows[e.RowIndex].Cells[1].Value) - 1].Cells[1];
-				MainTabControl.SelectedIndex = 0;
-			}
-			else if (text == "Ресурсы" || text == "Resources")
-			{
-				ResourcesGrid.CurrentCell = ResourcesGrid.Rows[Convert.ToInt32(ErrorsGrid.Rows[e.RowIndex].Cells[1].Value) - 1].Cells[1];
-				MainTabControl.SelectedIndex = 1;
-			}
-			else if (text == "Динамические объекты" || text == "Dynamic Objects")
-			{
-				DynamicGrid.CurrentCell = DynamicGrid.Rows[Convert.ToInt32(ErrorsGrid.Rows[e.RowIndex].Cells[1].Value) - 1].Cells[1];
-				MainTabControl.SelectedIndex = 2;
-			}
-		}
-		catch
-		{
-			if (Language == 1)
-			{
-				MessageBox.Show("Объект не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-			else
-			{
-				MessageBox.Show("Object doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-			}
-		}
-	}
-
-	private void RemoveAllErrors_Click(object sender, EventArgs e)
-	{
-		string text = "Вы уверены,что хотите удалить все объекты с ошибками?";
-		if (Language == 2)
-		{
-			text = "Are you sure that you want to delete all objects with errors?";
-		}
-		DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-		if (dialogResult != DialogResult.Yes)
-		{
-			return;
-		}
-		NpcMobsGrid.ScrollBars = ScrollBars.None;
-		ResourcesGrid.ScrollBars = ScrollBars.None;
-		DynamicGrid.ScrollBars = ScrollBars.None;
-		ErrorsGrid.Rows.Clear();
-		List<int> list = new List<int>();
-		List<int> list2 = new List<int>();
-		List<int> list3 = new List<int>();
-		ErrorExistenceCollection = ErrorExistenceCollection.OrderByDescending((IntDictionary r) => r.GridIndex).ToList();
-		MainProgressBar.Maximum = ErrorExistenceCollection.Count + ErrorResourcesCollection.Count + ErrorDynamicsCollection.Count;
-		foreach (IntDictionary k in ErrorExistenceCollection)
-		{
-			if (list.FindIndex((int f) => f == k.GridIndex) == -1)
-			{
-				NpcMobsGrid.Rows.RemoveAt(k.GridIndex);
-				Read.NpcMobList.RemoveAt(k.GridIndex);
-				list.Add(k.GridIndex);
-			}
-			MainProgressBar.Value++;
-		}
-		Read.NpcMobsAmount = Read.NpcMobList.Count;
-		ErrorExistenceCollection.Clear();
-		ExistenceGrid_CellChanged(null, null);
-		ErrorResourcesCollection = ErrorResourcesCollection.OrderByDescending((IntDictionary r) => r.GridIndex).ToList();
-		foreach (IntDictionary j in ErrorResourcesCollection)
-		{
-			if (list2.FindIndex((int f) => f == j.GridIndex) == -1)
-			{
-				ResourcesGrid.Rows.RemoveAt(j.GridIndex);
-				Read.ResourcesList.RemoveAt(j.GridIndex);
-				list2.Add(j.GridIndex);
-			}
-			MainProgressBar.Value++;
-		}
-		Read.ResourcesAmount = Read.ResourcesList.Count;
-		ErrorResourcesCollection.Clear();
-		ResourcesGrid_CurrentCellChanged(null, null);
-		ErrorDynamicsCollection = ErrorDynamicsCollection.OrderByDescending((IntDictionary r) => r.GridIndex).ToList();
-		foreach (IntDictionary i in ErrorDynamicsCollection)
-		{
-			if (list3.FindIndex((int f) => f == i.GridIndex) == -1)
-			{
-				DynamicGrid.Rows.RemoveAt(i.GridIndex);
-				Read.DynamicsList.RemoveAt(i.GridIndex);
-				list3.Add(i.GridIndex);
-			}
-			MainProgressBar.Value++;
-		}
-		NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
-		ResourcesGrid.ScrollBars = ScrollBars.Vertical;
-		DynamicGrid.ScrollBars = ScrollBars.Vertical;
-		if (NpcMobsGrid.CurrentCell != null)
-		{
-			NpcMobsGrid.FirstDisplayedScrollingRowIndex = NpcMobsGrid.CurrentCell.RowIndex;
-		}
-		if (ResourcesGrid.CurrentCell != null)
-		{
-			ResourcesGrid.FirstDisplayedScrollingRowIndex = ResourcesGrid.CurrentCell.RowIndex;
-		}
-		if (DynamicGrid.CurrentCell != null)
-		{
-			DynamicGrid.FirstDisplayedScrollingRowIndex = DynamicGrid.CurrentCell.RowIndex;
-		}
-		Read.DynobjectAmount = Read.DynamicsList.Count;
-		ErrorDynamicsCollection.Clear();
-		DynamicGrid_CurrentCellChanged(null, null);
-		MainProgressBar.Value = 0;
-	}
-
-	private void GetAllControls(Control container, ref List<Control> ControlList)
-	{
-		foreach (Control control in container.Controls)
-		{
-			GetAllControls(control, ref ControlList);
-			if (control is TabPage || control is GroupBox || control is RadioButton)
-			{
-				ControlList.Add(control);
-			}
-		}
-	}
-
-	private void GetAllLabels(Control container, ref List<Control> ControlList)
-	{
-		foreach (Control control in container.Controls)
-		{
-			GetAllLabels(control, ref ControlList);
-			if (control is Label || control is RadioButton || control is GroupBox)
-			{
-				ControlList.Add(control);
-			}
-		}
-	}
-
-	private void GetAllTextBoxs(Control container, ref List<Control> ControlList)
-	{
-		foreach (Control control in container.Controls)
-		{
-			GetAllTextBoxs(control, ref ControlList);
-			if (control is TextBox)
-			{
-				ControlList.Add(control);
-			}
-		}
-	}
-
-	private void InterfaceColorChanged(object sender, EventArgs e)
-	{
-		if ((sender as Control).Name == "Dark")
-		{
-			InterfaceColor = 2;
-			BackColor = Color.FromArgb(58, 58, 58);
-			List<Control> ControlList = new List<Control>();
-			GetAllControls(this, ref ControlList);
-			foreach (Control item in ControlList)
-			{
-				item.BackColor = Color.FromArgb(58, 58, 58);
-			}
-			List<Control> ControlList2 = new List<Control>();
-			GetAllLabels(this, ref ControlList2);
-			foreach (Control item2 in ControlList2)
-			{
-				item2.ForeColor = Color.FromArgb(220, 220, 220);
-			}
-			DynamicPictureBox.BackColor = Color.FromArgb(58, 58, 58);
-			List<Control> ControlList3 = new List<Control>();
-			GetAllTextBoxs(this, ref ControlList3);
-			foreach (Control item3 in ControlList3)
-			{
-				item3.BackColor = Color.FromArgb(75, 75, 75);
-				item3.ForeColor = Color.FromArgb(243, 243, 243);
-			}
-			ExistenceToolStrip.BackColor = Color.FromArgb(58, 58, 58);
-			toolStrip1.BackColor = Color.FromArgb(58, 58, 58);
-			toolStrip2.BackColor = Color.FromArgb(58, 58, 58);
-			toolStrip3.BackColor = Color.FromArgb(58, 58, 58);
-			ExportExistence.ForeColor = Color.FromArgb(240, 240, 240);
-			ImportExistence.ForeColor = Color.FromArgb(240, 240, 240);
-			ExportResources.ForeColor = Color.FromArgb(240, 240, 240);
-			ImportResources.ForeColor = Color.FromArgb(240, 240, 240);
-			LineUpResource.ForeColor = Color.FromArgb(240, 240, 240);
-			MoveResources.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripButton3.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripButton4.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripDropDownButton3.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripDropDownButton4.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripButton5.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripButton6.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripButton7.ForeColor = Color.FromArgb(240, 240, 240);
-			toolStripDropDownButton6.ForeColor = Color.FromArgb(240, 240, 240);
-			LineUpExistenceDropDown.ForeColor = Color.FromArgb(240, 240, 240);
-			MoveExistenceDropDown.ForeColor = Color.FromArgb(240, 240, 240);
-			Agression.BackColor = Color.FromArgb(90, 90, 90);
-			Path_type.BackColor = Color.FromArgb(90, 90, 90);
-			Agression.ForeColor = Color.FromArgb(245, 245, 245);
-			Path_type.ForeColor = Color.FromArgb(245, 245, 245);
-		}
-		else
-		{
-			InterfaceColor = 1;
-			BackColor = Color.FromArgb(239, 244, 250);
-			List<Control> ControlList4 = new List<Control>();
-			GetAllControls(this, ref ControlList4);
-			foreach (Control item4 in ControlList4)
-			{
-				item4.BackColor = Color.FromArgb(239, 244, 250);
-			}
-			List<Control> ControlList5 = new List<Control>();
-			GetAllLabels(this, ref ControlList5);
-			foreach (Control item5 in ControlList5)
-			{
-				item5.ForeColor = SystemColors.ControlText;
-			}
-			DynamicPictureBox.BackColor = Color.FromArgb(239, 244, 250);
-			List<Control> ControlList6 = new List<Control>();
-			GetAllTextBoxs(this, ref ControlList6);
-			foreach (Control item6 in ControlList6)
-			{
-				item6.BackColor = SystemColors.Window;
-				item6.ForeColor = SystemColors.ControlText;
-			}
-			ExistenceToolStrip.BackColor = Color.FromArgb(239, 244, 250);
-			toolStrip1.BackColor = Color.FromArgb(239, 244, 250);
-			toolStrip2.BackColor = Color.FromArgb(239, 244, 250);
-			toolStrip3.BackColor = Color.FromArgb(239, 244, 250);
-			ExportExistence.ForeColor = SystemColors.ControlText;
-			ImportExistence.ForeColor = SystemColors.ControlText;
-			ExportResources.ForeColor = SystemColors.ControlText;
-			ImportResources.ForeColor = SystemColors.ControlText;
-			LineUpResource.ForeColor = SystemColors.ControlText;
-			MoveResources.ForeColor = SystemColors.ControlText;
-			toolStripButton3.ForeColor = SystemColors.ControlText;
-			toolStripButton4.ForeColor = SystemColors.ControlText;
-			toolStripDropDownButton3.ForeColor = SystemColors.ControlText;
-			toolStripDropDownButton4.ForeColor = SystemColors.ControlText;
-			toolStripButton5.ForeColor = SystemColors.ControlText;
-			toolStripButton6.ForeColor = SystemColors.ControlText;
-			toolStripButton7.ForeColor = SystemColors.ControlText;
-			toolStripDropDownButton6.ForeColor = SystemColors.ControlText;
-			LineUpExistenceDropDown.ForeColor = SystemColors.ControlText;
-			MoveExistenceDropDown.ForeColor = SystemColors.ControlText;
-			Agression.BackColor = Color.FromArgb(255, 192, 128);
-			Path_type.BackColor = Color.FromArgb(255, 192, 128);
-			Agression.ForeColor = SystemColors.ControlText;
-			Path_type.ForeColor = SystemColors.ControlText;
-		}
-		Id_numeric.BackColor = Color.FromArgb(128, 255, 128);
-		RId_numeric.BackColor = Color.FromArgb(128, 255, 128);
-		DId_numeric.BackColor = Color.FromArgb(128, 255, 128);
-		Id_numeric.ForeColor = Color.Black;
-		RId_numeric.ForeColor = Color.Black;
-		DId_numeric.ForeColor = Color.Black;
-		groupBox23.BackColor = Color.FromArgb(128, 255, 128);
-		groupBox23.ForeColor = Color.Black;
-		Clear.ForeColor = Color.Black;
-		Dark.ForeColor = Color.Black;
-		Clear.BackColor = Color.Transparent;
-		Dark.BackColor = Color.Transparent;
-		Label_DynamicName.ForeColor = Color.Red;
-		if (DynamicForm != null)
-		{
-			DynamicForm.SetColor(InterfaceColor);
-		}
-	}
-
-	public void ShowWrongFile()
-	{
-		if (Language == 1)
-		{
-			MessageBox.Show("Неверный файл!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else
-		{
-			MessageBox.Show("Wrong file!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	private void ExportExistence_Click(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			if (MainTabControl.SelectedIndex == 0)
-			{
-				if (NpcRowCollection.Count != 0)
-				{
-					saveFileDialog.FileName = $"Npcgen Existences[{NpcRowCollection.Count}]";
-					saveFileDialog.Filter = "Npcgen Existence | *.nblee";
-					if (saveFileDialog.ShowDialog() == DialogResult.OK)
-					{
-						Read.ExportExistence(saveFileDialog.FileName, NpcRowCollection);
-					}
-				}
-			}
-			else if (MainTabControl.SelectedIndex == 1)
-			{
-				if (ResourcesRowCollection.Count != 0)
-				{
-					saveFileDialog.FileName = $"Npcgen Resources[{ResourcesRowCollection.Count}]";
-					saveFileDialog.Filter = "Npcgen Resource | *.nbler";
-					if (saveFileDialog.ShowDialog() == DialogResult.OK)
-					{
-						Read.ExportResource(saveFileDialog.FileName, ResourcesRowCollection);
-					}
-				}
-			}
-			else if (MainTabControl.SelectedIndex == 2)
-			{
-				if (DynamicsRowCollection.Count != 0)
-				{
-					saveFileDialog.FileName = $"Npcgen Dynamic Objects[{DynamicsRowCollection.Count}]";
-					saveFileDialog.Filter = "Npcgen Dynamic Objects | *.nbled";
-					if (saveFileDialog.ShowDialog() == DialogResult.OK)
-					{
-						Read.ExportDynamics(saveFileDialog.FileName, DynamicsRowCollection);
-					}
-				}
-			}
-			else if (MainTabControl.SelectedIndex == 3 && TriggersRowCollection.Count != 0)
-			{
-				saveFileDialog.FileName = $"Npcgen Triggers[{TriggersRowCollection.Count}]";
-				saveFileDialog.Filter = "Npcgen Triggers | *.nblet";
-				if (saveFileDialog.ShowDialog() == DialogResult.OK)
-				{
-					Read.ExportTriggers(saveFileDialog.FileName, TriggersRowCollection);
-				}
-			}
-		}
-		else if (Language == 1)
-		{
-			MessageBox.Show("Файл не загружен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else
-		{
-			MessageBox.Show("File isn't loaded!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	private void ImportExistence_Click(object sender, EventArgs e)
-	{
-		if (Read != null)
-		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			if (MainTabControl.SelectedIndex == 0)
-			{
-				openFileDialog.FileName = "Npcgen Exported Existence";
-				openFileDialog.Filter = "Npcgen Existence | *.nblee";
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-				BinaryReader binaryReader = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
-				if (Encoding.Default.GetString(binaryReader.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "Existence")
-				{
-					int num = binaryReader.ReadInt32();
-					for (int k = 0; k < num; k++)
-					{
-						ClassDefaultMonsters classDefaultMonsters = Read.ReadExistence(binaryReader, 15);
-						int[] Id_joined2 = new int[classDefaultMonsters.Amount_in_group];
-						string[] array = new string[classDefaultMonsters.Amount_in_group];
-						int j;
-						for (j = 0; j < classDefaultMonsters.Amount_in_group; j++)
-						{
-							Id_joined2[j] = classDefaultMonsters.MobDops[j].Id;
-							int num2 = Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Id_joined2[j]);
-							if (num2 != -1)
-							{
-								array[j] = Element.ExistenceLists[num2].Name;
-							}
-							else
-							{
-								array[j] = "?";
-							}
-						}
-						NpcMobsGrid.Rows.Add(NpcMobsGrid.Rows.Count + 1, string.Join(",", Id_joined2), string.Join(",", array));
-						Read.NpcMobList.Add(classDefaultMonsters);
-						Read.NpcMobsAmount++;
-					}
-					NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
-					for (int l = 0; l < num; l++)
-					{
-						NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1 - l].Selected = true;
-					}
-					ExistenceGrid_CellChanged(null, null);
-					binaryReader.Close();
-				}
-				else
-				{
-					ShowWrongFile();
-				}
-			}
-			else if (MainTabControl.SelectedIndex == 1)
-			{
-				openFileDialog.FileName = "Npcgen Exported Resources";
-				openFileDialog.Filter = "Npcgen Resources | *.nbler";
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-				BinaryReader binaryReader2 = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
-				if (Encoding.Default.GetString(binaryReader2.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "Resources")
-				{
-					int num3 = binaryReader2.ReadInt32();
-					for (int m = 0; m < num3; m++)
-					{
-						ClassDefaultResources classDefaultResources = Read.ReadResource(binaryReader2, 15);
-						int[] Id_joined = new int[classDefaultResources.Amount_in_group];
-						string[] array2 = new string[classDefaultResources.Amount_in_group];
-						int i;
-						for (i = 0; i < classDefaultResources.Amount_in_group; i++)
-						{
-							Id_joined[i] = classDefaultResources.ResExtra[i].Id;
-							int num4 = Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Id_joined[i]);
-							if (num4 != -1)
-							{
-								array2[i] = Element.ResourcesList[num4].Name;
-							}
-							else
-							{
-								array2[i] = "?";
-							}
-						}
-						ResourcesGrid.Rows.Add(ResourcesGrid.Rows.Count + 1, string.Join(",", Id_joined), string.Join(",", array2));
-						Read.ResourcesList.Add(classDefaultResources);
-						Read.ResourcesAmount++;
-					}
-					ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
-					for (int n = 0; n < num3; n++)
-					{
-						ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1 - n].Selected = true;
-					}
-					ResourcesGrid_CurrentCellChanged(null, null);
-				}
-				else
-				{
-					ShowWrongFile();
-				}
-			}
-			else if (MainTabControl.SelectedIndex == 2)
-			{
-				openFileDialog.FileName = "Npcgen Exported Dynamic Objects";
-				openFileDialog.Filter = "Npcgen Dynamic Objects | *.nbled";
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-				BinaryReader binaryReader3 = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
-				if (Encoding.Default.GetString(binaryReader3.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "DynObject")
-				{
-					int num5 = binaryReader3.ReadInt32();
-					for (int num6 = 0; num6 < num5; num6++)
-					{
-						ClassDynamicObject classDynamicObject = Read.ReadDynObjects(binaryReader3, 15);
-						DynamicGrid.Rows.Add(DynamicGrid.Rows.Count + 1, classDynamicObject.Id, GetDynamicName(classDynamicObject.Id), classDynamicObject.TriggerId);
-						Read.DynamicsList.Add(classDynamicObject);
-						Read.DynobjectAmount++;
-					}
-					DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
-					for (int num7 = 0; num7 < num5; num7++)
-					{
-						DynamicGrid.Rows[DynamicGrid.Rows.Count - 1 - num7].Selected = true;
-					}
-					DynamicGrid_CurrentCellChanged(null, null);
-				}
-			}
-			else
-			{
-				if (MainTabControl.SelectedIndex != 3)
-				{
-					return;
-				}
-				openFileDialog.FileName = "Npcgen Exported Triggers";
-				openFileDialog.Filter = "Npcgen Triggers | *.nblet";
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
-				{
-					return;
-				}
-				BinaryReader binaryReader4 = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
-				if (Encoding.Default.GetString(binaryReader4.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "Triggerss")
-				{
-					int num8 = binaryReader4.ReadInt32();
-					for (int num9 = 0; num9 < num8; num9++)
-					{
-						ClassTrigger classTrigger = Read.ReadTrigger(binaryReader4, 15);
-						TriggersGrid.Rows.Add(TriggersGrid.Rows.Count + 1, classTrigger.Id, classTrigger.GmID, classTrigger.TriggerName);
-						Read.TriggersList.Add(classTrigger);
-						Read.TriggersAmount++;
-					}
-					TriggersGrid.CurrentCell = TriggersGrid.Rows[TriggersGrid.Rows.Count - 1].Cells[1];
-					for (int num10 = 0; num10 < num8; num10++)
-					{
-						TriggersGrid.Rows[TriggersGrid.Rows.Count - 1 - num10].Selected = true;
-					}
-					TriggersGrid_CurrentCellChanged(null, null);
-				}
-			}
-		}
-		else if (Language == 1)
-		{
-			MessageBox.Show("Файл не загружен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-		else
-		{
-			MessageBox.Show("File isn't loaded!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-		}
-	}
-
-	private void ExistenceSearchId_DoubleClick(object sender, EventArgs e)
-	{
-		if (ChooseFromElementsForm == null)
-		{
-			return;
-		}
-		int.TryParse(ExistenceSearchId.Text, out var b);
-		int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == b);
-		ChooseFromElementsForm.SetAction = 1;
-		ChooseFromElementsForm.SetWindow = 2;
-		if (num != -1)
-		{
-			if (num >= Element.MonsterdAmount)
-			{
-				ChooseFromElementsForm.FindRow(num - Element.MonsterdAmount, "Npc");
-			}
-			else
-			{
-				ChooseFromElementsForm.FindRow(num, "Mob");
-			}
-		}
-		ChooseFromElementsForm.ShowDialog(this);
-	}
-
-	private void ResourceSearchId_DoubleClick(object sender, EventArgs e)
-	{
-		if (ChooseFromElementsForm != null)
-		{
-			ChooseFromElementsForm.SetAction = 2;
-			ChooseFromElementsForm.SetWindow = 2;
-			int.TryParse(ResourceSearchId.Text, out var b);
-			int num = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == b);
-			if (num != -1)
-			{
-				ChooseFromElementsForm.FindRow(num, "Resource");
-			}
-			ChooseFromElementsForm.ShowDialog(this);
-		}
-	}
-
-	private void DynamicSearchId_DoubleClick(object sender, EventArgs e)
-	{
-		DynamicForm.SetWindow = 2;
-		DynamicForm.ShowDialog(this);
-	}
-
-	private void ExistenceToEnd_Click(object sender, EventArgs e)
-	{
-		if (Read != null && NpcMobsGrid.CurrentRow != null && NpcMobsGrid.CurrentRow.Index != -1)
-		{
-			ClassDefaultMonsters item = Read.NpcMobList[NpcMobsGrid.CurrentRow.Index];
-			Read.NpcMobList.RemoveAt(NpcMobsGrid.CurrentRow.Index);
-			Read.NpcMobList.Insert(Read.NpcMobList.Count, item);
-			DataGridViewRow dataGridViewRow = NpcMobsGrid.Rows[NpcMobsGrid.CurrentRow.Index];
-			NpcMobsGrid.Rows.Remove(dataGridViewRow);
-			NpcMobsGrid.Rows.Insert(NpcMobsGrid.Rows.Count, dataGridViewRow);
-			NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
-		}
-	}
-
-	protected override void Dispose(bool disposing)
-	{
-		if (disposing && components != null)
-		{
-			components.Dispose();
-		}
-		base.Dispose(disposing);
-	}
-
-	private void InitializeComponent()
-	{
+                    },
+                    dirX = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
+                    dirY = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
+                    dirZ = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
+                    posX = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
+                    posY = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber),
+                    posZ = int.Parse(streamReader.ReadLine(), NumberStyles.HexNumber)
+                });
+            }
+        }
+    }
+
+    private void KBDHook_KeyDown(LLKHEventArgs e)
+    {
+        ClassPosition classPosition = null;
+        if ((e.Keys == MonstersExtraKey && Control.ModifierKeys == MonstersDefaultKey) || (e.Keys == ResourcesExtraKey && Control.ModifierKeys == ResourcesDefaultKey) || (e.Keys == DynamicsExtraKey && Control.ModifierKeys == DynamicsDefaultKey))
+        {
+            classPosition = GetCoordinates();
+        }
+        if (classPosition == null)
+        {
+            return;
+        }
+        if (e.Keys == MonstersExtraKey && Control.ModifierKeys == MonstersDefaultKey)
+        {
+            Read.NpcMobsAmount++;
+            ClassDefaultMonsters dm3 = new ClassDefaultMonsters
+            {
+                X_position = classPosition.PosX,
+                Y_position = classPosition.PosY,
+                Z_position = classPosition.PosZ,
+                X_direction = classPosition.DirX,
+                Y_direction = classPosition.DirY,
+                Z_direction = classPosition.DirZ,
+                Amount_in_group = 1,
+                Location = AddintExistenceType.SelectedIndex,
+                Type = AddMonsterType.SelectedIndex,
+                Trigger_id = Convert.ToInt32(AddMonsterTrigger.Value)
+            };
+            ClassExtraMonsters item = new ClassExtraMonsters
+            {
+                Id = Convert.ToInt32(AddMonsterId.Value),
+                Amount = Convert.ToInt32(AddMonsterAmount.Value),
+                Respawn = Convert.ToInt32(AddMonsterRespawnTime.Value)
+            };
+            dm3.MobDops = new List<ClassExtraMonsters> { item };
+            Read.NpcMobList.Add(dm3);
+            string text = "?";
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == dm3.MobDops[0].Id);
+                if (num != -1)
+                {
+                    text = Element.ExistenceLists[num].Name;
+                }
+            }
+            else
+            {
+                text = Elementsdata.GetMobName(dm3.MobDops[0].Id);
+            }
+            NpcMobsGrid.Rows.Add(Read.NpcMobsAmount, dm3.MobDops[0].Id, text);
+            NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
+        }
+        if (e.Keys == ResourcesExtraKey && Control.ModifierKeys == ResourcesDefaultKey)
+        {
+            Read.ResourcesAmount++;
+            ClassDefaultResources dm2 = new ClassDefaultResources
+            {
+                X_position = classPosition.PosX,
+                Y_position = classPosition.PosY,
+                Z_position = classPosition.PosZ,
+                Amount_in_group = 1,
+                Trigger_id = Convert.ToInt32(AddResourcesTrigger.Value)
+            };
+            ClassExtraResources item2 = new ClassExtraResources
+            {
+                Id = Convert.ToInt32(AddResourceID.Value),
+                Amount = Convert.ToInt32(AddResourceAmount.Value),
+                Respawntime = Convert.ToInt32(AddResourceRespawnTime.Value)
+            };
+            dm2.ResExtra = new List<ClassExtraResources> { item2 };
+            Read.ResourcesList.Add(dm2);
+            string text2 = "?";
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num2 = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == dm2.ResExtra[0].Id);
+                if (num2 != -1)
+                {
+                    text2 = Element.ResourcesList[num2].Name;
+                }
+            }
+            else
+            {
+                text2 = Elementsdata.GetNpcName(dm2.ResExtra[0].Id);
+            }
+            ResourcesGrid.Rows.Add(Read.NpcMobsAmount, dm2.ResExtra[0].Id, text2);
+            ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
+        }
+        if (e.Keys != DynamicsExtraKey || Control.ModifierKeys != DynamicsDefaultKey)
+        {
+            return;
+        }
+        ClassDynamicObject dm = new ClassDynamicObject
+        {
+            Id = Convert.ToInt32(AddDynamicsTrigger.Value),
+            TriggerId = Convert.ToInt32(AddDynamicsID.Value),
+            X_position = classPosition.PosX,
+            Y_position = classPosition.PosY,
+            Z_position = classPosition.PosZ
+        };
+        Read.DynobjectAmount++;
+        Read.DynamicsList.Add(dm);
+        string text3 = "?";
+        if (Language == 1)
+        {
+            int num3 = DynamicsListRu.FindIndex((DefaultInformation z) => z.Id == dm.Id);
+            if (num3 != -1)
+            {
+                text3 = DynamicsListRu[num3].Name;
+            }
+        }
+        else if (Language == 2)
+        {
+            int num4 = DynamicsListEn.FindIndex((DefaultInformation z) => z.Id == dm.Id);
+            if (num4 != -1)
+            {
+                text3 = DynamicsListEn[num4].Name;
+            }
+        }
+        DynamicGrid.Rows.Add(Read.DynobjectAmount, dm.Id, text3, dm.TriggerId);
+        DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
+    }
+
+    public ClassPosition GetCoordinates()
+    {
+        Process[] processesByName = Process.GetProcessesByName("elementclient_64");
+        if (processesByName.Length == 0)
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Клиент игры не запущен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (Language == 2)
+            {
+                MessageBox.Show("Game isn't running!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            return null;
+        }
+
+        int processId = processesByName[0].Id;
+        offsets offsets2 = Offsets[Version_combobox.SelectedIndex];
+        long baseAddress = 0;
+
+        for (int i = 0; i < 3; i++)
+        {
+            long nextAddress = ReadMemory(processId, baseAddress + offsets2.baseChain[i]);
+            if (nextAddress == 0)
+            {
+                MessageBox.Show("Failed to read memory chain.", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+            baseAddress = nextAddress;
+        }
+
+        float posX = ReadFloatMemory(processId, baseAddress + offsets2.posX);
+        float posY = ReadFloatMemory(processId, baseAddress + offsets2.posY);
+        float posZ = ReadFloatMemory(processId, baseAddress + offsets2.posZ);
+        float dirX = ReadFloatMemory(processId, baseAddress + offsets2.dirX);
+        float dirY = ReadFloatMemory(processId, baseAddress + offsets2.dirY);
+        float dirZ = ReadFloatMemory(processId, baseAddress + offsets2.dirZ);
+
+        return new ClassPosition(posX, posY, posZ, dirX, dirY, dirZ);
+    }
+
+    private long ReadMemory(int processId, long address)
+    {
+        ProcessStartInfo startInfo = new ProcessStartInfo
+        {
+            FileName = "HelperProcess.exe",
+            Arguments = $"{processId} {address:X}",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using (Process process = Process.Start(startInfo))
+        {
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            if (long.TryParse(output, out long result))
+            {
+                return result;
+            }
+        }
+
+        return 0;
+    }
+
+    private float ReadFloatMemory(int processId, long address)
+    {
+        long value = ReadMemory(processId, address);
+        return BitConverter.ToSingle(BitConverter.GetBytes(value), 0);
+    }
+
+    private List<PointF> GetPoint(int Action)
+    {
+        List<PointF> list = new List<PointF>();
+        switch (Action)
+        {
+            case 1:
+                foreach (int item in NpcRowCollection)
+                {
+                    list.Add(new PointF(Read.NpcMobList[item].X_position, Read.NpcMobList[item].Z_position));
+                }
+                break;
+            case 2:
+                foreach (int item2 in ResourcesRowCollection)
+                {
+                    list.Add(new PointF(Read.ResourcesList[item2].X_position, Read.ResourcesList[item2].Z_position));
+                }
+                break;
+            case 3:
+                foreach (int item3 in DynamicsRowCollection)
+                {
+                    list.Add(new PointF(Read.DynamicsList[item3].X_position, Read.DynamicsList[item3].Z_position));
+                }
+                break;
+        }
+        return list;
+    }
+
+    private void LinkMaps(List<PCKFileEntry> l, string MapName)
+    {
+        int num = 256;
+        Bitmap bm = null;
+        int num2 = LoadedMapConfigs.FindIndex((MapLoadedInformation z) => z.Name == MapName);
+        if (num2 != -1)
+        {
+            if (l.Count == 88)
+            {
+                num = 1024;
+            }
+            bm = new Bitmap(LoadedMapConfigs[num2].Width, LoadedMapConfigs[num2].Height);
+            int num3 = 0;
+            int num4 = 0;
+            Graphics graphics = Graphics.FromImage(bm);
+            MapProgress.BeginInvoke((MethodInvoker)delegate
+            {
+                MapProgress.Maximum = l.Count;
+                MapProgress.Value = 0;
+            });
+            l = l.OrderBy((PCKFileEntry t) => t.Path).ToList();
+            for (int i = 0; i < l.Count; i++)
+            {
+                graphics.DrawImage(PWHelper.LoadDDSImage(PckFile.ReadFile(PckFile.PckFile, l[i]).ToArray()), new Point(num3, num4));
+                num3 += num;
+                if (num3 == bm.Width)
+                {
+                    num4 += num;
+                    num3 = 0;
+                }
+                MapProgress.BeginInvoke((MethodInvoker)delegate
+                {
+                    MapProgress.Value++;
+                });
+            }
+            BeginInvoke((MethodInvoker)delegate
+            {
+                MapProgress.Value = 0;
+                if (MapForm == null)
+                {
+                    MapForm = new ShowLocationWindow(this, bm);
+                    MapForm.Show(this);
+                }
+                else if (!MapForm.Visible)
+                {
+                    MapForm = new ShowLocationWindow(this, bm);
+                    MapForm.Show(this);
+                }
+                else
+                {
+                    MapForm.SetPicture(bm);
+                }
+            });
+        }
+        else if (Language == 1)
+        {
+            MessageBox.Show("Настройки карты не найдены в Maps.conf", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else
+        {
+            MessageBox.Show("Map options haven't been found in Maps.conf", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    public void SetId(int Id, int act, int Window)
+    {
+        if (act == 1 && Window == 1)
+        {
+            Id_numeric.Value = Id;
+            UnderNpcAndMobs_Leave(Id_numeric, null);
+        }
+        else if (act == 1 && Window == 2)
+        {
+            ExistenceSearchId.Text = Id.ToString();
+            ExistenceSearchId_TextChanged(null, null);
+        }
+        else if (act == 2 && Window == 1)
+        {
+            RId_numeric.Value = Id;
+            UnderResourcesLeave(RId_numeric, null);
+        }
+        else if (act == 2 && Window == 2)
+        {
+            ResourceSearchId.Text = Id.ToString();
+            ResourceSearchId_TextChanged(null, null);
+        }
+        else if (act == 3 && Window == 1)
+        {
+            DId_numeric.Text = Id.ToString();
+            DynamicsLeave(DId_numeric, null);
+        }
+        else if (act == 3 && Window == 2)
+        {
+            DynamicSearchId.Text = Id.ToString();
+            DynamicSearchId_TextChanged(null, null);
+        }
+    }
+
+    private void DefaultMobButton_combobox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Control control = sender as Control;
+        KeysConverter keysConverter = new KeysConverter();
+        switch (control.Name)
+        {
+            case "DefaultMobButton_combobox":
+                MonstersDefaultKey = (Keys)keysConverter.ConvertFromString(DefaultMobButton_combobox.SelectedItem.ToString());
+                break;
+            case "ExtraMobButton_combobox":
+                MonstersExtraKey = (Keys)keysConverter.ConvertFromString(ExtraMobButton_combobox.SelectedItem.ToString());
+                break;
+            case "DefaultResourceButton_combobox":
+                ResourcesDefaultKey = (Keys)keysConverter.ConvertFromString(DefaultResourceButton_combobox.SelectedItem.ToString());
+                break;
+            case "ExtraResourceButton_combobox":
+                ResourcesExtraKey = (Keys)keysConverter.ConvertFromString(ExtraResourceButton_combobox.SelectedItem.ToString());
+                break;
+            case "DefaultDynamicsButton_combobox":
+                DynamicsDefaultKey = (Keys)keysConverter.ConvertFromString(DefaultDynamicsButton_combobox.SelectedItem.ToString());
+                break;
+            case "ExtraDynamicsButton_combobox":
+                DynamicsExtraKey = (Keys)keysConverter.ConvertFromString(ExtraDynamicsButton_combobox.SelectedItem.ToString());
+                break;
+        }
+    }
+
+    private void SearchElementButton(object sender, EventArgs e)
+    {
+        if (Element_dialog.ShowDialog() == DialogResult.OK)
+        {
+            Elements_textbox.Text = Element_dialog.FileName;
+        }
+    }
+
+    private void SearchNpcgenButton(object sender, EventArgs e)
+    {
+        if (Npcgen_dialog.ShowDialog() == DialogResult.OK)
+        {
+            Npcgen_textbox.Text = Npcgen_dialog.FileName;
+        }
+    }
+
+    private void SearchSurfacesButton(object sender, EventArgs e)
+    {
+        if (Surfaces_search.ShowDialog() == DialogResult.OK)
+        {
+            Surfaces_path.Text = Surfaces_search.FileName;
+        }
+    }
+
+    private void OpenElementAndNpcgen(object sender, EventArgs e)
+    {
+        if (File.Exists(Npcgen_textbox.Text) && File.Exists(Elements_textbox.Text))
+        {
+            Read = new NpcGen();
+            BinaryReader binaryReader = new BinaryReader(File.Open(Npcgen_textbox.Text, FileMode.Open));
+            Read.ReadNpcgen(binaryReader);
+            binaryReader.Close();
+            Element = new Elementsdata(Elements_textbox.Text);
+            Text = Npcgen_textbox.Text + "  -  Version " + Read.File_version + "  -  Npcgen Editor By Luka v1.7.4 and Updated by Haly";
+            NpcMobsGrid.ScrollBars = ScrollBars.None;
+            ResourcesGrid.ScrollBars = ScrollBars.None;
+            DynamicGrid.ScrollBars = ScrollBars.None;
+            TriggersGrid.ScrollBars = ScrollBars.None;
+            new Thread((ThreadStart)delegate
+            {
+                ChooseFromElementsForm = new MobsNpcsForm(this, Element.ExistenceLists, Element.ResourcesList, Element.MonsterdAmount, Element.NpcsAmount);
+                ChooseFromElementsForm.RefreshLanguage(Language);
+            }).Start();
+            NpcMobsGrid.Rows.Clear();
+            ResourcesGrid.Rows.Clear();
+            DynamicGrid.Rows.Clear();
+            TriggersGrid.Rows.Clear();
+            ErrorsGrid.Rows.Clear();
+            MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount + Read.TriggersAmount;
+            SortNpcGen();
+            SortDynamicObjects();
+            SortTriggers();
+            NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
+            ResourcesGrid.ScrollBars = ScrollBars.Vertical;
+            DynamicGrid.ScrollBars = ScrollBars.Vertical;
+            TriggersGrid.ScrollBars = ScrollBars.Vertical;
+            if (Language == 1)
+            {
+                ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
+                ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
+                DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
+                TriggersTab.Text = $"Тригеры 1/{Read.TriggersAmount}";
+            }
+            else
+            {
+                ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
+                ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
+                DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
+                TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
+            }
+            if (Read.File_version <= 6)
+            {
+                if (Language == 1)
+                {
+                    MessageBox.Show("Обратите внимание,в этой версии триггеры не были доступны,но их можно редактировать для конвертирования в другую версию!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
+                else if (Language == 2)
+                {
+                    MessageBox.Show("Make attention,triggers didn't exist in this file version,but you can edit them for converting to another version!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
+            }
+            string text = "Проверить файл на ошибки?";
+            if (Language == 2)
+            {
+                text = "Do you want to check file on errors?";
+            }
+            DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                SearchErrorsButton_Click(null, null);
+                MainTabControl.SelectedIndex = 5;
+            }
+        }
+        else if (Language == 1)
+        {
+            MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else if (Language == 2)
+        {
+            MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    public void SortTriggers()
+    {
+        for (int i = 0; i < Read.TriggersAmount; i++)
+        {
+            TriggersGrid.Rows.Add(i + 1, Read.TriggersList[i].Id, Read.TriggersList[i].GmID, Read.TriggersList[i].TriggerName);
+        }
+        if (TriggersGrid.Rows.Count != 0)
+        {
+            TriggersGrid.CurrentCell = TriggersGrid.Rows[0].Cells[1];
+        }
+        TriggersGrid_CurrentCellChanged(null, null);
+    }
+
+    public void SortNpcGen()
+    {
+        for (int k = 0; k < Read.NpcMobsAmount; k++)
+        {
+            int[] Id_joined2 = new int[Read.NpcMobList[k].Amount_in_group];
+            string[] array = new string[Read.NpcMobList[k].Amount_in_group];
+            int j;
+            for (j = 0; j < Read.NpcMobList[k].Amount_in_group; j++)
+            {
+                Id_joined2[j] = Read.NpcMobList[k].MobDops[j].Id;
+                if (!UdE.API.IsElementsEditorRunning)
+                {
+                    int num = Element.ExistenceLists.FindIndex((NpcMonster e) => e.Id == Id_joined2[j]);
+                    if (num != -1)
+                    {
+                        array[j] = Element.ExistenceLists[num].Name;
+                    }
+                    else
+                    {
+                        array[j] = "?";
+                    }
+                }
+                else
+                {
+                    array[j] = Elementsdata.GetMobName(Id_joined2[j]);
+                }
+            }
+            NpcMobsGrid.Rows.Add(k + 1, string.Join(",", Id_joined2), string.Join(",", array));
+            if (Read.NpcMobList[k].Type == 1)
+            {
+                NpcMobsGrid.Rows[k].Cells[1].Style.ForeColor = Color.FromArgb(251, 251, 107);
+                NpcMobsGrid.Rows[k].Cells[2].Style.ForeColor = Color.FromArgb(251, 251, 107);
+            }
+            MainProgressBar.Value++;
+        }
+        ExistenceGrid_CellChanged(null, null);
+        for (int l = 0; l < Read.ResourcesAmount; l++)
+        {
+            int[] Id_joined = new int[Read.ResourcesList[l].Amount_in_group];
+            string[] array2 = new string[Read.ResourcesList[l].Amount_in_group];
+            int i;
+            for (i = 0; i < Read.ResourcesList[l].Amount_in_group; i++)
+            {
+                Id_joined[i] = Read.ResourcesList[l].ResExtra[i].Id;
+                if (!UdE.API.IsElementsEditorRunning)
+                {
+                    int num = Element.ResourcesList.FindIndex((NpcMonster e) => e.Id == Id_joined[i]);
+                    if (num != -1)
+                    {
+                        array2[i] = Element.ResourcesList[num].Name;
+                    }
+                    else
+                    {
+                        array2[i] = "?";
+                    }
+                }
+                else
+                {
+                    array2[i] = Elementsdata.GetNpcName(Id_joined[i]);
+                }
+            }
+            ResourcesGrid.Rows.Add(l + 1, string.Join(",", Id_joined), string.Join(",", array2));
+            MainProgressBar.Value++;
+        }
+        MainProgressBar.Value = 0;
+        if (ResourcesGrid.Rows.Count != 0)
+        {
+            ResourcesGrid.CurrentCell = ResourcesGrid.Rows[0].Cells[1];
+        }
+        if (ResourcesGroupGrid.Rows.Count != 0)
+        {
+            ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[0].Cells[1];
+        }
+    }
+
+    public void SortDynamicObjects()
+    {
+        for (int i = 0; i < Read.DynobjectAmount; i++)
+        {
+            DynamicGrid.Rows.Add(i + 1, Read.DynamicsList[i].Id, GetDynamicName(Read.DynamicsList[i].Id), Read.DynamicsList[i].TriggerId);
+        }
+        if (DynamicGrid.Rows.Count != 0)
+        {
+            DynamicGrid.CurrentCell = DynamicGrid.Rows[0].Cells[1];
+            DynamicGrid_CurrentCellChanged(null, null);
+        }
+    }
+
+    public string GetDynamicName(int Id)
+    {
+        string result = "?";
+        if (Language == 1)
+        {
+            int num = DynamicsListRu.FindIndex((DefaultInformation z) => z.Id == Id);
+            if (num != -1)
+            {
+                result = DynamicsListRu[num].Name;
+            }
+        }
+        else if (Language == 2)
+        {
+            int num2 = DynamicsListEn.FindIndex((DefaultInformation z) => z.Id == Id);
+            if (num2 != -1)
+            {
+                result = DynamicsListEn[num2].Name;
+            }
+        }
+        return result;
+    }
+
+    private void Open_surfaces_Click(object sender, EventArgs e)
+    {
+        if (File.Exists(Surfaces_path.Text))
+        {
+            try
+            {
+                PckFile = new ArchiveEngine(Surfaces_path.Text);
+                PckFile.ReadFileTable(PckFile.PckFile);
+                Maps = new List<GameMapInfo>();
+                List<PCKFileEntry> list = PckFile.Files.Where((PCKFileEntry z) => z.Path.Contains("minimaps") && !z.Path.Contains("surfaces\\minimaps\\world")).ToList();
+                List<string> list2 = new List<string>();
+                foreach (PCKFileEntry item in list)
+                {
+                    GameMapInfo map = new GameMapInfo();
+                    List<string> st = item.Path.Split('\\').ToList();
+                    map.MapName = st.ElementAt(st.Count - 2);
+                    st.RemoveAt(st.Count - 1);
+                    map.MapPath = string.Join("\\", st);
+                    if (list2.FindIndex((string v) => v == string.Join("\\", st)) == -1)
+                    {
+                        map.MapFragments = (from z in list.Where((PCKFileEntry z) => z.Path.Contains(map.MapPath)).ToList()
+                                            orderby z.Path
+                                            select z).ToList();
+                        Maps.Add(map);
+                        list2.Add(map.MapPath);
+                    }
+                }
+                if (Maps.Count != 0)
+                {
+                    GameMapInfo map2 = new GameMapInfo
+                    {
+                        MapName = "World",
+                        MapPath = "surfaces\\maps\\"
+                    };
+                    map2.MapFragments = PckFile.Files.Where((PCKFileEntry z) => z.Path.Contains(map2.MapPath)).ToList();
+                    Maps.Add(map2);
+                    Maps_combobox.Items.Clear();
+                    for (int i = 0; i < Maps.Count; i++)
+                    {
+                        Maps_combobox.Items.Add(Maps[i].MapName);
+                    }
+                    Maps_combobox.SelectedIndex = Maps_combobox.Items.Count - 1;
+                }
+                return;
+            }
+            catch
+            {
+                if (Language == 1)
+                {
+                    MessageBox.Show("Загружен неверный файл!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
+                else if (Language == 2)
+                {
+                    MessageBox.Show("Loaded wrong file!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
+                PckFile = null;
+                Maps_combobox.Items.Clear();
+                Maps = null;
+                MapForm = null;
+                return;
+            }
+        }
+        if (Language == 1)
+        {
+            MessageBox.Show("Указанный surfaces.pck не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else if (Language == 2)
+        {
+            MessageBox.Show("Selected surfaces.pck doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    private void SaveFile_Click(object sender, EventArgs e)
+    {
+        if (File.Exists(Npcgen_textbox.Text))
+        {
+            BinaryWriter binaryWriter = new BinaryWriter(File.Create(Npcgen_textbox.Text));
+            Read.WriteNpcgen(binaryWriter, Read.File_version);
+            binaryWriter.Close();
+            if (Language == 1)
+            {
+                MessageBox.Show("Файл успешно сохранен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (Language == 2)
+            {
+                MessageBox.Show("File has been successfully saved!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+        else if (Language == 1)
+        {
+            MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else if (Language == 2)
+        {
+            MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    private void ConvertAndSaveButton_Click(object sender, EventArgs e)
+    {
+        if (Read != null && Npcgen_save_dialog.ShowDialog() == DialogResult.OK)
+        {
+            BinaryWriter binaryWriter = new BinaryWriter(File.Create(Npcgen_save_dialog.FileName));
+            Read.WriteNpcgen(binaryWriter, Convert.ToInt32(ConvertComboboxVersion.SelectedItem));
+            binaryWriter.Close();
+            if (Language == 1)
+            {
+                MessageBox.Show("Файл успешно сохранен!!", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (Language == 2)
+            {
+                MessageBox.Show("File has been successfully saved!!", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void ShowOnMapsButton_Click(object sender, EventArgs e)
+    {
+        if (Maps != null)
+        {
+            int SelectedIndex = Maps_combobox.SelectedIndex;
+            Thread thread = new Thread((ThreadStart)delegate
+            {
+                LinkMaps(Maps[SelectedIndex].MapFragments, Maps[SelectedIndex].MapName);
+            });
+            thread.Start();
+        }
+    }
+
+    private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+    {
+        XmlTextWriter xmlTextWriter = new XmlTextWriter(string.Format(Application.StartupPath + "\\Npcgen Editor Settings.xml"), Encoding.UTF8)
+        {
+            Formatting = Formatting.Indented,
+            IndentChar = '\t',
+            Indentation = 1,
+            QuoteChar = '\''
+        };
+        xmlTextWriter.WriteStartDocument();
+        xmlTextWriter.WriteStartElement("root");
+        xmlTextWriter.WriteStartAttribute("ProductName");
+        xmlTextWriter.WriteString("NpcGen Editor By Luka and Updated by Haly");
+        xmlTextWriter.WriteEndAttribute();
+        xmlTextWriter.WriteStartElement("Settings");
+        xmlTextWriter.WriteElementString("Version", "1.5");
+        xmlTextWriter.WriteElementString("Language", Language.ToString());
+        xmlTextWriter.WriteElementString("Interface_Color", InterfaceColor.ToString());
+        if (!string.IsNullOrWhiteSpace(Elements_textbox.Text))
+        {
+            xmlTextWriter.WriteElementString("ElementPath", Elements_textbox.Text);
+        }
+        else
+        {
+            xmlTextWriter.WriteElementString("ElementPath", "Not Loaded");
+        }
+        if (!string.IsNullOrWhiteSpace(Npcgen_textbox.Text))
+        {
+            xmlTextWriter.WriteElementString("NpcgenPath", Npcgen_textbox.Text);
+        }
+        else
+        {
+            xmlTextWriter.WriteElementString("NpcgenPath", "Not Loaded");
+        }
+        if (!string.IsNullOrWhiteSpace(Surfaces_path.Text))
+        {
+            xmlTextWriter.WriteElementString("SurfacesPath", Surfaces_path.Text);
+        }
+        else
+        {
+            xmlTextWriter.WriteElementString("SurfacesPath", "Not Loaded");
+        }
+        if (DefaultMobButton_combobox.SelectedIndex == -1)
+        {
+            DefaultMobButton_combobox.SelectedIndex = 0;
+        }
+        if (ExtraMobButton_combobox.SelectedIndex == -1)
+        {
+            ExtraMobButton_combobox.SelectedIndex = 0;
+        }
+        if (DefaultResourceButton_combobox.SelectedIndex == -1)
+        {
+            DefaultResourceButton_combobox.SelectedIndex = 0;
+        }
+        if (ExtraResourceButton_combobox.SelectedIndex == -1)
+        {
+            ExtraResourceButton_combobox.SelectedIndex = 0;
+        }
+        if (DefaultDynamicsButton_combobox.SelectedIndex == -1)
+        {
+            DefaultDynamicsButton_combobox.SelectedIndex = 0;
+        }
+        if (ExtraDynamicsButton_combobox.SelectedIndex == -1)
+        {
+            ExtraDynamicsButton_combobox.SelectedIndex = 0;
+        }
+        xmlTextWriter.WriteElementString("ClientVersion", Version_combobox.SelectedIndex.ToString());
+        xmlTextWriter.WriteElementString("MobsOrNpcsHotKey", $"{DefaultMobButton_combobox.SelectedIndex}+{ExtraMobButton_combobox.SelectedIndex}");
+        xmlTextWriter.WriteElementString("ResourcesHotKey", $"{DefaultResourceButton_combobox.SelectedIndex}+{ExtraResourceButton_combobox.SelectedIndex}");
+        xmlTextWriter.WriteElementString("DynamicsHotKey", $"{DefaultDynamicsButton_combobox.SelectedIndex}+{ExtraDynamicsButton_combobox.SelectedIndex}");
+        xmlTextWriter.WriteEndElement();
+        xmlTextWriter.WriteStartElement("Existence_properties");
+        xmlTextWriter.WriteElementString("Existence_ID", AddMonsterId.Value.ToString());
+        xmlTextWriter.WriteElementString("Existence_Amount", AddMonsterAmount.Value.ToString());
+        xmlTextWriter.WriteElementString("Existence_RespawnTime", AddMonsterRespawnTime.Value.ToString());
+        xmlTextWriter.WriteElementString("Existence_Trigger", AddMonsterTrigger.Value.ToString());
+        xmlTextWriter.WriteElementString("Existence_Location", AddintExistenceType.SelectedIndex.ToString());
+        xmlTextWriter.WriteElementString("Existence_Type", AddMonsterType.SelectedIndex.ToString());
+        xmlTextWriter.WriteEndElement();
+        xmlTextWriter.WriteStartElement("Resources_properties");
+        xmlTextWriter.WriteElementString("Resources_ID", AddResourceID.Value.ToString());
+        xmlTextWriter.WriteElementString("Resources_Amount", AddResourceAmount.Value.ToString());
+        xmlTextWriter.WriteElementString("Resources_RespawnTime", AddResourceRespawnTime.Value.ToString());
+        xmlTextWriter.WriteElementString("Resources_Trigger", AddResourcesTrigger.Value.ToString());
+        xmlTextWriter.WriteEndElement();
+        xmlTextWriter.WriteStartElement("Dynamics_properties");
+        xmlTextWriter.WriteElementString("Dynamics_Trigger", AddDynamicsID.Value.ToString());
+        xmlTextWriter.WriteElementString("Dynamics_ID", AddDynamicsTrigger.Value.ToString());
+        xmlTextWriter.WriteEndElement();
+        xmlTextWriter.WriteEndDocument();
+        xmlTextWriter.Close();
+    }
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+        DynamicsListRu = new List<DefaultInformation>();
+        DynamicsListEn = new List<DefaultInformation>();
+        try
+        {
+            if (File.Exists(Application.StartupPath + "\\DynObjectInfo.RU"))
+            {
+                StreamReader streamReader = new StreamReader(Application.StartupPath + "\\DynObjectInfo.RU");
+                do
+                {
+                    string[] array = streamReader.ReadLine().Split(new string[1] { "->" }, StringSplitOptions.None);
+                    DefaultInformation item = new DefaultInformation
+                    {
+                        Id = Convert.ToInt32(array[0]),
+                        Name = array[1]
+                    };
+                    DynamicsListRu.Add(item);
+                }
+                while (!streamReader.EndOfStream);
+            }
+            if (File.Exists(Application.StartupPath + "\\DynObjectInfo.EN"))
+            {
+                StreamReader streamReader2 = new StreamReader(Application.StartupPath + "\\DynObjectInfo.EN");
+                do
+                {
+                    string[] array2 = streamReader2.ReadLine().Split(new string[1] { "->" }, StringSplitOptions.None);
+                    DefaultInformation item2 = new DefaultInformation
+                    {
+                        Id = Convert.ToInt32(array2[0]),
+                        Name = array2[1]
+                    };
+                    DynamicsListEn.Add(item2);
+                }
+                while (!streamReader2.EndOfStream);
+            }
+        }
+        catch
+        {
+        }
+        ConvertComboboxVersion.SelectedIndex = 0;
+        try
+        {
+            if (File.Exists(Application.StartupPath + "\\Npcgen Editor Settings.xml"))
+            {
+                using XmlTextReader xmlTextReader = new XmlTextReader(string.Format(Application.StartupPath + "\\Npcgen Editor Settings.xml"));
+                xmlTextReader.ReadToFollowing("Language");
+                int num = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
+                if (num == 2)
+                {
+                    English.Checked = true;
+                    ChangeLanguage(English, null);
+                }
+                xmlTextReader.ReadToFollowing("Interface_Color");
+                int num2 = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
+                if (num2 == 2)
+                {
+                    Dark.Checked = true;
+                    InterfaceColorChanged(Dark, null);
+                }
+                xmlTextReader.ReadToFollowing("ElementPath");
+                Elements_textbox.Text = xmlTextReader.ReadElementContentAsString();
+                xmlTextReader.ReadToFollowing("NpcgenPath");
+                Npcgen_textbox.Text = xmlTextReader.ReadElementContentAsString();
+                xmlTextReader.ReadToFollowing("SurfacesPath");
+                Surfaces_path.Text = xmlTextReader.ReadElementContentAsString();
+                xmlTextReader.ReadToFollowing("ClientVersion");
+                Version_combobox.SelectedIndex = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("MobsOrNpcsHotKey");
+                string[] array3 = xmlTextReader.ReadElementContentAsString().Split('+');
+                DefaultMobButton_combobox.SelectedIndex = Convert.ToInt32(array3[0]);
+                ExtraMobButton_combobox.SelectedIndex = Convert.ToInt32(array3[1]);
+                xmlTextReader.ReadToFollowing("ResourcesHotKey");
+                string[] array4 = xmlTextReader.ReadElementContentAsString().Split('+');
+                DefaultResourceButton_combobox.SelectedIndex = Convert.ToInt32(array4[0]);
+                ExtraResourceButton_combobox.SelectedIndex = Convert.ToInt32(array4[1]);
+                xmlTextReader.ReadToFollowing("DynamicsHotKey");
+                string[] array5 = xmlTextReader.ReadElementContentAsString().Split('+');
+                DefaultDynamicsButton_combobox.SelectedIndex = Convert.ToInt32(array5[0]);
+                ExtraDynamicsButton_combobox.SelectedIndex = Convert.ToInt32(array5[1]);
+                DefaultMobButton_combobox_SelectedIndexChanged(DefaultMobButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(ExtraMobButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(DefaultResourceButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(ExtraResourceButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(DefaultDynamicsButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(ExtraDynamicsButton_combobox, null);
+                xmlTextReader.ReadToFollowing("Existence_ID");
+                AddMonsterId.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Existence_Amount");
+                AddMonsterAmount.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Existence_RespawnTime");
+                AddMonsterRespawnTime.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Existence_Trigger");
+                AddMonsterTrigger.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Existence_Location");
+                int num3 = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
+                if (num3 < 0)
+                {
+                    num3 = 0;
+                }
+                AddintExistenceType.SelectedIndex = num3;
+                xmlTextReader.ReadToFollowing("Existence_Type");
+                int num4 = Convert.ToInt32(xmlTextReader.ReadElementContentAsString());
+                if (num4 < 0)
+                {
+                    num4 = 0;
+                }
+                AddMonsterType.SelectedIndex = num4;
+                xmlTextReader.ReadToFollowing("Resources_ID");
+                AddResourceID.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Resources_Amount");
+                AddResourceAmount.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Resources_RespawnTime");
+                AddResourceRespawnTime.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Resources_Trigger");
+                AddResourcesTrigger.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Dynamics_Trigger");
+                AddDynamicsID.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+                xmlTextReader.ReadToFollowing("Dynamics_ID");
+                AddDynamicsTrigger.Value = Convert.ToDecimal(xmlTextReader.ReadElementContentAsString());
+            }
+            else
+            {
+                AddintExistenceType.SelectedIndex = 0;
+                AddMonsterType.SelectedIndex = 0;
+                Version_combobox.SelectedIndex = 0;
+                DefaultMobButton_combobox.SelectedIndex = 0;
+                ExtraMobButton_combobox.SelectedIndex = 1;
+                DefaultResourceButton_combobox.SelectedIndex = 0;
+                ExtraResourceButton_combobox.SelectedIndex = 2;
+                DefaultDynamicsButton_combobox.SelectedIndex = 0;
+                ExtraDynamicsButton_combobox.SelectedIndex = 3;
+                DefaultMobButton_combobox_SelectedIndexChanged(DefaultMobButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(ExtraMobButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(DefaultResourceButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(ExtraResourceButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(DefaultDynamicsButton_combobox, null);
+                DefaultMobButton_combobox_SelectedIndexChanged(ExtraDynamicsButton_combobox, null);
+            }
+        }
+        catch
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Ошибка при загрузке настроек", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("Error when reading options", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+        LoadedMapConfigs = new List<MapLoadedInformation>();
+        if (File.Exists(Application.StartupPath + "\\Maps.conf"))
+        {
+            StreamReader streamReader3 = new StreamReader(Application.StartupPath + "\\Maps.conf");
+            do
+            {
+                string[] array6 = streamReader3.ReadLine().Split(new string[1] { "->" }, StringSplitOptions.None);
+                MapLoadedInformation mapLoadedInformation = new MapLoadedInformation
+                {
+                    Name = array6[0]
+                };
+                string[] array7 = array6[1].Split(new string[1] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                int.TryParse(array7[0], out mapLoadedInformation.Width);
+                int.TryParse(array7[1], out mapLoadedInformation.Height);
+                LoadedMapConfigs.Add(mapLoadedInformation);
+            }
+            while (!streamReader3.EndOfStream);
+        }
+    }
+
+    private void InformationButton_Click(object sender, EventArgs e)
+    {
+        MessageBox.Show("Perfect world: Npcgen.data Editor \rVersion: v1.7.4\rSkype:Luka007789\r                                         27.10.2023\r                                              © Luka and Updated by Haly", "Npcgen Editor By Luka and Updated by Haly", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+    }
+
+    private void UpObjects(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        DataGridView dataGridView = null;
+        int selectedIndex = MainTabControl.SelectedIndex;
+        if (MainTabControl.SelectedIndex == 0)
+        {
+            dataGridView = NpcMobsGrid;
+        }
+        else if (MainTabControl.SelectedIndex == 1)
+        {
+            dataGridView = ResourcesGrid;
+        }
+        else if (MainTabControl.SelectedIndex == 2)
+        {
+            dataGridView = DynamicGrid;
+        }
+        else if (MainTabControl.SelectedIndex == 3)
+        {
+            dataGridView = TriggersGrid;
+        }
+        List<DataGridViewRow> list = (from DataGridViewRow i in dataGridView.SelectedRows
+                                      orderby i.Index
+                                      select i).ToList();
+        List<DataGridViewRow> list2 = (from DataGridViewRow i in dataGridView.SelectedRows
+                                       orderby i.Index
+                                       select i).ToList();
+        if (list.Count == 0 || list[0].Index == 0)
+        {
+            return;
+        }
+        AllowCellChanging = false;
+        foreach (DataGridViewRow item5 in list)
+        {
+            int index = item5.Index;
+            int num = item5.Index - 1;
+            dataGridView.Rows.Remove(item5);
+            dataGridView.Rows.Insert(num, item5);
+            switch (selectedIndex)
+            {
+                case 0:
+                    {
+                        ClassDefaultMonsters item4 = Read.NpcMobList[index];
+                        Read.NpcMobList.RemoveAt(index);
+                        Read.NpcMobList.Insert(num, item4);
+                        break;
+                    }
+                case 1:
+                    {
+                        ClassDefaultResources item3 = Read.ResourcesList[index];
+                        Read.ResourcesList.RemoveAt(index);
+                        Read.ResourcesList.Insert(num, item3);
+                        break;
+                    }
+                case 2:
+                    {
+                        ClassDynamicObject item2 = Read.DynamicsList[index];
+                        Read.DynamicsList.RemoveAt(index);
+                        Read.DynamicsList.Insert(num, item2);
+                        break;
+                    }
+                case 3:
+                    {
+                        ClassTrigger item = Read.TriggersList[index];
+                        Read.TriggersList.RemoveAt(index);
+                        Read.TriggersList.Insert(num, item);
+                        break;
+                    }
+            }
+        }
+        AllowCellChanging = true;
+        dataGridView.CurrentCell = dataGridView.Rows[list[list.Count() - 1].Index].Cells[1];
+        foreach (DataGridViewRow item6 in list2)
+        {
+            dataGridView.Rows[item6.Index].Selected = true;
+        }
+    }
+
+    private void DownObjects(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        DataGridView dataGridView = null;
+        int selectedIndex = MainTabControl.SelectedIndex;
+        if (MainTabControl.SelectedIndex == 0)
+        {
+            dataGridView = NpcMobsGrid;
+        }
+        else if (MainTabControl.SelectedIndex == 1)
+        {
+            dataGridView = ResourcesGrid;
+        }
+        else if (MainTabControl.SelectedIndex == 2)
+        {
+            dataGridView = DynamicGrid;
+        }
+        else if (MainTabControl.SelectedIndex == 3)
+        {
+            dataGridView = TriggersGrid;
+        }
+        List<DataGridViewRow> list = (from DataGridViewRow i in dataGridView.SelectedRows
+                                      orderby i.Index descending
+                                      select i).ToList();
+        List<DataGridViewRow> list2 = (from DataGridViewRow i in dataGridView.SelectedRows
+                                       orderby i.Index descending
+                                       select i).ToList();
+        if (list.Count == 0 || list[0].Index == dataGridView.Rows.Count - 1)
+        {
+            return;
+        }
+        AllowCellChanging = false;
+        foreach (DataGridViewRow item5 in list)
+        {
+            int index = item5.Index;
+            int num = item5.Index + 1;
+            dataGridView.Rows.Remove(item5);
+            dataGridView.Rows.Insert(num, item5);
+            switch (selectedIndex)
+            {
+                case 0:
+                    {
+                        ClassDefaultMonsters item4 = Read.NpcMobList[index];
+                        Read.NpcMobList.RemoveAt(index);
+                        Read.NpcMobList.Insert(num, item4);
+                        break;
+                    }
+                case 1:
+                    {
+                        ClassDefaultResources item3 = Read.ResourcesList[index];
+                        Read.ResourcesList.RemoveAt(index);
+                        Read.ResourcesList.Insert(num, item3);
+                        break;
+                    }
+                case 2:
+                    {
+                        ClassDynamicObject item2 = Read.DynamicsList[index];
+                        Read.DynamicsList.RemoveAt(index);
+                        Read.DynamicsList.Insert(num, item2);
+                        break;
+                    }
+                case 3:
+                    {
+                        ClassTrigger item = Read.TriggersList[index];
+                        Read.TriggersList.RemoveAt(index);
+                        Read.TriggersList.Insert(num, item);
+                        break;
+                    }
+            }
+        }
+        AllowCellChanging = true;
+        dataGridView.CurrentCell = dataGridView.Rows[list[list.Count() - 1].Index].Cells[1];
+        foreach (DataGridViewRow item6 in list2)
+        {
+            dataGridView.Rows[item6.Index].Selected = true;
+        }
+    }
+
+    private void GridsKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.W && Control.ModifierKeys == Keys.Shift)
+        {
+            UpObjects(null, null);
+        }
+        if (e.KeyCode == Keys.S && Control.ModifierKeys == Keys.Shift)
+        {
+            DownObjects(null, null);
+        }
+    }
+
+    private void MoveToTrigger_Click(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            int TriggerId = 0;
+            if (MainTabControl.SelectedIndex == 0)
+            {
+                int.TryParse(Trigger.Text, out TriggerId);
+            }
+            else if (MainTabControl.SelectedIndex == 1)
+            {
+                int.TryParse(RTriggerID.Text, out TriggerId);
+            }
+            else if (MainTabControl.SelectedIndex == 2)
+            {
+                int.TryParse(DTrigger_id.Text, out TriggerId);
+            }
+            int num = Read.TriggersList.FindIndex((ClassTrigger z) => z.Id == TriggerId);
+            if (num != -1)
+            {
+                TriggersGrid.CurrentCell = TriggersGrid.Rows[num].Cells[1];
+                MainTabControl.SelectedIndex = 3;
+            }
+            else if (Language == 1)
+            {
+                MessageBox.Show("Операция не удалась!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (Language == 2)
+            {
+                MessageBox.Show("Invalid action!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void LineUpX_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        if (MainTabControl.SelectedIndex == 0)
+        {
+            foreach (int item in NpcRowCollection)
+            {
+                Read.NpcMobList[item].X_position = Read.NpcMobList[NpcRowIndex].X_position;
+            }
+            return;
+        }
+        if (MainTabControl.SelectedIndex == 1)
+        {
+            foreach (int item2 in ResourcesRowCollection)
+            {
+                Read.ResourcesList[item2].X_position = Read.ResourcesList[NpcRowIndex].X_position;
+            }
+            return;
+        }
+        if (MainTabControl.SelectedIndex != 2)
+        {
+            return;
+        }
+        foreach (int item3 in DynamicsRowCollection)
+        {
+            Read.DynamicsList[item3].X_position = Read.DynamicsList[NpcRowIndex].X_position;
+        }
+    }
+
+    private void LineUpZ_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        if (MainTabControl.SelectedIndex == 0)
+        {
+            foreach (int item in NpcRowCollection)
+            {
+                Read.NpcMobList[item].Z_position = Read.NpcMobList[NpcRowIndex].Z_position;
+            }
+            return;
+        }
+        if (MainTabControl.SelectedIndex == 1)
+        {
+            foreach (int item2 in ResourcesRowCollection)
+            {
+                Read.ResourcesList[item2].Z_position = Read.ResourcesList[NpcRowIndex].Z_position;
+            }
+            return;
+        }
+        if (MainTabControl.SelectedIndex != 2)
+        {
+            return;
+        }
+        foreach (int item3 in DynamicsRowCollection)
+        {
+            Read.DynamicsList[item3].Z_position = Read.DynamicsList[NpcRowIndex].Z_position;
+        }
+    }
+
+    private void ChangeLanguage(object sender, EventArgs e)
+    {
+        int selectedIndex = ExistenceLocating.SelectedIndex;
+        int selectedIndex2 = ExistenceType.SelectedIndex;
+        int selectedIndex3 = AddintExistenceType.SelectedIndex;
+        int selectedIndex4 = AddMonsterType.SelectedIndex;
+        int selectedIndex5 = TStartWeekDay.SelectedIndex;
+        int selectedIndex6 = TStopWeekDay.SelectedIndex;
+        int selectedIndex7 = Agression.SelectedIndex;
+        int selectedIndex8 = Path_type.SelectedIndex;
+        Control control = sender as Control;
+        if (control.Name == "Russian")
+        {
+            Language = 1;
+            OpenFiles.Text = "Открыть";
+            Open_surfaces.Text = "Открыть";
+            ButtonShowMap.Text = "Показать карту";
+            if (Read == null)
+            {
+                ExistenceTab.Text = "Мобы и Нипы";
+                ResourcesTab.Text = "Ресурсы";
+                DynObjectsTab.Text = "Динамические Объекты";
+                TriggersTab.Text = "Тригеры";
+            }
+            else
+            {
+                ExistenceTab.Text = $"Мобы и Нипы {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
+                ResourcesTab.Text = $"Ресурсы {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
+                DynObjectsTab.Text = $"Динамические Объекты {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
+                TriggersTab.Text = $"Тригеры {TriggersRowCollection.Count}/{Read.TriggersAmount}";
+            }
+            OptionsTab.Text = "Настройки и сохранение";
+            SearchTab.Text = "Поиск";
+            ErrorsTab.Text = "Ошибки";
+            ExistenceLocating.Items.Clear();
+            ComboBox.ObjectCollection items = ExistenceLocating.Items;
+            object[] items2 = new string[2] { "Наземный", "Свободный" };
+            items.AddRange(items2);
+            ExistenceLocating.SelectedIndex = selectedIndex;
+            AddintExistenceType.Items.Clear();
+            ComboBox.ObjectCollection items3 = AddintExistenceType.Items;
+            items2 = new string[2] { "Наземный", "Свободный" };
+            items3.AddRange(items2);
+            AddintExistenceType.SelectedIndex = selectedIndex3;
+            ExistenceType.Items.Clear();
+            ComboBox.ObjectCollection items4 = ExistenceType.Items;
+            items2 = new string[2] { "Моб", "Нпс" };
+            items4.AddRange(items2);
+            ExistenceType.SelectedIndex = selectedIndex2;
+            AddMonsterType.Items.Clear();
+            ComboBox.ObjectCollection items5 = AddMonsterType.Items;
+            items2 = new string[2] { "Моб", "Нпс" };
+            items5.AddRange(items2);
+            AddMonsterType.SelectedIndex = selectedIndex4;
+            MainGroupBox.Text = "Основное";
+            groupBox1.Text = "Мобы|Нипы";
+            groupBox3.Text = "Основное";
+            groupBox7.Text = "Основное";
+            groupBox9.Text = "Изображение";
+            groupBox8.Text = "Настройки для добавления новых существ";
+            label3.Text = "Расположе:";
+            label3.Location = new Point(2, 14);
+            label9.Text = "Поворот X:";
+            label9.Location = new Point(5, 106);
+            label10.Text = "Поворот Y:";
+            label10.Location = new Point(5, 131);
+            label11.Text = "Поворот Z:";
+            label11.Location = new Point(5, 154);
+            label14.Text = "Разброс X:";
+            label14.Location = new Point(6, 178);
+            label13.Text = "Разброс Y:";
+            label13.Location = new Point(6, 201);
+            label12.Text = "Разброс Z:";
+            label12.Location = new Point(6, 224);
+            label15.Text = "Тип:";
+            label15.Location = new Point(215, 12);
+            label5.Text = "В группе:";
+            label5.Location = new Point(186, 39);
+            label16.Text = "Тип группы:";
+            label16.Location = new Point(172, 62);
+            label18.Text = "Триггер:";
+            label18.Location = new Point(191, 109);
+            label19.Text = "Врем.Жизни:";
+            label19.Location = new Point(165, 132);
+            label20.Text = "Макс.колво:";
+            label20.Location = new Point(169, 155);
+            ExistenceAutoRevive.Text = "Мгновенный респавн";
+            ExistenceAutoRevive.Location = new Point(201, 200);
+            ExistenceInitGen.Text = "Активировать генератор";
+            ExistenceInitGen.Location = new Point(184, 178);
+            ExistenceCloneButton.Text = "Клонировать";
+            ExistenceRemoveButton.Text = "Удалить";
+            ExistenceGroupCloneButton.Text = "Клонировать";
+            ExistenceGroupRemoveButton.Text = "Удалить";
+            label22.Text = "Количество:";
+            label22.Location = new Point(32, 37);
+            label23.Text = "Время респавна:";
+            label23.Location = new Point(5, 60);
+            label24.Text = "Кол-во смертей:";
+            label24.Location = new Point(8, 83);
+            label25.Text = "Агрессия:";
+            label25.Location = new Point(49, 106);
+            label26.Text = "Тип пути:";
+            label26.Location = new Point(51, 130);
+            label27.Text = "Скорость:";
+            label27.Location = new Point(45, 154);
+            label28.Text = "Путь:";
+            label28.Location = new Point(72, 177);
+            label29.Text = "Оффсет воды:";
+            label29.Location = new Point(16, 201);
+            label30.Text = "Оффсет повор:";
+            label30.Location = new Point(196, 14);
+            label31.Text = "Просит помощь:";
+            label31.Location = new Point(193, 60);
+            label32.Text = "Нужна помощь:";
+            label32.Location = new Point(199, 83);
+            label33.Text = "Показ трупа(Сек):";
+            label33.Location = new Point(184, 107);
+            label35.Text = "Группа:";
+            label35.Location = new Point(245, 37);
+            ExistenceInsertCordsFromGame.Text = "Вставить координаты с игры";
+            label67.Text = "ID триггера:";
+            label67.Location = new Point(89, 18);
+            label68.Text = "Расположение:";
+            label68.Location = new Point(62, 39);
+            label66.Text = "Тип существа:";
+            label66.Location = new Point(70, 62);
+            label65.Text = "ID создаваемого существа:";
+            label65.Location = new Point(8, 89);
+            label64.Text = "Количество существ:";
+            label64.Location = new Point(42, 112);
+            label63.Text = "Время респавна:";
+            label63.Location = new Point(62, 135);
+            ResourcesCloneButton.Text = "Клонировать";
+            ResourcesRemoveButton.Text = "Удалить";
+            label43.Text = "Разброс X:";
+            label43.Location = new Point(8, 82);
+            label42.Text = "Разброс Z:";
+            label42.Location = new Point(9, 105);
+            label45.Text = "Наклон 1:";
+            label45.Location = new Point(14, 128);
+            label44.Text = "Наклон 2:";
+            label44.Location = new Point(14, 151);
+            label41.Text = "Поворот:";
+            label41.Location = new Point(16, 174);
+            label51.Text = "В группе:";
+            label51.Location = new Point(189, 15);
+            label37.Text = "Триггер:";
+            label37.Location = new Point(192, 60);
+            groupBox11.Text = "Настройки для добавления новых ресурсов";
+            label75.Text = "ID триггера:";
+            label75.Location = new Point(90, 18);
+            label57.Text = "ID создаваемого ресурса:";
+            label57.Location = new Point(18, 42);
+            label56.Text = "Количество ресурсов:";
+            label56.Location = new Point(40, 65);
+            label54.Text = "Время респавна:";
+            label54.Location = new Point(65, 88);
+            ResourcesInsertCordsFromGame.Text = "Вставить координаты с игры";
+            ResourcesGroupCloneButton.Text = "Клонировать";
+            ResourcesGroupRemoveButton.Text = "Удалить";
+            groupBox5.Text = "Ресурсы";
+            ResourcesInitGen.Text = "Активировать генератор";
+            ResourcesInitGen.Location = new Point(187, 107);
+            ResourcesAutoRevive.Text = "Мгновенный респавн";
+            ResourcesAutoRevive.Location = new Point(204, 129);
+            label59.Text = "Количество:";
+            label59.Location = new Point(224, 41);
+            label58.Text = "Время респа:";
+            label58.Location = new Point(218, 67);
+            label55.Text = "Тип:";
+            label55.Location = new Point(272, 93);
+            label53.Text = "Над землей:";
+            label53.Location = new Point(224, 119);
+            DynObjectsCloneButton.Text = "Клонировать";
+            DynObjectsRemoveButton.Text = "Удалить";
+            label72.Text = "Наклон 1:";
+            label72.Location = new Point(4, 107);
+            label71.Text = "Наклон 2:";
+            label71.Location = new Point(184, 38);
+            label70.Text = "Поворот:";
+            label70.Location = new Point(187, 61);
+            label73.Text = "Триггер:";
+            label73.Location = new Point(192, 83);
+            label74.Text = "Увеличение:";
+            label74.Location = new Point(167, 107);
+            groupBox10.Text = "Настройки для добавления Дин.Объектов";
+            label61.Text = "ID Дин.Объекта:";
+            label61.Location = new Point(69, 18);
+            label40.Text = "ID триггера:";
+            label40.Location = new Point(89, 43);
+            DynObjectsInsertCordsFromGame.Text = "Вставить координаты с игры";
+            TriggersCloneButton.Text = "Клонировать";
+            TriggersRemoveButton.Text = "Удалить";
+            groupBox12.Text = "Основное";
+            groupBox16.Text = "Запуск";
+            groupBox17.Text = "Выключение";
+            groupBox13.Text = "Используется в существах";
+            groupBox14.Text = "Используется в ресурсах";
+            groupBox15.Text = "Используется в дин.объектах";
+            GotoNpcMobsContacts.Text = "Перейти к выбранному";
+            GotoResourcesContacts.Text = "Перейти к выбранному";
+            GotoDynamicsContacts.Text = "Перейти к выбранному";
+            label89.Text = "ID Триггера:";
+            label89.Location = new Point(71, 16);
+            label79.Text = "ID в панели ГМ:";
+            label79.Location = new Point(50, 39);
+            label99.Text = "Название:";
+            label99.Location = new Point(81, 61);
+            label83.Text = "Задержка включения:";
+            label83.Location = new Point(14, 84);
+            label84.Text = "Задержка выключения:";
+            label84.Location = new Point(5, 106);
+            TAutoStart.Text = "Запускать автоматически";
+            label85.Text = "Продолжительность:";
+            label85.Location = new Point(7, 147);
+            TStartBySchedule.Text = "Запускать по графику";
+            TStartBySchedule.Location = new Point(178, 170);
+            TStopBySchedule.Text = "Выключать по графику";
+            TStopBySchedule.Location = new Point(174, 190);
+            label86.Text = "Год:";
+            label86.Location = new Point(55, 16);
+            label87.Text = "Месяц:";
+            label87.Location = new Point(38, 40);
+            label88.Text = "День недели:";
+            label88.Location = new Point(1, 65);
+            label90.Text = "День:";
+            label90.Location = new Point(168, 15);
+            label91.Text = "Час:";
+            label91.Location = new Point(177, 41);
+            label92.Text = "Минута:";
+            label92.Location = new Point(154, 65);
+            label97.Text = "Год:";
+            label97.Location = new Point(55, 16);
+            label96.Text = "Месяц:";
+            label96.Location = new Point(38, 40);
+            label98.Text = "День недели:";
+            label98.Location = new Point(1, 65);
+            label94.Text = "Час:";
+            label94.Location = new Point(177, 41);
+            label95.Text = "День:";
+            label95.Location = new Point(168, 15);
+            label93.Text = "Минута:";
+            label93.Location = new Point(154, 65);
+            label52.Text = "Версия клиента для захвата координат из игры:";
+            groupBox6.Text = "Горячие клавиши";
+            label50.Text = "Существо:";
+            label50.Location = new Point(20, 19);
+            label77.Text = "Ресурс:";
+            label77.Location = new Point(37, 46);
+            label101.Text = "Дин.Объект:";
+            label101.Location = new Point(7, 73);
+            SaveFile.Text = "Сохранить Npcgen.data";
+            ConvertComboboxVersion.Location = new Point(335, 435);
+            ConvertAndSaveButton.Text = "Конвертировать в     версию и сохранить";
+            TStartWeekDay.Items.Clear();
+            ComboBox.ObjectCollection items6 = TStartWeekDay.Items;
+            items2 = new string[8] { "Все", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
+            items6.AddRange(items2);
+            TStartWeekDay.SelectedIndex = selectedIndex5;
+            TStopWeekDay.Items.Clear();
+            ComboBox.ObjectCollection items7 = TStopWeekDay.Items;
+            items2 = new string[8] { "Все", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
+            items7.AddRange(items2);
+            TStopWeekDay.SelectedIndex = selectedIndex6;
+            DeleteEmptyTrigger.Text = "Удалить пустые триггеры";
+            MoveToTrigger.Text = "Перейти к триггеру";
+            toolStripMenuItem1.Text = "Переместить";
+            UpExistence.Text = "Выше   Shift+W";
+            DownExistence.Text = "Ниже    Shift+S";
+            toolStripMenuItem4.Text = "Переместить";
+            UpTrigger.Text = "Выше   Shift+W";
+            DownTrigger.Text = "Ниже    Shift+S";
+            Agression.Items[0] = "Нет";
+            Agression.Items[1] = "Агрессивный";
+            Agression.Items[2] = "Защита";
+            Path_type.Items[0] = "Нет";
+            Path_type.Items[1] = "Обычный";
+            Path_type.Items[2] = "Зацикленный";
+            LineUpX.Text = "Выстроить в ряд по X";
+            LineUpZ.Text = "Выстроить в ряд по Z";
+            groupBox18.Text = "Поиск в существах";
+            groupBox19.Text = "Поиск в ресурсах";
+            groupBox20.Text = "Поиск в Дин.Объектах";
+            groupBox21.Text = "Поиск в Триггерах";
+            MoveToSelected.Text = "Перейти к выбранному";
+            ExistenceSearchName_Radio.Text = "Название";
+            ExistenceSearchName_Radio.Location = new Point(1, 43);
+            ExistenceSearchTrigger_Radio.Text = "Триггер";
+            ExistenceSearchTrigger_Radio.Location = new Point(10, 64);
+            ExistenceSearchPath_Radio.Text = "Путь";
+            ExistenceSearchPath_Radio.Location = new Point(27, 86);
+            ExistenceSearchButton.Text = "Найти";
+            ResourceSearchName_Radio.Text = "Название";
+            ResourceSearchName_Radio.Location = new Point(1, 43);
+            ResourceSearchTrigger_Radio.Text = "Триггер";
+            ResourceSearchTrigger_Radio.Location = new Point(10, 64);
+            ResourceSearchButton.Text = "Найти";
+            DynamicSearchName_Radio.Text = "Название";
+            DynamicSearchName_Radio.Location = new Point(1, 43);
+            DynamicSearchTrigger_Radio.Text = "Триггер";
+            DynamicSearchTrigger_Radio.Location = new Point(10, 64);
+            DynamicSearchButton.Text = "Найти";
+            TriggerSearchName_Radio.Text = "Название";
+            TriggerSearchName_Radio.Location = new Point(1, 64);
+            TriggerSearchButton.Text = "Найти";
+            SearchErrorsButton.Text = "Найти ошибки";
+            RemoveAllErrors.Text = "Удалить все объекты";
+            ExportExistence.Text = "Экспорт";
+            ImportExistence.Text = "Импорт";
+            LineUpExistenceDropDown.Text = "Выстроить";
+            ToolStripLineUpX.Text = "По Х";
+            ToolStripLineUpZ.Text = "По Z";
+            MoveExistenceDropDown.Text = "Переместить";
+            MoveUpToolStripMenuItem.Text = "Выше   Shift+W";
+            MoveDownToolStripMenuItem.Text = "Ниже    Shift+S";
+            ExportResources.Text = "Экспорт";
+            ImportResources.Text = "Импорт";
+            LineUpResource.Text = "Выстроить";
+            ResourcesOnX.Text = "По X";
+            ResourcesOnZ.Text = "По Z";
+            MoveResources.Text = "Переместить";
+            ResourceUp.Text = "Выше   Shift+W";
+            ResourceDown.Text = "Ниже Shift+S";
+            toolStripButton3.Text = "Экспорт";
+            toolStripButton4.Text = "Импорт";
+            toolStripDropDownButton3.Text = "Выстроить";
+            toolStripMenuItem7.Text = "По X";
+            toolStripMenuItem8.Text = "По Z";
+            toolStripDropDownButton4.Text = "Переместить";
+            toolStripMenuItem9.Text = "Выше   Shift+W";
+            toolStripMenuItem10.Text = "Ниже Shift+S";
+            toolStripButton5.Text = "Экспорт";
+            toolStripButton6.Text = "Импорт";
+            toolStripDropDownButton6.Text = "Переместить";
+            toolStripMenuItem13.Text = "Выше   Shift+W";
+            toolStripMenuItem14.Text = "Ниже Shift+S";
+            toolStripButton7.Text = "Очистить";
+            экспортToolStripMenuItem.Text = "Экспорт";
+            импортToolStripMenuItem.Text = "Импорт";
+            toolStripMenuItem11.Text = "Импорт";
+            toolStripMenuItem12.Text = "Экспорт";
+            DynamicForm = new DynamicObjectsForm(DynamicsListRu, this);
+            DynamicForm.LanguageChange(1);
+        }
+        else if (control.Name == "English")
+        {
+            Language = 2;
+            OpenFiles.Text = "Open";
+            Open_surfaces.Text = "Open";
+            ButtonShowMap.Text = "Show map";
+            if (Read == null)
+            {
+                ExistenceTab.Text = "Mobs and Npcs";
+                ResourcesTab.Text = "Resources";
+                DynObjectsTab.Text = "Dynamic Objects";
+                TriggersTab.Text = "Triggers";
+            }
+            else
+            {
+                ExistenceTab.Text = $"Mobs and Npcs {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
+                ResourcesTab.Text = $"Resources {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
+                DynObjectsTab.Text = $"Dynamic Objects {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
+                TriggersTab.Text = $"Triggers {TriggersRowCollection.Count}/{Read.TriggersAmount}";
+            }
+            OptionsTab.Text = "Options and saving";
+            SearchTab.Text = "Search";
+            ErrorsTab.Text = "Errors";
+            ExistenceLocating.Items.Clear();
+            ComboBox.ObjectCollection items8 = ExistenceLocating.Items;
+            object[] items2 = new string[2] { "Ground", "Free" };
+            items8.AddRange(items2);
+            ExistenceLocating.SelectedIndex = selectedIndex;
+            AddintExistenceType.Items.Clear();
+            ComboBox.ObjectCollection items9 = AddintExistenceType.Items;
+            items2 = new string[2] { "Ground", "Free" };
+            items9.AddRange(items2);
+            AddintExistenceType.SelectedIndex = selectedIndex3;
+            ExistenceType.Items.Clear();
+            ComboBox.ObjectCollection items10 = ExistenceType.Items;
+            items2 = new string[2] { "Mob", "Npc" };
+            items10.AddRange(items2);
+            ExistenceType.SelectedIndex = selectedIndex2;
+            AddMonsterType.Items.Clear();
+            ComboBox.ObjectCollection items11 = AddMonsterType.Items;
+            items2 = new string[2] { "Mob", "Npc" };
+            items11.AddRange(items2);
+            AddMonsterType.SelectedIndex = selectedIndex4;
+            MainGroupBox.Text = "Default";
+            groupBox8.Text = "Options for adding new existence";
+            groupBox1.Text = "Mobs|Npcs";
+            label3.Text = "Location:";
+            label3.Location = new Point(21, 14);
+            label9.Text = "Rotation X:";
+            label9.Location = new Point(11, 106);
+            label10.Text = "Rotation Y:";
+            label10.Location = new Point(11, 131);
+            label11.Text = "Rotation Z:";
+            label11.Location = new Point(11, 154);
+            label14.Text = "Scatter X:";
+            label14.Location = new Point(18, 178);
+            label13.Text = "Scatter Y:";
+            label13.Location = new Point(18, 201);
+            label12.Text = "Scatter Z:";
+            label12.Location = new Point(18, 224);
+            label15.Text = "Type:";
+            label15.Location = new Point(210, 12);
+            label5.Text = "In group:";
+            label5.Location = new Point(192, 39);
+            label16.Text = "Group type:";
+            label16.Location = new Point(178, 62);
+            label18.Text = "Trigger:";
+            label18.Location = new Point(197, 109);
+            label19.Text = "Life time:";
+            label19.Location = new Point(189, 132);
+            label20.Text = "Max amount:";
+            label20.Location = new Point(168, 155);
+            ExistenceAutoRevive.Text = "Instant respawn";
+            ExistenceAutoRevive.Location = new Point(235, 201);
+            ExistenceInitGen.Text = "Activate generator";
+            ExistenceInitGen.Location = new Point(223, 178);
+            ResourcesInitGen.Text = "Activate generator";
+            ResourcesInitGen.Location = new Point(226, 107);
+            ResourcesAutoRevive.Text = "Instant respawn";
+            ResourcesAutoRevive.Location = new Point(238, 129);
+            ExistenceCloneButton.Text = "Clone";
+            ExistenceRemoveButton.Text = "Delete";
+            ExistenceGroupCloneButton.Text = "Clone";
+            ExistenceGroupRemoveButton.Text = "Delete";
+            label22.Text = "Amount:";
+            label22.Location = new Point(59, 37);
+            label23.Text = "Respawn time:";
+            label23.Location = new Point(22, 60);
+            label24.Text = "Death amount:";
+            label24.Location = new Point(23, 83);
+            label25.Text = "Agression:";
+            label25.Location = new Point(47, 106);
+            label26.Text = "Path type:";
+            label26.Location = new Point(51, 130);
+            label27.Text = "Speed:";
+            label27.Location = new Point(65, 154);
+            label28.Text = "Type:";
+            label28.Location = new Point(75, 177);
+            label29.Text = "Water offset:";
+            label29.Location = new Point(37, 201);
+            label30.Text = "Turn offset:";
+            label30.Location = new Point(228, 14);
+            label31.Text = "Ask help:";
+            label31.Location = new Point(239, 60);
+            label32.Text = "Need help:";
+            label32.Location = new Point(227, 83);
+            label33.Text = "Corpse(sec):";
+            label33.Location = new Point(219, 107);
+            label35.Text = "Group:";
+            label35.Location = new Point(251, 37);
+            ExistenceInsertCordsFromGame.Text = "Insert Coordinates from game";
+            label67.Text = "Trigger ID:";
+            label67.Location = new Point(101, 18);
+            label68.Text = "Location:";
+            label68.Location = new Point(100, 39);
+            label66.Text = "Existence type:";
+            label66.Location = new Point(68, 62);
+            label65.Text = "Existence ID:";
+            label65.Location = new Point(86, 89);
+            label64.Text = "Existence amount:";
+            label64.Location = new Point(62, 112);
+            label63.Text = "Respawn time:";
+            label63.Location = new Point(79, 135);
+            groupBox3.Text = "Default";
+            ResourcesCloneButton.Text = "Clone";
+            ResourcesRemoveButton.Text = "Delete";
+            label43.Text = "Spread X:";
+            label43.Location = new Point(15, 82);
+            label42.Text = "Spread Z:";
+            label42.Location = new Point(16, 105);
+            label45.Text = "Incline 1:";
+            label45.Location = new Point(20, 128);
+            label44.Text = "Incline 2:";
+            label44.Location = new Point(20, 151);
+            label41.Text = "Rotation:";
+            label41.Location = new Point(20, 174);
+            label51.Text = "In group:";
+            label51.Location = new Point(194, 15);
+            label37.Text = "Trigger:";
+            label37.Location = new Point(200, 60);
+            groupBox11.Text = "Options for adding new resources";
+            label75.Text = "Trigger ID:";
+            label75.Location = new Point(101, 18);
+            label57.Text = "Resource ID:";
+            label57.Location = new Point(87, 42);
+            label56.Text = "Resources amount:";
+            label56.Location = new Point(58, 65);
+            label54.Text = "Respawn time:";
+            label54.Location = new Point(80, 88);
+            label53.Text = "Above ground:";
+            label53.Location = new Point(218, 119);
+            ResourcesInsertCordsFromGame.Text = "Insert Coordinates from game";
+            ResourcesGroupCloneButton.Text = "Clone";
+            ResourcesGroupRemoveButton.Text = "Delete";
+            groupBox5.Text = "Resources";
+            label59.Text = "Amount:";
+            label59.Location = new Point(251, 41);
+            label58.Text = "Respa. time:";
+            label58.Location = new Point(227, 67);
+            label55.Text = "Type:";
+            label55.Location = new Point(267, 93);
+            DynObjectsCloneButton.Text = "Clone";
+            DynObjectsRemoveButton.Text = "Delete";
+            groupBox7.Text = "Default";
+            groupBox9.Text = "Image";
+            label72.Text = "Incline 1:";
+            label72.Location = new Point(11, 107);
+            label71.Text = "Incline 2:";
+            label71.Location = new Point(192, 38);
+            label70.Text = "Rotation:";
+            label70.Location = new Point(190, 61);
+            label73.Text = "Trigger:";
+            label73.Location = new Point(198, 83);
+            label74.Text = "Scale:";
+            label74.Location = new Point(206, 107);
+            groupBox10.Text = "Options for adding new dyn.Objects";
+            label61.Text = "Dyn.Object ID:";
+            label61.Location = new Point(81, 18);
+            label40.Text = "Trigger ID:";
+            label40.Location = new Point(100, 43);
+            DynObjectsInsertCordsFromGame.Text = "Insert Coordinates from game";
+            TriggersCloneButton.Text = "Clone";
+            TriggersRemoveButton.Text = "Delete";
+            groupBox12.Text = "Default";
+            groupBox16.Text = "Start schedule";
+            groupBox17.Text = "Stop schedule";
+            groupBox13.Text = "Using in existence";
+            groupBox14.Text = "Using in resources";
+            groupBox15.Text = "Using in Dyn.Objects";
+            GotoNpcMobsContacts.Text = "Move to selected";
+            GotoResourcesContacts.Text = "Move to selected";
+            GotoDynamicsContacts.Text = "Move to selected";
+            label89.Text = "Trigger ID:";
+            label89.Location = new Point(85, 16);
+            label79.Text = "ID in GM console:";
+            label79.Location = new Point(44, 39);
+            label99.Text = "Name:";
+            label99.Location = new Point(103, 61);
+            label83.Text = "Start delay:";
+            label83.Location = new Point(80, 84);
+            label84.Text = "Stop delay:";
+            label84.Location = new Point(81, 106);
+            TAutoStart.Text = "Start automatically";
+            label85.Text = "During:";
+            label85.Location = new Point(95, 147);
+            TStartBySchedule.Text = "Start on schedule";
+            TStartBySchedule.Location = new Point(209, 170);
+            TStopBySchedule.Text = "Stop on schedule";
+            TStopBySchedule.Location = new Point(209, 190);
+            label86.Text = "Year:";
+            label86.Location = new Point(52, 16);
+            label87.Text = "Month:";
+            label87.Location = new Point(41, 40);
+            label88.Text = "Week day:";
+            label88.Location = new Point(20, 65);
+            label90.Text = "Day:";
+            label90.Location = new Point(177, 15);
+            label91.Text = "Hour:";
+            label91.Location = new Point(171, 41);
+            label92.Text = "Minute:";
+            label92.Location = new Point(160, 65);
+            label97.Text = "Year:";
+            label97.Location = new Point(50, 16);
+            label96.Text = "Month:";
+            label96.Location = new Point(40, 40);
+            label98.Text = "Week day:";
+            label98.Location = new Point(22, 65);
+            label95.Text = "Day:";
+            label95.Location = new Point(177, 15);
+            label94.Text = "Hour:";
+            label94.Location = new Point(171, 41);
+            label93.Text = "Minute:";
+            label93.Location = new Point(160, 65);
+            label52.Text = "Client version for catching coordinates from game:";
+            groupBox6.Text = "Hot keys";
+            label50.Text = "Existence:";
+            label50.Location = new Point(24, 19);
+            label77.Text = "Resource:";
+            label77.Location = new Point(23, 46);
+            label101.Text = "Dyn.object:";
+            label101.Location = new Point(18, 73);
+            SaveFile.Text = "Save Npcgen.data";
+            ConvertComboboxVersion.Location = new Point(274, 435);
+            ConvertAndSaveButton.Text = "Convert to               version and save";
+            TStartWeekDay.Items.Clear();
+            ComboBox.ObjectCollection items12 = TStartWeekDay.Items;
+            items2 = new string[8] { "All", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+            items12.AddRange(items2);
+            TStartWeekDay.SelectedIndex = selectedIndex5;
+            TStopWeekDay.Items.Clear();
+            ComboBox.ObjectCollection items13 = TStopWeekDay.Items;
+            items2 = new string[8] { "All", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+            items13.AddRange(items2);
+            TStopWeekDay.SelectedIndex = selectedIndex6;
+            DeleteEmptyTrigger.Text = "Delete empty triggers";
+            MoveToTrigger.Text = "Move to trigger";
+            toolStripMenuItem1.Text = "Move";
+            UpExistence.Text = "Up           Shift+W";
+            DownExistence.Text = "Down      Shift+S";
+            toolStripMenuItem4.Text = "Move";
+            UpTrigger.Text = "Up           Shift+W";
+            DownTrigger.Text = "Down      Shift+S";
+            Agression.Items[0] = "No";
+            Agression.Items[1] = "Aggressive";
+            Agression.Items[2] = "Defend";
+            Path_type.Items[0] = "No";
+            Path_type.Items[1] = "Default";
+            Path_type.Items[2] = "Cycle";
+            LineUpX.Text = "Line up on X";
+            LineUpZ.Text = "Line up on Z";
+            groupBox18.Text = "Search in existence";
+            groupBox19.Text = "Search in resources";
+            groupBox20.Text = "Search in Dyn.Objects";
+            groupBox21.Text = "Search in triggers";
+            MoveToSelected.Text = "Move to selected";
+            ExistenceSearchName_Radio.Text = "Name";
+            ExistenceSearchName_Radio.Location = new Point(22, 43);
+            ExistenceSearchTrigger_Radio.Text = "Trigger";
+            ExistenceSearchTrigger_Radio.Location = new Point(17, 64);
+            ExistenceSearchPath_Radio.Text = "Path";
+            ExistenceSearchPath_Radio.Location = new Point(28, 86);
+            ExistenceSearchButton.Text = "Search";
+            ResourceSearchName_Radio.Text = "Name";
+            ResourceSearchName_Radio.Location = new Point(22, 43);
+            ResourceSearchTrigger_Radio.Text = "Trigger";
+            ResourceSearchTrigger_Radio.Location = new Point(17, 64);
+            ResourceSearchButton.Text = "Search";
+            DynamicSearchName_Radio.Text = "Name";
+            DynamicSearchName_Radio.Location = new Point(22, 43);
+            DynamicSearchTrigger_Radio.Text = "Trigger";
+            DynamicSearchTrigger_Radio.Location = new Point(17, 64);
+            DynamicSearchButton.Text = "Search";
+            TriggerSearchName_Radio.Text = "Name";
+            TriggerSearchName_Radio.Location = new Point(22, 64);
+            TriggerSearchButton.Text = "Search";
+            SearchErrorsButton.Text = "Search errors";
+            RemoveAllErrors.Text = "Remove all objects";
+            ExportExistence.Text = "Export";
+            ImportExistence.Text = "Import";
+            LineUpExistenceDropDown.Text = "Line up";
+            ToolStripLineUpX.Text = "On Х";
+            ToolStripLineUpZ.Text = "On Z";
+            MoveExistenceDropDown.Text = "Move objects";
+            MoveUpToolStripMenuItem.Text = "Up           Shift+W";
+            MoveDownToolStripMenuItem.Text = "Down      Shift+S";
+            ExportResources.Text = "Export";
+            ImportResources.Text = "Import";
+            LineUpResource.Text = "Line up";
+            ResourcesOnX.Text = "On X";
+            ResourcesOnZ.Text = "On Z";
+            MoveResources.Text = "Move objects";
+            ResourceUp.Text = "Up           Shift+W";
+            ResourceDown.Text = "Down      Shift+S";
+            toolStripButton3.Text = "Export";
+            toolStripButton4.Text = "Import";
+            toolStripDropDownButton3.Text = "Line up";
+            toolStripMenuItem7.Text = "On X";
+            toolStripMenuItem8.Text = "On Z";
+            toolStripDropDownButton4.Text = "Move objects";
+            toolStripMenuItem9.Text = "Up   Shift+W";
+            toolStripMenuItem10.Text = "Down Shift+S";
+            toolStripButton5.Text = "Export";
+            toolStripButton6.Text = "Import";
+            toolStripDropDownButton6.Text = "Move objects";
+            toolStripMenuItem13.Text = "Up   Shift+W";
+            toolStripMenuItem14.Text = "Down Shift+S";
+            toolStripButton7.Text = "Clear";
+            экспортToolStripMenuItem.Text = "Export";
+            импортToolStripMenuItem.Text = "Import";
+            toolStripMenuItem11.Text = "Import";
+            toolStripMenuItem12.Text = "Export";
+            DynamicForm = new DynamicObjectsForm(DynamicsListEn, this);
+            DynamicForm.LanguageChange(2);
+        }
+        if (Read != null)
+        {
+            DynamicGrid.Rows.Clear();
+            SortDynamicObjects();
+        }
+        if (ChooseFromElementsForm != null)
+        {
+            ChooseFromElementsForm.RefreshLanguage(Language);
+        }
+    }
+
+    private void NpcMobsGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+    {
+        if (!UdE.API.IsElementsEditorRunning)
+        {
+            if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+            {
+                string caption = Convert.ToString(NpcMobsGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                toolTip1.SetToolTip(NpcMobsGrid, caption);
+            }
+        }
+        else
+        {
+            if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+            {
+                if (int.TryParse(NpcMobsGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out int id) && id > 0)
+                {
+                    UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+                }
+            }
+        }
+    }
+
+    private void ExistenceGrid_CellChanged(object sender, EventArgs e)
+    {
+        if (!AllowCellChanging)
+        {
+            return;
+        }
+        NpcsGroupGrid.Rows.Clear();
+        NpcRowCollection = (from DataGridViewRow q in NpcMobsGrid.SelectedRows
+                            select q.Index into r
+                            orderby r descending
+                            select r).ToList();
+        if (NpcMobsGrid.CurrentRow != null)
+        {
+            NpcRowIndex = NpcMobsGrid.CurrentRow.Index;
+            if (NpcRowIndex != -1)
+            {
+                ExistenceLocating.SelectedIndex = Read.NpcMobList[NpcRowIndex].Location;
+                Group_amount_textbox.Text = Read.NpcMobList[NpcRowIndex].Amount_in_group.ToString();
+                X_position.Text = Read.NpcMobList[NpcRowIndex].X_position.ToString();
+                Y_position.Text = Read.NpcMobList[NpcRowIndex].Y_position.ToString();
+                Z_position.Text = Read.NpcMobList[NpcRowIndex].Z_position.ToString();
+                X_rotate.Text = Read.NpcMobList[NpcRowIndex].X_direction.ToString();
+                Y_rotate.Text = Read.NpcMobList[NpcRowIndex].Y_direction.ToString();
+                Z_rotate.Text = Read.NpcMobList[NpcRowIndex].Z_direction.ToString();
+                X_scatter.Text = Read.NpcMobList[NpcRowIndex].X_random.ToString();
+                Y_scatter.Text = Read.NpcMobList[NpcRowIndex].Y_random.ToString();
+                Z_scatter.Text = Read.NpcMobList[NpcRowIndex].Z_random.ToString();
+                ExistenceType.SelectedIndex = Read.NpcMobList[NpcRowIndex].Type;
+                Group_type.Text = Read.NpcMobList[NpcRowIndex].iGroupType.ToString();
+                ExistenceInitGen.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].BInitGen);
+                ExistenceAutoRevive.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].bAutoRevive);
+                BValicOnce.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].BValicOnce);
+                dwGenId.Text = Read.NpcMobList[NpcRowIndex].dwGenId.ToString();
+                Trigger.Text = Read.NpcMobList[NpcRowIndex].Trigger_id.ToString();
+                Life_time.Text = Read.NpcMobList[NpcRowIndex].Life_time.ToString();
+                IMaxNuml.Text = Read.NpcMobList[NpcRowIndex].MaxRespawnTime.ToString();
+                int i;
+                for (i = 0; i < Read.NpcMobList[NpcRowIndex].Amount_in_group; i++)
+                {
+                    string text = "?";
+                    if (!UdE.API.IsElementsEditorRunning)
+                    {
+                        int num = Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Read.NpcMobList[NpcRowIndex].MobDops[i].Id);
+                        if (num != -1)
+                        {
+                            text = Element.ExistenceLists[num].Name;
+                        }
+                    }
+                    else
+                    {
+                        text = Elementsdata.GetMobName(Read.NpcMobList[NpcRowIndex].MobDops[i].Id);
+                    }
+                    NpcsGroupGrid.Rows.Add(i + 1, Read.NpcMobList[NpcRowIndex].MobDops[i].Id, text);
+                    if (Read.NpcMobList[i].Type == 1)
+                    {
+                        NpcsGroupGrid.Rows[i].Cells[1].Style.ForeColor = Color.FromArgb(251, 251, 107);
+                        NpcsGroupGrid.Rows[i].Cells[2].Style.ForeColor = Color.FromArgb(251, 251, 107);
+                    }
+                }
+            }
+            if (MapForm != null && MainProgressBar.Value == 0 && NpcRowCollection.Count != 0 && MapForm.Visible)
+            {
+                MapForm.GetCoordinates(GetPoint(1));
+            }
+            UnderExistenceGrid_CellChanged(null, null);
+        }
+        if (Language == 1)
+        {
+            ExistenceTab.Text = $"Мобы и Нипы {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
+        }
+        else
+        {
+            ExistenceTab.Text = $"Mobs and Npcs {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
+        }
+    }
+
+    private void UnderExistenceGrid_CellChanged(object sender, EventArgs e)
+    {
+        if (NpcsGroupGrid.CurrentRow != null && NpcsGroupGrid.CurrentRow.Index != -1)
+        {
+            UnderNpcRowCollection = (from DataGridViewRow b in NpcsGroupGrid.SelectedRows
+                                     select b.Index).ToList();
+            NpcGroupIndex = NpcsGroupGrid.CurrentRow.Index;
+            Id_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Id;
+            Amount_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Amount;
+            Respawn_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Respawn;
+            DeathAmount_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Dead_amount;
+            Agression.SelectedIndex = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Agression;
+            Path_type.SelectedIndex = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Path_type;
+            Path_speed.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Speed;
+            Path_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Path;
+            Water_numeric.Value = Convert.ToDecimal(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].fOffsetWater);
+            Turn_numeric.Value = Convert.ToDecimal(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].fOffsetTrn);
+            Group_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Group;
+            AskHelp_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Group_help_sender;
+            NeedHelp_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Group_help_Needer;
+            bNeedHelp.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bNeedHelp);
+            bFaction.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bFaction);
+            bFac_Helper.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bFac_Helper);
+            bFac_Accept.Checked = Convert.ToBoolean(Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].bFac_Accept);
+            Deadtime_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].Dead_time;
+            RefreshLower_numeric.Value = Read.NpcMobList[NpcRowIndex].MobDops[NpcGroupIndex].RefreshLower;
+        }
+    }
+
+    private void NpcAndMobsDefaultLeave(object sender, EventArgs e)
+    {
+        if (NpcRowCollection == null || Read == null)
+        {
+            return;
+        }
+        Control control = sender as Control;
+        float result2;
+        int result;
+        switch (control.Name)
+        {
+            case "ExistenceLocating":
+                {
+                    foreach (int item in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item].Location = ExistenceLocating.SelectedIndex;
+                    }
+                    break;
+                }
+            case "X_position":
+                float.TryParse(X_position.Text, out result2);
+                {
+                    foreach (int item2 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item2].X_position = result2;
+                    }
+                    break;
+                }
+            case "Y_position":
+                float.TryParse(Y_position.Text, out result2);
+                {
+                    foreach (int item3 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item3].Y_position = result2;
+                    }
+                    break;
+                }
+            case "Z_position":
+                float.TryParse(Z_position.Text, out result2);
+                {
+                    foreach (int item4 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item4].Z_position = result2;
+                    }
+                    break;
+                }
+            case "X_rotate":
+                float.TryParse(X_rotate.Text, out result2);
+                {
+                    foreach (int item5 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item5].X_direction = result2;
+                    }
+                    break;
+                }
+            case "Y_rotate":
+                float.TryParse(Y_rotate.Text, out result2);
+                {
+                    foreach (int item6 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item6].Y_direction = result2;
+                    }
+                    break;
+                }
+            case "Z_rotate":
+                float.TryParse(Z_rotate.Text, out result2);
+                {
+                    foreach (int item7 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item7].Z_direction = result2;
+                    }
+                    break;
+                }
+            case "X_scatter":
+                float.TryParse(X_scatter.Text, out result2);
+                {
+                    foreach (int item8 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item8].X_random = result2;
+                    }
+                    break;
+                }
+            case "Y_scatter":
+                float.TryParse(Y_scatter.Text, out result2);
+                {
+                    foreach (int item9 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item9].Y_random = result2;
+                    }
+                    break;
+                }
+            case "Z_scatter":
+                float.TryParse(Z_scatter.Text, out result2);
+                {
+                    foreach (int item10 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item10].Z_random = result2;
+                    }
+                    break;
+                }
+            case "ExistenceType":
+                {
+                    foreach (int item11 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item11].Type = ExistenceType.SelectedIndex;
+                        if (ExistenceType.SelectedIndex == 1)
+                        {
+                            NpcMobsGrid.Rows[item11].Cells[1].Style.ForeColor = Color.FromArgb(251, 251, 107);
+                            NpcMobsGrid.Rows[item11].Cells[2].Style.ForeColor = Color.FromArgb(251, 251, 107);
+                        }
+                        else
+                        {
+                            NpcMobsGrid.Rows[item11].Cells[1].Style.ForeColor = Color.FromArgb(77, 255, 143);
+                            NpcMobsGrid.Rows[item11].Cells[2].Style.ForeColor = Color.White;
+                        }
+                    }
+                    break;
+                }
+            case "Group_type":
+                int.TryParse(Group_type.Text, out result);
+                {
+                    foreach (int item12 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item12].iGroupType = result;
+                    }
+                    break;
+                }
+            case "ExistenceInitGen":
+                {
+                    foreach (int item13 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item13].BInitGen = Convert.ToByte(ExistenceInitGen.Checked);
+                    }
+                    break;
+                }
+            case "ExistenceAutoRevive":
+                {
+                    foreach (int item14 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item14].bAutoRevive = Convert.ToByte(ExistenceAutoRevive.Checked);
+                    }
+                    break;
+                }
+            case "BValicOnce":
+                {
+                    foreach (int item15 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item15].BValicOnce = Convert.ToByte(BValicOnce.Checked);
+                    }
+                    break;
+                }
+            case "dwGenId":
+                int.TryParse(dwGenId.Text, out result);
+                {
+                    foreach (int item16 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item16].dwGenId = result;
+                    }
+                    break;
+                }
+            case "Trigger":
+                int.TryParse(Trigger.Text, out result);
+                {
+                    foreach (int item17 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item17].Trigger_id = result;
+                    }
+                    break;
+                }
+            case "Life_time":
+                int.TryParse(Life_time.Text, out result);
+                {
+                    foreach (int item18 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item18].Life_time = result;
+                    }
+                    break;
+                }
+            case "IMaxNuml":
+                int.TryParse(IMaxNuml.Text, out result);
+                {
+                    foreach (int item19 in NpcRowCollection)
+                    {
+                        Read.NpcMobList[item19].MaxRespawnTime = result;
+                    }
+                    break;
+                }
+        }
+    }
+
+    private void NpcAndMobsDefault_EnterPress(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Return)
+        {
+            NpcAndMobsDefaultLeave(sender, null);
+        }
+    }
+
+    private void UnderNpcAndMobs_Leave(object sender, EventArgs e)
+    {
+        if (NpcRowCollection == null || Read == null)
+        {
+            return;
+        }
+        Control control = sender as Control;
+        switch (control.Name)
+        {
+            case "Id_numeric":
+                {
+                    foreach (int item in NpcRowCollection)
+                    {
+                        foreach (int item2 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item].Amount_in_group >= item2 + 1)
+                            {
+                                Read.NpcMobList[item].MobDops[item2].Id = Convert.ToInt32(Id_numeric.Value);
+                                NpcsGroupGrid.Rows[item2].Cells[1].Value = Convert.ToInt32(Id_numeric.Value);
+                                if (!UdE.API.IsElementsEditorRunning)
+                                {
+                                    int num = Element.ExistenceLists.FindIndex((NpcMonster c) => c.Id == Convert.ToInt32(Id_numeric.Value));
+                                    if (num != -1)
+                                    {
+                                        NpcsGroupGrid.Rows[item2].Cells[2].Value = Element.ExistenceLists[num].Name;
+                                    }
+                                    else
+                                    {
+                                        NpcsGroupGrid.Rows[item2].Cells[2].Value = "?";
+                                    }
+                                }
+                                else
+                                {
+                                    NpcsGroupGrid.Rows[item2].Cells[2].Value = Elementsdata.GetMobName(Convert.ToInt32(Id_numeric.Value));
+                                }
+
+                            }
+                        }
+                        RefreshRowNpcAndMobs(item);
+                    }
+                    break;
+                }
+            case "Amount_numeric":
+                {
+                    foreach (int item3 in NpcRowCollection)
+                    {
+                        foreach (int item4 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item3].Amount_in_group >= item4 + 1)
+                            {
+                                Read.NpcMobList[item3].MobDops[item4].Amount = Convert.ToInt32(Amount_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Respawn_numeric":
+                {
+                    foreach (int item5 in NpcRowCollection)
+                    {
+                        foreach (int item6 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item5].Amount_in_group >= item6 + 1)
+                            {
+                                Read.NpcMobList[item5].MobDops[item6].Respawn = Convert.ToInt32(Respawn_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "DeathAmount_numeric":
+                {
+                    foreach (int item7 in NpcRowCollection)
+                    {
+                        foreach (int item8 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item7].Amount_in_group >= item8 + 1)
+                            {
+                                Read.NpcMobList[item7].MobDops[item8].Dead_amount = Convert.ToInt32(DeathAmount_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Agression":
+                {
+                    foreach (int item9 in NpcRowCollection)
+                    {
+                        foreach (int item10 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item9].Amount_in_group >= item10 + 1)
+                            {
+                                Read.NpcMobList[item9].MobDops[item10].Agression = Agression.SelectedIndex;
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Path_type":
+                {
+                    foreach (int item11 in NpcRowCollection)
+                    {
+                        foreach (int item12 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item11].Amount_in_group >= item12 + 1)
+                            {
+                                Read.NpcMobList[item11].MobDops[item12].Path_type = Path_type.SelectedIndex;
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Path_speed":
+                {
+                    foreach (int item13 in NpcRowCollection)
+                    {
+                        foreach (int item14 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item13].Amount_in_group >= item14 + 1)
+                            {
+                                Read.NpcMobList[item13].MobDops[item14].Speed = Convert.ToInt32(Path_speed.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Path_numeric":
+                {
+                    foreach (int item15 in NpcRowCollection)
+                    {
+                        foreach (int item16 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item15].Amount_in_group >= item16 + 1)
+                            {
+                                Read.NpcMobList[item15].MobDops[item16].Path = Convert.ToInt32(Path_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Water_numeric":
+                {
+                    foreach (int item17 in NpcRowCollection)
+                    {
+                        foreach (int item18 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item17].Amount_in_group >= item18 + 1)
+                            {
+                                Read.NpcMobList[item17].MobDops[item18].fOffsetWater = Convert.ToSingle(Water_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Turn_numeric":
+                {
+                    foreach (int item19 in NpcRowCollection)
+                    {
+                        foreach (int item20 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item19].Amount_in_group >= item20 + 1)
+                            {
+                                Read.NpcMobList[item19].MobDops[item20].fOffsetTrn = Convert.ToSingle(Turn_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Group_numeric":
+                {
+                    foreach (int item21 in NpcRowCollection)
+                    {
+                        foreach (int item22 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item21].Amount_in_group >= item22 + 1)
+                            {
+                                Read.NpcMobList[item21].MobDops[item22].Group = Convert.ToInt32(Group_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "AskHelp_numeric":
+                {
+                    foreach (int item23 in NpcRowCollection)
+                    {
+                        foreach (int item24 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item23].Amount_in_group >= item24 + 1)
+                            {
+                                Read.NpcMobList[item23].MobDops[item24].Group_help_sender = Convert.ToInt32(AskHelp_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "NeedHelp_numeric":
+                {
+                    foreach (int item25 in NpcRowCollection)
+                    {
+                        foreach (int item26 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item25].Amount_in_group >= item26 + 1)
+                            {
+                                Read.NpcMobList[item25].MobDops[item26].Group_help_Needer = Convert.ToInt32(NeedHelp_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "bNeedHelp":
+                {
+                    foreach (int item27 in NpcRowCollection)
+                    {
+                        foreach (int item28 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item27].Amount_in_group >= item28 + 1)
+                            {
+                                Read.NpcMobList[item27].MobDops[item28].bNeedHelp = Convert.ToByte(bNeedHelp.Checked);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "bFac_Accept":
+                {
+                    foreach (int item29 in NpcRowCollection)
+                    {
+                        foreach (int item30 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item29].Amount_in_group >= item30 + 1)
+                            {
+                                Read.NpcMobList[item29].MobDops[item30].bFac_Accept = Convert.ToByte(bFac_Accept.Checked);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "bFac_Helper":
+                {
+                    foreach (int item31 in NpcRowCollection)
+                    {
+                        foreach (int item32 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item31].Amount_in_group >= item32 + 1)
+                            {
+                                Read.NpcMobList[item31].MobDops[item32].bFac_Helper = Convert.ToByte(bFac_Helper.Checked);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "bFaction":
+                {
+                    foreach (int item33 in NpcRowCollection)
+                    {
+                        foreach (int item34 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item33].Amount_in_group >= item34 + 1)
+                            {
+                                Read.NpcMobList[item33].MobDops[item34].bFaction = Convert.ToByte(bFaction.Checked);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "Deadtime_numeric":
+                {
+                    foreach (int item35 in NpcRowCollection)
+                    {
+                        foreach (int item36 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item35].Amount_in_group >= item36 + 1)
+                            {
+                                Read.NpcMobList[item35].MobDops[item36].Dead_time = Convert.ToInt32(Deadtime_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "RefreshLower_numeric":
+                {
+                    foreach (int item37 in NpcRowCollection)
+                    {
+                        foreach (int item38 in UnderNpcRowCollection)
+                        {
+                            if (Read.NpcMobList[item37].Amount_in_group >= item38 + 1)
+                            {
+                                Read.NpcMobList[item37].MobDops[item38].RefreshLower = Convert.ToInt32(RefreshLower_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+        }
+    }
+
+    private void UnderNpcAndMobs_EnterPress(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Return)
+        {
+            UnderNpcAndMobs_Leave(sender, null);
+        }
+    }
+
+    private void CloneNpcAndMobFull(object sender, EventArgs e)
+    {
+        if (NpcMobsGrid.Rows.Count > 0)
+        {
+            NpcMobsGrid.ScrollBars = ScrollBars.None;
+            NpcRowCollection = NpcRowCollection.OrderBy((int z) => z).ToList();
+            foreach (int item3 in NpcRowCollection)
+            {
+                Read.NpcMobsAmount++;
+                ClassDefaultMonsters classDefaultMonsters = new ClassDefaultMonsters
+                {
+                    Amount_in_group = Read.NpcMobList[item3].Amount_in_group,
+                    bAutoRevive = Read.NpcMobList[item3].bAutoRevive,
+                    BInitGen = Read.NpcMobList[item3].BInitGen,
+                    BValicOnce = Read.NpcMobList[item3].BValicOnce,
+                    dwGenId = Read.NpcMobList[item3].dwGenId,
+                    iGroupType = Read.NpcMobList[item3].iGroupType,
+                    MaxRespawnTime = Read.NpcMobList[item3].MaxRespawnTime,
+                    Type = Read.NpcMobList[item3].Type,
+                    Life_time = Read.NpcMobList[item3].Life_time,
+                    Trigger_id = Read.NpcMobList[item3].Trigger_id,
+                    Location = Read.NpcMobList[item3].Location,
+                    X_direction = Read.NpcMobList[item3].X_direction,
+                    X_position = Read.NpcMobList[item3].X_position,
+                    X_random = Read.NpcMobList[item3].X_random,
+                    Y_direction = Read.NpcMobList[item3].Y_direction,
+                    Y_position = Read.NpcMobList[item3].Y_position,
+                    Y_random = Read.NpcMobList[item3].Y_random,
+                    Z_direction = Read.NpcMobList[item3].Z_direction,
+                    Z_position = Read.NpcMobList[item3].Z_position,
+                    Z_random = Read.NpcMobList[item3].Z_random,
+                    MobDops = new List<ClassExtraMonsters>()
+                };
+                for (int i = 0; i < Read.NpcMobList[item3].Amount_in_group; i++)
+                {
+                    ClassExtraMonsters item = new ClassExtraMonsters
+                    {
+                        Agression = Read.NpcMobList[item3].MobDops[i].Agression,
+                        Amount = Read.NpcMobList[item3].MobDops[i].Amount,
+                        bFac_Accept = Read.NpcMobList[item3].MobDops[i].bFac_Accept,
+                        bFac_Helper = Read.NpcMobList[item3].MobDops[i].bFac_Helper,
+                        bFaction = Read.NpcMobList[item3].MobDops[i].bFaction,
+                        bNeedHelp = Read.NpcMobList[item3].MobDops[i].bNeedHelp,
+                        Dead_amount = Read.NpcMobList[item3].MobDops[i].Dead_amount,
+                        Dead_time = Read.NpcMobList[item3].MobDops[i].Dead_time,
+                        fOffsetTrn = Read.NpcMobList[item3].MobDops[i].fOffsetTrn,
+                        fOffsetWater = Read.NpcMobList[item3].MobDops[i].fOffsetWater,
+                        Group = Read.NpcMobList[item3].MobDops[i].Group,
+                        Group_help_Needer = Read.NpcMobList[item3].MobDops[i].Group_help_Needer,
+                        Group_help_sender = Read.NpcMobList[item3].MobDops[i].Group_help_sender,
+                        Id = Read.NpcMobList[item3].MobDops[i].Id,
+                        Path = Read.NpcMobList[item3].MobDops[i].Path,
+                        Path_type = Read.NpcMobList[item3].MobDops[i].Path_type,
+                        RefreshLower = Read.NpcMobList[item3].MobDops[i].RefreshLower,
+                        Respawn = Read.NpcMobList[item3].MobDops[i].Respawn,
+                        Speed = Read.NpcMobList[item3].MobDops[i].Speed
+                    };
+                    classDefaultMonsters.MobDops.Add(item);
+                }
+                Read.NpcMobList.Add(classDefaultMonsters);
+                NpcMobsGrid.Rows.Add(NpcMobsGrid.Rows.Count, NpcMobsGrid.Rows[item3].Cells[1].Value, NpcMobsGrid.Rows[item3].Cells[2].Value);
+            }
+            NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
+            List<int> npcRowCollection = NpcRowCollection;
+            NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
+            for (int j = 1; j <= npcRowCollection.Count; j++)
+            {
+                NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - j].Selected = true;
+            }
+            ExistenceGrid_CellChanged(null, null);
+        }
+        else if (Read != null)
+        {
+            Read.NpcMobsAmount++;
+            ClassDefaultMonsters classDefaultMonsters2 = new ClassDefaultMonsters
+            {
+                Location = 0,
+                Type = 0,
+                Amount_in_group = 1,
+                MobDops = new List<ClassExtraMonsters>()
+            };
+            ClassExtraMonsters item2 = new ClassExtraMonsters
+            {
+                Id = 16,
+                Amount = 1,
+                Respawn = 30
+            };
+            classDefaultMonsters2.MobDops.Add(item2);
+            Read.NpcMobList.Add(classDefaultMonsters2);
+            if (Language == 1)
+            {
+                NpcMobsGrid.Rows.Add(1, 16, "Зеленый мотыль");
+            }
+            else
+            {
+                NpcMobsGrid.Rows.Add(1, 16, "Green WaterBeetle");
+            }
+            ExistenceGrid_CellChanged(null, null);
+        }
+        if (Language == 1)
+        {
+            ExistenceTab.Text = $"Мобы и Нипы {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
+        }
+        else
+        {
+            ExistenceTab.Text = $"Mobs and Npcs {NpcRowCollection.Count}/{Read.NpcMobsAmount}";
+        }
+    }
+
+    private void RemoveNpcAndMobFull(object sender, EventArgs e)
+    {
+        if (Read == null || NpcRowCollection.Count == 0)
+        {
+            return;
+        }
+        string text = "Вы уверены,что хотите удалить выбранные объекты?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete selected objects?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        int num = NpcRowCollection.Min();
+        NpcMobsGrid.ScrollBars = ScrollBars.None;
+        ErrorsGrid.ScrollBars = ScrollBars.None;
+        AllowCellChanging = false;
+        NpcMobsGrid.ClearSelection();
+        MainProgressBar.Maximum = NpcRowCollection.Count;
+        Read.NpcMobsAmount -= NpcRowCollection.Count;
+        foreach (int i in NpcRowCollection)
+        {
+            List<IntDictionary> Matched = (from f in ErrorExistenceCollection
+                                           where f.GridIndex == i
+                                           orderby f.ErrorInex descending
+                                           select f).ToList();
+            foreach (IntDictionary item in Matched)
+            {
+                ErrorsGrid.Rows.RemoveAt(item.ErrorInex);
+                ErrorExistenceCollection.RemoveAt(item.ErrorInex);
+            }
+            ErrorExistenceCollection.Where((IntDictionary b) => b.GridIndex > i).ToList().ForEach(delegate (IntDictionary s)
+            {
+                s.ErrorInex -= Matched.Count;
+            });
+            ErrorExistenceCollection.Where((IntDictionary a) => a.GridIndex > i).ToList().ForEach(delegate (IntDictionary s)
+            {
+                s.GridIndex--;
+            });
+            ErrorResourcesCollection.ForEach(delegate (IntDictionary s)
+            {
+                s.ErrorInex -= Matched.Count;
+            });
+            ErrorDynamicsCollection.ForEach(delegate (IntDictionary s)
+            {
+                s.ErrorInex -= Matched.Count;
+            });
+            Read.NpcMobList.RemoveAt(i);
+            NpcMobsGrid.Rows.RemoveAt(i);
+            MainProgressBar.Value++;
+        }
+        if (ErrorsGrid.Rows.Count != 0)
+        {
+            for (int j = 0; j < ErrorExistenceCollection.Count; j++)
+            {
+                ErrorsGrid.Rows[j].Cells[0].Value = j + 1;
+                ErrorsGrid.Rows[j].Cells[1].Value = ErrorExistenceCollection[j].GridIndex + 1;
+            }
+            int num2 = ((ErrorResourcesCollection.Count != 0) ? ErrorResourcesCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
+            for (int k = num2; k <= num2; k++)
+            {
+                ErrorsGrid.Rows[k].Cells[0].Value = k + 1;
+            }
+            int num3 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
+            for (int l = num3; l <= num3; l++)
+            {
+                ErrorsGrid.Rows[l].Cells[0].Value = l + 1;
+            }
+        }
+        AllowCellChanging = true;
+        MainProgressBar.Value = 0;
+        NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
+        ErrorsGrid.ScrollBars = ScrollBars.Vertical;
+        if (NpcMobsGrid.Rows.Count > num)
+        {
+            NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[num].Cells[1];
+            NpcMobsGrid.FirstDisplayedScrollingRowIndex = num;
+        }
+        else if (NpcMobsGrid.Rows.Count != 0)
+        {
+            NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
+            NpcMobsGrid.FirstDisplayedScrollingRowIndex = NpcMobsGrid.Rows.Count - 1;
+        }
+        ExistenceGrid_CellChanged(null, null);
+        for (int m = 0; m < NpcMobsGrid.Rows.Count; m++)
+        {
+            NpcMobsGrid.Rows[m].Cells[0].Value = m + 1;
+        }
+        if (Language == 1)
+        {
+            ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
+        }
+        else
+        {
+            ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
+        }
+    }
+
+    private void Id_numeric_DoubleClick(object sender, EventArgs e)
+    {
+        if (ChooseFromElementsForm == null)
+        {
+            return;
+        }
+        ChooseFromElementsForm.SetAction = 1;
+        ChooseFromElementsForm.SetWindow = 1;
+        if (!UdE.API.IsElementsEditorRunning)
+        {
+            int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == Convert.ToInt32(Id_numeric.Value));
+            if (num != -1)
+            {
+                if (num >= Element.MonsterdAmount)
+                {
+                    ChooseFromElementsForm.FindRow(num - Element.MonsterdAmount, "Npc");
+                }
+                else
+                {
+                    ChooseFromElementsForm.FindRow(num, "Mob");
+                }
+            }
+            else if (Language == 1)
+            {
+                MessageBox.Show("ID не найдено в elements.data!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (Language == 2)
+            {
+                MessageBox.Show("ID not found in elements.data!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            ChooseFromElementsForm.ShowDialog(this);
+        }
+        else
+        {
+            if (!UdE.API.IsSelectItemDialogCreated())
+            {
+                if (UdE.API.CreateSelectItemDialog(this) == IntPtr.Zero)
+                    return;
+            }
+
+            int selectedItemId = UdE.API.ShowSelectItemDialogByID(UdE.ItemType.NpcOrMobOrMine, Convert.ToInt32(Id_numeric.Value));
+            if (selectedItemId > 0)
+            {
+                Id_numeric.Value = selectedItemId;
+                SetId(selectedItemId, 1, 1);
+            }
+            UdE.API.DestroySelectItemDialog();
+        }
+    }
+
+    private void CloneNpcinGroupButton_Click(object sender, EventArgs e)
+    {
+        if (NpcMobsGrid.Rows.Count > 0 && NpcsGroupGrid.Rows.Count > 0)
+        {
+            UnderNpcRowCollection = UnderNpcRowCollection.OrderBy((int z) => z).ToList();
+            foreach (int item2 in UnderNpcRowCollection)
+            {
+                Read.NpcMobList[NpcRowIndex].Amount_in_group++;
+                ClassExtraMonsters item = new ClassExtraMonsters
+                {
+                    Agression = Read.NpcMobList[NpcRowIndex].MobDops[item2].Agression,
+                    Amount = Read.NpcMobList[NpcRowIndex].MobDops[item2].Agression,
+                    bFac_Accept = Read.NpcMobList[NpcRowIndex].MobDops[item2].bFac_Accept,
+                    bFac_Helper = Read.NpcMobList[NpcRowIndex].MobDops[item2].bFac_Helper,
+                    bFaction = Read.NpcMobList[NpcRowIndex].MobDops[item2].bFaction,
+                    bNeedHelp = Read.NpcMobList[NpcRowIndex].MobDops[item2].bNeedHelp,
+                    Dead_amount = Read.NpcMobList[NpcRowIndex].MobDops[item2].Dead_amount,
+                    Dead_time = Read.NpcMobList[NpcRowIndex].MobDops[item2].Dead_time,
+                    fOffsetTrn = Read.NpcMobList[NpcRowIndex].MobDops[item2].fOffsetTrn,
+                    fOffsetWater = Read.NpcMobList[NpcRowIndex].MobDops[item2].fOffsetWater,
+                    Group = Read.NpcMobList[NpcRowIndex].MobDops[item2].Group,
+                    Group_help_Needer = Read.NpcMobList[NpcRowIndex].MobDops[item2].Group_help_Needer,
+                    Group_help_sender = Read.NpcMobList[NpcRowIndex].MobDops[item2].Group_help_sender,
+                    Id = Read.NpcMobList[NpcRowIndex].MobDops[item2].Id,
+                    Path = Read.NpcMobList[NpcRowIndex].MobDops[item2].Path,
+                    Path_type = Read.NpcMobList[NpcRowIndex].MobDops[item2].Path_type,
+                    RefreshLower = Read.NpcMobList[NpcRowIndex].MobDops[item2].RefreshLower,
+                    Respawn = Read.NpcMobList[NpcRowIndex].MobDops[item2].Respawn,
+                    Speed = Read.NpcMobList[NpcRowIndex].MobDops[item2].Speed
+                };
+                Read.NpcMobList[NpcRowIndex].MobDops.Add(item);
+                NpcsGroupGrid.Rows.Add(Read.NpcMobList[NpcRowIndex].Amount_in_group, NpcsGroupGrid.Rows[item2].Cells[1].Value, NpcsGroupGrid.Rows[item2].Cells[2].Value);
+            }
+            RefreshRowNpcAndMobs(NpcRowIndex);
+            NpcsGroupGrid.ClearSelection();
+            for (int i = 1; i <= UnderNpcRowCollection.Count; i++)
+            {
+                NpcsGroupGrid.Rows[NpcsGroupGrid.Rows.Count - i].Selected = true;
+            }
+            NpcsGroupGrid.CurrentCell = NpcsGroupGrid.Rows[NpcsGroupGrid.Rows.Count - 1].Cells[1];
+            NpcsGroupGrid.FirstDisplayedScrollingRowIndex = NpcsGroupGrid.Rows.Count - 1;
+        }
+        else
+        {
+            ClassExtraMonsters classExtraMonsters = new ClassExtraMonsters();
+            Read.NpcMobList[NpcRowIndex].Amount_in_group++;
+            classExtraMonsters.Id = 16;
+            classExtraMonsters.Amount = 1;
+            classExtraMonsters.Respawn = 60;
+            Read.NpcMobList[NpcRowIndex].MobDops.Add(classExtraMonsters);
+            if (Language == 1)
+            {
+                NpcsGroupGrid.Rows.Add(1, 16, "Зеленый мотыль");
+            }
+            else if (Language == 2)
+            {
+                NpcsGroupGrid.Rows.Add(1, 16, "Green WaterBeetle");
+            }
+            RefreshRowNpcAndMobs(NpcRowIndex);
+            UnderExistenceGrid_CellChanged(null, null);
+        }
+    }
+
+    private void DeleteNpcinGroupButton_Click(object sender, EventArgs e)
+    {
+        if (UnderNpcRowCollection == null || NpcMobsGrid.Rows.Count <= 0 || NpcsGroupGrid.Rows.Count <= 0)
+        {
+            return;
+        }
+        string text = "Вы уверены,что хотите удалить выбранные объекты?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete selected objects?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        UnderNpcRowCollection = UnderNpcRowCollection.OrderByDescending((int z) => z).ToList();
+        int num = UnderNpcRowCollection.Min();
+        NpcsGroupGrid.ClearSelection();
+        foreach (int item in UnderNpcRowCollection)
+        {
+            Read.NpcMobList[NpcRowIndex].Amount_in_group--;
+            Read.NpcMobList[NpcRowIndex].MobDops.RemoveAt(item);
+            NpcsGroupGrid.Rows.RemoveAt(item);
+        }
+        RefreshRowNpcAndMobs(NpcRowIndex);
+        if (NpcsGroupGrid.Rows.Count > num)
+        {
+            NpcsGroupGrid.CurrentCell = NpcsGroupGrid.Rows[num].Cells[1];
+            NpcsGroupGrid.FirstDisplayedScrollingRowIndex = num;
+        }
+        else if (NpcsGroupGrid.Rows.Count != 0)
+        {
+            NpcsGroupGrid.CurrentCell = NpcsGroupGrid.Rows[NpcsGroupGrid.Rows.Count - 1].Cells[1];
+            NpcsGroupGrid.FirstDisplayedScrollingRowIndex = NpcsGroupGrid.Rows.Count - 1;
+        }
+        UnderExistenceGrid_CellChanged(null, null);
+    }
+
+    public void RefreshRowNpcAndMobs(int index)
+    {
+        int[] Id_joined = new int[Read.NpcMobList[index].Amount_in_group];
+        string[] array = new string[Read.NpcMobList[index].Amount_in_group];
+        int i;
+        for (i = 0; i < Read.NpcMobList[index].Amount_in_group; i++)
+        {
+            Id_joined[i] = Read.NpcMobList[index].MobDops[i].Id;
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num = Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Id_joined[i]);
+                if (num != -1)
+                {
+                    array[i] = Element.ExistenceLists[num].Name;
+                }
+                else
+                {
+                    array[i] = "?";
+                }
+            }
+            else
+            {
+                array[i] = Elementsdata.GetMobName(Id_joined[i]);
+            }
+        }
+        NpcMobsGrid.Rows[index].Cells[1].Value = string.Join(",", Id_joined);
+        NpcMobsGrid.Rows[index].Cells[2].Value = string.Join(",", array);
+    }
+
+    private void InsertCordsFromGame_Click(object sender, EventArgs e)
+    {
+        ClassPosition coordinates = GetCoordinates();
+        if (coordinates != null)
+        {
+            X_position.Text = coordinates.PosX.ToString();
+            Y_position.Text = coordinates.PosY.ToString();
+            Z_position.Text = coordinates.PosZ.ToString();
+            X_rotate.Text = coordinates.DirX.ToString();
+            Y_rotate.Text = coordinates.DirY.ToString();
+            Z_rotate.Text = coordinates.DirZ.ToString();
+            NpcAndMobsDefaultLeave(X_position, null);
+            NpcAndMobsDefaultLeave(Y_position, null);
+            NpcAndMobsDefaultLeave(Z_position, null);
+            NpcAndMobsDefaultLeave(X_rotate, null);
+            NpcAndMobsDefaultLeave(Y_rotate, null);
+            NpcAndMobsDefaultLeave(Z_rotate, null);
+        }
+    }
+
+    private void ResourcesGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+    {
+        if (!UdE.API.IsElementsEditorRunning)
+        {
+            if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+            {
+                string caption = Convert.ToString(ResourcesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                toolTip1.SetToolTip(ResourcesGrid, caption);
+            }
+        }
+        else
+        {
+            if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+            {
+                if (int.TryParse(ResourcesGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out int id) && id > 0)
+                {
+                    UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+                }
+            }
+        }
+    }
+
+    private void ResourcesGrid_CurrentCellChanged(object sender, EventArgs e)
+    {
+        if (AllowCellChanging)
+        {
+            ResourcesRowCollection = (from DataGridViewRow f in ResourcesGrid.SelectedRows
+                                      select f.Index into t
+                                      orderby t descending
+                                      select t).ToList();
+            if (ResourcesGrid.CurrentRow != null)
+            {
+                ResourcesRowIndex = ResourcesGrid.CurrentRow.Index;
+                if (ResourcesRowIndex != -1)
+                {
+                    RX_position.Text = Read.ResourcesList[ResourcesRowIndex].X_position.ToString();
+                    RY_position.Text = Read.ResourcesList[ResourcesRowIndex].Y_position.ToString();
+                    RZ_position.Text = Read.ResourcesList[ResourcesRowIndex].Z_position.ToString();
+                    RX_Random.Text = Read.ResourcesList[ResourcesRowIndex].X_Random.ToString();
+                    RZ_Random.Text = Read.ResourcesList[ResourcesRowIndex].Z_Random.ToString();
+                    RInCline1.Text = Read.ResourcesList[ResourcesRowIndex].InCline1.ToString();
+                    RInCline2.Text = Read.ResourcesList[ResourcesRowIndex].InCline2.ToString();
+                    RRotation.Text = Read.ResourcesList[ResourcesRowIndex].Rotation.ToString();
+                    RGroup_amount_textbox.Text = Read.ResourcesList[ResourcesRowIndex].Amount_in_group.ToString();
+                    RdwGenID.Text = Read.ResourcesList[ResourcesRowIndex].dwGenID.ToString();
+                    RTriggerID.Text = Read.ResourcesList[ResourcesRowIndex].Trigger_id.ToString();
+                    RIMaxNuml.Text = Read.ResourcesList[ResourcesRowIndex].IMaxNum.ToString();
+                    ResourcesInitGen.Checked = Convert.ToBoolean(Read.ResourcesList[ResourcesRowIndex].bInitGen);
+                    ResourcesAutoRevive.Checked = Convert.ToBoolean(Read.ResourcesList[ResourcesRowIndex].bAutoRevive);
+                    RBValidOnce.Checked = Convert.ToBoolean(Read.ResourcesList[ResourcesRowIndex].bValidOnce);
+                    ResourcesGroupGrid.Rows.Clear();
+                    int i;
+                    for (i = 0; i < Read.ResourcesList[ResourcesRowIndex].Amount_in_group; i++)
+                    {
+                        string text = "?";
+                        if (!UdE.API.IsElementsEditorRunning)
+                        {
+                            int num = Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Read.ResourcesList[ResourcesRowIndex].ResExtra[i].Id);
+                            if (num != -1)
+                            {
+                                text = Element.ResourcesList[num].Name;
+                            }
+                        }
+                        else
+                        {
+                            text = Elementsdata.GetMineName(Read.ResourcesList[ResourcesRowIndex].ResExtra[i].Id);
+                        }
+
+                        ResourcesGroupGrid.Rows.Add(i + 1, Read.ResourcesList[ResourcesRowIndex].ResExtra[i].Id, text);
+                    }
+                    if (MapForm != null && MainProgressBar.Value == 0 && ResourcesRowCollection.Count != 0 && MapForm.Visible)
+                    {
+                        MapForm.GetCoordinates(GetPoint(2));
+                    }
+                    ResourcesGroupGrid_CurrentCellChanged(null, null);
+                }
+            }
+        }
+        if (Language == 1)
+        {
+            ResourcesTab.Text = $"Ресурсы {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
+        }
+        else
+        {
+            ResourcesTab.Text = $"Resources {ResourcesRowCollection.Count}/{Read.ResourcesAmount}";
+        }
+    }
+
+    private void ResourcesGroupGrid_CurrentCellChanged(object sender, EventArgs e)
+    {
+        if (ResourcesGroupGrid.CurrentRow == null || ResourcesGroupGrid.CurrentRow.Index == -1)
+        {
+            return;
+        }
+        UnderResourcesRowCollection = new List<int>(ResourcesGroupGrid.SelectedRows.Count);
+        foreach (DataGridViewRow selectedRow in ResourcesGroupGrid.SelectedRows)
+        {
+            UnderResourcesRowCollection.Add(selectedRow.Index);
+        }
+        ResourcesGroupIndex = ResourcesGroupGrid.CurrentRow.Index;
+        RId_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].Id;
+        RAmount_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].Amount;
+        RRespawn_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].Respawntime;
+        RType_numeric.Value = Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].ResourceType;
+        RfHeiOff_numeric.Value = Convert.ToDecimal(Read.ResourcesList[ResourcesRowIndex].ResExtra[ResourcesGroupIndex].fHeiOff);
+    }
+
+    private void ResourcesDefault_EnterPress(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Return)
+        {
+            ResourcesDefaultLeave(sender, null);
+        }
+    }
+
+    private void ResourcesDefaultLeave(object sender, EventArgs e)
+    {
+        Control control = sender as Control;
+        float result3;
+        byte result2;
+        int result;
+        switch (control.Name)
+        {
+            case "RX_position":
+                float.TryParse(RX_position.Text, out result3);
+                {
+                    foreach (int item in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item].X_position = result3;
+                    }
+                    break;
+                }
+            case "RY_position":
+                float.TryParse(RY_position.Text, out result3);
+                {
+                    foreach (int item2 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item2].Y_position = result3;
+                    }
+                    break;
+                }
+            case "RZ_position":
+                float.TryParse(RZ_position.Text, out result3);
+                {
+                    foreach (int item3 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item3].Z_position = result3;
+                    }
+                    break;
+                }
+            case "RX_Random":
+                float.TryParse(RX_Random.Text, out result3);
+                {
+                    foreach (int item4 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item4].X_Random = result3;
+                    }
+                    break;
+                }
+            case "RZ_Random":
+                float.TryParse(RZ_Random.Text, out result3);
+                {
+                    foreach (int item5 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item5].Z_Random = result3;
+                    }
+                    break;
+                }
+            case "RInCline1":
+                byte.TryParse(RInCline1.Text, out result2);
+                {
+                    foreach (int item6 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item6].InCline1 = result2;
+                    }
+                    break;
+                }
+            case "RInCline2":
+                byte.TryParse(RInCline2.Text, out result2);
+                {
+                    foreach (int item7 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item7].InCline2 = result2;
+                    }
+                    break;
+                }
+            case "RRotation":
+                byte.TryParse(RRotation.Text, out result2);
+                {
+                    foreach (int item8 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item8].Rotation = result2;
+                    }
+                    break;
+                }
+            case "RdwGenID":
+                int.TryParse(RdwGenID.Text, out result);
+                {
+                    foreach (int item9 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item9].dwGenID = result;
+                    }
+                    break;
+                }
+            case "RTriggerID":
+                int.TryParse(RTriggerID.Text, out result);
+                {
+                    foreach (int item10 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item10].Trigger_id = result;
+                    }
+                    break;
+                }
+            case "RIMaxNuml":
+                int.TryParse(RIMaxNuml.Text, out result);
+                {
+                    foreach (int item11 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item11].IMaxNum = result;
+                    }
+                    break;
+                }
+            case "ResourcesInitGen":
+                {
+                    foreach (int item12 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item12].bInitGen = Convert.ToByte(ResourcesInitGen.Checked);
+                    }
+                    break;
+                }
+            case "ResourcesAutoRevive":
+                {
+                    foreach (int item13 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item13].bAutoRevive = Convert.ToByte(ResourcesAutoRevive.Checked);
+                    }
+                    break;
+                }
+            case "RBValidOnce":
+                {
+                    foreach (int item14 in ResourcesRowCollection)
+                    {
+                        Read.ResourcesList[item14].bValidOnce = Convert.ToByte(RBValidOnce.Checked);
+                    }
+                    break;
+                }
+        }
+    }
+
+    private void UnderResources_EnterPress(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Return)
+        {
+            UnderResourcesLeave(sender, null);
+        }
+    }
+
+    private void UnderResourcesLeave(object sender, EventArgs e)
+    {
+        Control control = sender as Control;
+        if (UnderResourcesRowCollection == null)
+        {
+            return;
+        }
+        switch (control.Name)
+        {
+            case "RId_numeric":
+                {
+                    foreach (int item in ResourcesRowCollection)
+                    {
+                        foreach (int item2 in UnderResourcesRowCollection)
+                        {
+                            if (Read.ResourcesList[item].Amount_in_group >= item2 + 1)
+                            {
+                                Read.ResourcesList[item].ResExtra[item2].Id = Convert.ToInt32(RId_numeric.Value);
+                                ResourcesGroupGrid.Rows[item2].Cells[1].Value = Convert.ToInt32(RId_numeric.Value);
+                                if (!UdE.API.IsElementsEditorRunning)
+                                {
+                                    int num = Element.ResourcesList.FindIndex((NpcMonster c) => c.Id == Convert.ToInt32(RId_numeric.Value));
+                                    if (num != -1)
+                                    {
+                                        ResourcesGroupGrid.Rows[item2].Cells[2].Value = Element.ResourcesList[num].Name;
+                                    }
+                                    else
+                                    {
+                                        ResourcesGroupGrid.Rows[item2].Cells[2].Value = "?";
+                                    }
+                                }
+                                else
+                                {
+                                    ResourcesGroupGrid.Rows[item2].Cells[2].Value = Elementsdata.GetMineName(Convert.ToInt32(RId_numeric.Value));
+                                }
+                            }
+                        }
+                        RefreshResourcesRow(item);
+                    }
+                    break;
+                }
+            case "RAmount_numeric":
+                {
+                    foreach (int item3 in ResourcesRowCollection)
+                    {
+                        foreach (int item4 in UnderResourcesRowCollection)
+                        {
+                            if (Read.ResourcesList[item3].Amount_in_group >= item4 + 1)
+                            {
+                                Read.ResourcesList[item3].ResExtra[item4].Amount = Convert.ToInt32(RAmount_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "RRespawn_numeric":
+                {
+                    foreach (int item5 in ResourcesRowCollection)
+                    {
+                        foreach (int item6 in UnderResourcesRowCollection)
+                        {
+                            if (Read.ResourcesList[item5].Amount_in_group >= item6 + 1)
+                            {
+                                Read.ResourcesList[item5].ResExtra[item6].Respawntime = Convert.ToInt32(RRespawn_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "RType_numeric":
+                {
+                    foreach (int item7 in ResourcesRowCollection)
+                    {
+                        foreach (int item8 in UnderResourcesRowCollection)
+                        {
+                            if (Read.ResourcesList[item7].Amount_in_group >= item8 + 1)
+                            {
+                                Read.ResourcesList[item7].ResExtra[item8].ResourceType = Convert.ToInt32(RType_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+            case "RfHeiOff_numeric":
+                {
+                    foreach (int item9 in ResourcesRowCollection)
+                    {
+                        foreach (int item10 in UnderResourcesRowCollection)
+                        {
+                            if (Read.ResourcesList[item9].Amount_in_group >= item10 + 1)
+                            {
+                                Read.ResourcesList[item9].ResExtra[item10].fHeiOff = Convert.ToSingle(RfHeiOff_numeric.Value);
+                            }
+                        }
+                    }
+                    break;
+                }
+        }
+    }
+
+    public void RefreshResourcesRow(int index)
+    {
+        int[] Id_joined = new int[Read.ResourcesList[index].Amount_in_group];
+        string[] array = new string[Read.ResourcesList[index].Amount_in_group];
+        int i;
+        for (i = 0; i < Read.ResourcesList[index].Amount_in_group; i++)
+        {
+            Id_joined[i] = Read.ResourcesList[index].ResExtra[i].Id;
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num = Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Id_joined[i]);
+                if (num != -1)
+                {
+                    array[i] = Element.ResourcesList[num].Name;
+                }
+                else
+                {
+                    array[i] = "?";
+                }
+            }
+            else
+            {
+                array[i] = Elementsdata.GetMineName(Id_joined[i]);
+            }
+
+        }
+        ResourcesGrid.Rows[index].Cells[1].Value = string.Join(",", Id_joined);
+        ResourcesGrid.Rows[index].Cells[2].Value = string.Join(",", array);
+    }
+
+    private void CloneResurcesFull_Click(object sender, EventArgs e)
+    {
+        if (ResourcesGrid.Rows.Count > 0)
+        {
+            ResourcesGrid.ScrollBars = ScrollBars.None;
+            ResourcesRowCollection = ResourcesRowCollection.OrderBy((int z) => z).ToList();
+            foreach (int item3 in ResourcesRowCollection)
+            {
+                Read.ResourcesAmount++;
+                ClassDefaultResources classDefaultResources = new ClassDefaultResources
+                {
+                    Amount_in_group = Read.ResourcesList[item3].Amount_in_group,
+                    X_position = Read.ResourcesList[item3].X_position,
+                    Y_position = Read.ResourcesList[item3].Y_position,
+                    Z_position = Read.ResourcesList[item3].Z_position,
+                    bAutoRevive = Read.ResourcesList[item3].bAutoRevive,
+                    bInitGen = Read.ResourcesList[item3].bInitGen,
+                    bValidOnce = Read.ResourcesList[item3].bValidOnce,
+                    dwGenID = Read.ResourcesList[item3].dwGenID,
+                    IMaxNum = Read.ResourcesList[item3].IMaxNum,
+                    Trigger_id = Read.ResourcesList[item3].Trigger_id,
+                    InCline1 = Read.ResourcesList[item3].InCline1,
+                    X_Random = Read.ResourcesList[item3].X_Random,
+                    InCline2 = Read.ResourcesList[item3].InCline2,
+                    Z_Random = Read.ResourcesList[item3].Z_Random,
+                    Rotation = Read.ResourcesList[item3].Rotation,
+                    ResExtra = new List<ClassExtraResources>()
+                };
+                for (int i = 0; i < Read.ResourcesList[item3].Amount_in_group; i++)
+                {
+                    ClassExtraResources item = new ClassExtraResources
+                    {
+                        Id = Read.ResourcesList[item3].ResExtra[i].Id,
+                        ResourceType = Read.ResourcesList[item3].ResExtra[i].ResourceType,
+                        Respawntime = Read.ResourcesList[item3].ResExtra[i].Respawntime,
+                        Amount = Read.ResourcesList[item3].ResExtra[i].Amount,
+                        fHeiOff = Read.ResourcesList[item3].ResExtra[i].fHeiOff
+                    };
+                    classDefaultResources.ResExtra.Add(item);
+                }
+                Read.ResourcesList.Add(classDefaultResources);
+                ResourcesGrid.Rows.Add(Read.ResourcesAmount, ResourcesGrid.Rows[item3].Cells[1].Value, ResourcesGrid.Rows[item3].Cells[2].Value);
+            }
+            ResourcesGrid.ScrollBars = ScrollBars.Vertical;
+            List<int> resourcesRowCollection = ResourcesRowCollection;
+            ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
+            for (int j = 1; j <= resourcesRowCollection.Count; j++)
+            {
+                ResourcesGrid.Rows[ResourcesGrid.Rows.Count - j].Selected = true;
+            }
+            ResourcesGrid_CurrentCellChanged(null, null);
+        }
+        else
+        {
+            Read.ResourcesAmount++;
+            ClassDefaultResources classDefaultResources2 = new ClassDefaultResources
+            {
+                Amount_in_group = 1,
+                ResExtra = new List<ClassExtraResources>()
+            };
+            ClassExtraResources item2 = new ClassExtraResources
+            {
+                Id = 3074,
+                Amount = 1,
+                Respawntime = 60,
+                ResourceType = 80
+            };
+            classDefaultResources2.ResExtra.Add(item2);
+            Read.ResourcesList.Add(classDefaultResources2);
+            if (Language == 1)
+            {
+                ResourcesGrid.Rows.Add(1, 3074, "Высохший древесный корень");
+            }
+            else
+            {
+                ResourcesGrid.Rows.Add(1, 3074, "Withered root");
+            }
+            ResourcesGrid_CurrentCellChanged(null, null);
+        }
+        if (Language == 1)
+        {
+            ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
+        }
+        else
+        {
+            ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
+        }
+    }
+
+    private void RemoveResourceFull_Click(object sender, EventArgs e)
+    {
+        if (Read == null || ResourcesRowCollection.Count == 0)
+        {
+            return;
+        }
+        string text = "Вы уверены,что хотите удалить выбранные объекты?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete selected objects?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        int num = ResourcesRowCollection.Min();
+        ResourcesGrid.ScrollBars = ScrollBars.None;
+        ErrorsGrid.ScrollBars = ScrollBars.None;
+        AllowCellChanging = false;
+        ResourcesGrid.ClearSelection();
+        MainProgressBar.Maximum = ResourcesRowCollection.Count;
+        Read.ResourcesAmount -= ResourcesRowCollection.Count;
+        foreach (int j in ResourcesRowCollection)
+        {
+            List<IntDictionary> Matched = (from f in ErrorResourcesCollection
+                                           where f.GridIndex == j
+                                           orderby f.ErrorInex descending
+                                           select f).ToList();
+            foreach (IntDictionary item in Matched)
+            {
+                ErrorsGrid.Rows.RemoveAt(item.ErrorInex);
+                ErrorResourcesCollection.RemoveAt(ErrorResourcesCollection.FindIndex((IntDictionary t) => t.ErrorInex == item.ErrorInex));
+            }
+            ErrorResourcesCollection.Where((IntDictionary b) => b.GridIndex > j).ToList().ForEach(delegate (IntDictionary s)
+            {
+                s.ErrorInex -= Matched.Count;
+            });
+            ErrorResourcesCollection.Where((IntDictionary a) => a.GridIndex > j).ToList().ForEach(delegate (IntDictionary s)
+            {
+                s.GridIndex--;
+            });
+            ErrorDynamicsCollection.ForEach(delegate (IntDictionary s)
+            {
+                s.ErrorInex -= Matched.Count;
+            });
+            Read.ResourcesList.RemoveAt(j);
+            ResourcesGrid.Rows.RemoveAt(j);
+            MainProgressBar.Value++;
+        }
+        if (ErrorsGrid.Rows.Count != 0)
+        {
+            int num2 = ((ErrorResourcesCollection.Count != 0) ? ErrorResourcesCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
+            int num3 = ((ErrorResourcesCollection.Count != 0) ? ErrorResourcesCollection.Max((IntDictionary f) => f.ErrorInex) : 0);
+            int i;
+            for (i = num2; i <= num3; i++)
+            {
+                ErrorsGrid.Rows[i].Cells[0].Value = i + 1;
+                ErrorsGrid.Rows[i].Cells[1].Value = ErrorResourcesCollection.Find((IntDictionary f) => f.ErrorInex == i).GridIndex + 1;
+            }
+            int num4 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
+            for (int k = num4; k <= num4; k++)
+            {
+                ErrorsGrid.Rows[k].Cells[0].Value = k + 1;
+            }
+        }
+        AllowCellChanging = true;
+        MainProgressBar.Value = 0;
+        ResourcesGrid.ScrollBars = ScrollBars.Vertical;
+        ErrorsGrid.ScrollBars = ScrollBars.Vertical;
+        if (ResourcesGrid.Rows.Count > num)
+        {
+            ResourcesGrid.CurrentCell = ResourcesGrid.Rows[num].Cells[1];
+            ResourcesGrid.FirstDisplayedScrollingRowIndex = num;
+        }
+        else if (ResourcesGrid.Rows.Count != 0)
+        {
+            ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
+            ResourcesGrid.FirstDisplayedScrollingRowIndex = ResourcesGrid.Rows.Count - 1;
+        }
+        ResourcesGrid_CurrentCellChanged(null, null);
+        for (int l = 0; l < ResourcesGrid.Rows.Count; l++)
+        {
+            ResourcesGrid.Rows[l].Cells[0].Value = l + 1;
+        }
+        if (Language == 1)
+        {
+            ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
+        }
+        else
+        {
+            ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
+        }
+    }
+
+    private void CloneResourcesInGroup_Click(object sender, EventArgs e)
+    {
+        if (ResourcesGrid.Rows.Count <= 0)
+        {
+            return;
+        }
+        if (ResourcesGroupGrid.Rows.Count > 0)
+        {
+            UnderResourcesRowCollection = UnderResourcesRowCollection.OrderBy((int z) => z).ToList();
+            foreach (int item2 in UnderResourcesRowCollection)
+            {
+                Read.ResourcesList[ResourcesRowIndex].Amount_in_group++;
+                ClassExtraResources item = new ClassExtraResources
+                {
+                    Id = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].Id,
+                    Amount = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].Amount,
+                    ResourceType = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].ResourceType,
+                    Respawntime = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].Respawntime,
+                    fHeiOff = Read.ResourcesList[ResourcesRowIndex].ResExtra[item2].fHeiOff
+                };
+                Read.ResourcesList[ResourcesRowIndex].ResExtra.Add(item);
+                ResourcesGroupGrid.Rows.Add(Read.ResourcesList[ResourcesRowIndex].Amount_in_group, ResourcesGroupGrid.Rows[item2].Cells[1].Value, ResourcesGroupGrid.Rows[item2].Cells[2].Value);
+            }
+            RefreshResourcesRow(ResourcesRowIndex);
+            ResourcesGroupGrid.ClearSelection();
+            for (int i = 1; i <= UnderResourcesRowCollection.Count; i++)
+            {
+                ResourcesGroupGrid.Rows[ResourcesGroupGrid.Rows.Count - i].Selected = true;
+            }
+            ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[ResourcesGroupGrid.Rows.Count - 1].Cells[1];
+            ResourcesGroupGrid.FirstDisplayedScrollingRowIndex = ResourcesGroupGrid.Rows.Count - 1;
+        }
+        else
+        {
+            ClassExtraResources classExtraResources = new ClassExtraResources();
+            Read.ResourcesList[ResourcesRowIndex].Amount_in_group++;
+            classExtraResources.Id = 3074;
+            classExtraResources.Amount = 1;
+            classExtraResources.Respawntime = 60;
+            classExtraResources.ResourceType = 80;
+            Read.ResourcesList[ResourcesRowIndex].ResExtra.Add(classExtraResources);
+            if (Language == 1)
+            {
+                ResourcesGroupGrid.Rows.Add(1, 3074, "Высохший древесный корень");
+            }
+            else
+            {
+                ResourcesGroupGrid.Rows.Add(1, 3074, "Withered root");
+            }
+            RefreshResourcesRow(ResourcesRowIndex);
+            ResourcesGroupGrid_CurrentCellChanged(null, null);
+        }
+    }
+
+    private void RemoveResourcesInGroup_Click(object sender, EventArgs e)
+    {
+        UnderResourcesRowCollection = UnderResourcesRowCollection.OrderByDescending((int z) => z).ToList();
+        if (UnderResourcesRowCollection.Count == 0 || ResourcesGrid.Rows.Count <= 0 || ResourcesGroupGrid.Rows.Count <= 0)
+        {
+            return;
+        }
+        string text = "Вы уверены,что хотите удалить выбранные ресурсы?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete selected resources?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        int num = UnderResourcesRowCollection.Min();
+        ResourcesGroupGrid.ClearSelection();
+        foreach (int item in UnderResourcesRowCollection)
+        {
+            Read.ResourcesList[ResourcesRowIndex].Amount_in_group--;
+            Read.ResourcesList[ResourcesRowIndex].ResExtra.RemoveAt(item);
+            ResourcesGroupGrid.Rows.RemoveAt(item);
+        }
+        RefreshResourcesRow(ResourcesRowIndex);
+        if (ResourcesGroupGrid.Rows.Count > num)
+        {
+            ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[num].Cells[1];
+            ResourcesGroupGrid.FirstDisplayedScrollingRowIndex = num;
+        }
+        else if (ResourcesGroupGrid.Rows.Count != 0)
+        {
+            ResourcesGroupGrid.CurrentCell = ResourcesGroupGrid.Rows[ResourcesGroupGrid.Rows.Count - 1].Cells[1];
+            ResourcesGroupGrid.FirstDisplayedScrollingRowIndex = ResourcesGroupGrid.Rows.Count - 1;
+        }
+        ResourcesGroupGrid_CurrentCellChanged(null, null);
+    }
+
+    private void RId_numeric_DoubleClick(object sender, EventArgs e)
+    {
+        if (ChooseFromElementsForm != null)
+        {
+            ChooseFromElementsForm.SetAction = 2;
+            ChooseFromElementsForm.SetWindow = 1;
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == Convert.ToInt32(RId_numeric.Value));
+                if (num != -1)
+                {
+                    ChooseFromElementsForm.FindRow(num, "Resource");
+                }
+                ChooseFromElementsForm.ShowDialog(this);
+            }
+            else
+            {
+                if (!UdE.API.IsSelectItemDialogCreated())
+                {
+                    if (UdE.API.CreateSelectItemDialog(this) == IntPtr.Zero)
+                        return;
+                }
+
+                int selectedItemId = UdE.API.ShowSelectItemDialogByID(UdE.ItemType.PW_MINE_ESSENCE, Convert.ToInt32(RId_numeric.Value));
+                if (selectedItemId > 0)
+                {
+                    RId_numeric.Value = selectedItemId;
+                    SetId(selectedItemId, 2, 1);
+                }
+                UdE.API.DestroySelectItemDialog();
+            }
+
+        }
+    }
+
+    private void RInsterCordsFromGame_Click(object sender, EventArgs e)
+    {
+        ClassPosition coordinates = GetCoordinates();
+        if (coordinates != null)
+        {
+            RX_position.Text = coordinates.PosX.ToString();
+            RY_position.Text = coordinates.PosY.ToString();
+            RZ_position.Text = coordinates.PosZ.ToString();
+            ResourcesDefaultLeave(RX_position, null);
+            ResourcesDefaultLeave(RY_position, null);
+            ResourcesDefaultLeave(RZ_position, null);
+        }
+    }
+
+    private void DynamicGrid_CurrentCellChanged(object sender, EventArgs e)
+    {
+        if (AllowCellChanging)
+        {
+            DynamicsRowCollection = (from DataGridViewRow f in DynamicGrid.SelectedRows
+                                     select f.Index into v
+                                     orderby v descending
+                                     select v).ToList();
+            if (DynamicGrid.CurrentRow != null)
+            {
+                DynamicRowIndex = DynamicGrid.CurrentRow.Index;
+                if (DynamicRowIndex != -1)
+                {
+                    DId_numeric.Text = Read.DynamicsList[DynamicRowIndex].Id.ToString();
+                    Label_DynamicName.Text = DynamicGrid.Rows[DynamicRowIndex].Cells[2].Value.ToString();
+                    DX_position.Text = Read.DynamicsList[DynamicRowIndex].X_position.ToString();
+                    DY_position.Text = Read.DynamicsList[DynamicRowIndex].Y_position.ToString();
+                    DZ_position.Text = Read.DynamicsList[DynamicRowIndex].Z_position.ToString();
+                    DIncline1.Text = Read.DynamicsList[DynamicRowIndex].InCline1.ToString();
+                    DIncline2.Text = Read.DynamicsList[DynamicRowIndex].InCline2.ToString();
+                    DRotation.Text = Read.DynamicsList[DynamicRowIndex].Rotation.ToString();
+                    DTrigger_id.Text = Read.DynamicsList[DynamicRowIndex].TriggerId.ToString();
+                    DScale.Text = Read.DynamicsList[DynamicRowIndex].Scale.ToString();
+                    string text = $"{Application.StartupPath}\\DynamicObjects\\d{DynamicGrid.Rows[DynamicRowIndex].Cells[1].Value}.jpg";
+                    if (File.Exists(text))
+                    {
+                        DynamicPictureBox.Image = Image.FromFile(text);
+                    }
+                    if (MapForm != null && MainProgressBar.Value == 0 && DynamicsRowCollection.Count != 0 && MapForm.Visible)
+                    {
+                        MapForm.GetCoordinates(GetPoint(3));
+                    }
+                }
+            }
+        }
+        if (Language == 1)
+        {
+            DynObjectsTab.Text = $"Динамические Объекты {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
+        }
+        else
+        {
+            DynObjectsTab.Text = $"Dynamic Objects {DynamicsRowCollection.Count}/{Read.DynobjectAmount}";
+        }
+    }
+
+    private void IdFind(object sender, EventArgs e)
+    {
+        if (!string.IsNullOrWhiteSpace(DId_numeric.Text))
+        {
+            Label_DynamicName.Text = GetDynamicName(Convert.ToInt32(DId_numeric.Text));
+            string text = $"{Application.StartupPath}\\DynamicObjects\\d{Convert.ToInt32(DId_numeric.Text)}.jpg";
+            if (File.Exists(text))
+            {
+                DynamicPictureBox.Image = Image.FromFile(text);
+            }
+            if (Label_DynamicName.Text == "?")
+            {
+                DynamicPictureBox.Image = null;
+            }
+        }
+    }
+
+    private void DynamicsLeave(object sender, EventArgs e)
+    {
+        Control control = sender as Control;
+        if (DynamicsRowCollection == null)
+        {
+            return;
+        }
+        int result2;
+        float result3;
+        byte result;
+        switch (control.Name)
+        {
+            case "DId_numeric":
+                int.TryParse(DId_numeric.Text, out result2);
+                {
+                    foreach (int item in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item].Id = result2;
+                        DynamicGrid.Rows[item].Cells[1].Value = result2;
+                        DynamicGrid.Rows[item].Cells[2].Value = Label_DynamicName.Text;
+                    }
+                    break;
+                }
+            case "DX_position":
+                float.TryParse(DX_position.Text, out result3);
+                {
+                    foreach (int item2 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item2].X_position = result3;
+                    }
+                    break;
+                }
+            case "DY_position":
+                float.TryParse(DY_position.Text, out result3);
+                {
+                    foreach (int item3 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item3].Y_position = result3;
+                    }
+                    break;
+                }
+            case "DZ_position":
+                float.TryParse(DZ_position.Text, out result3);
+                {
+                    foreach (int item4 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item4].Z_position = result3;
+                    }
+                    break;
+                }
+            case "DIncline1":
+                byte.TryParse(DIncline1.Text, out result);
+                {
+                    foreach (int item5 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item5].InCline1 = result;
+                    }
+                    break;
+                }
+            case "DIncline2":
+                byte.TryParse(DIncline2.Text, out result);
+                {
+                    foreach (int item6 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item6].InCline2 = result;
+                    }
+                    break;
+                }
+            case "DRotation":
+                byte.TryParse(DRotation.Text, out result);
+                {
+                    foreach (int item7 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item7].Rotation = result;
+                    }
+                    break;
+                }
+            case "DTrigger_id":
+                int.TryParse(DTrigger_id.Text, out result2);
+                {
+                    foreach (int item8 in DynamicsRowCollection)
+                    {
+                        DynamicGrid.Rows[item8].Cells[3].Value = result2;
+                        Read.DynamicsList[item8].TriggerId = result2;
+                    }
+                    break;
+                }
+            case "DScale":
+                byte.TryParse(DScale.Text, out result);
+                {
+                    foreach (int item9 in DynamicsRowCollection)
+                    {
+                        Read.DynamicsList[item9].Scale = result;
+                    }
+                    break;
+                }
+        }
+    }
+
+    private void DynamicsKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Return)
+        {
+            DynamicsLeave(sender, null);
+        }
+    }
+
+    private void DClone_button_Click(object sender, EventArgs e)
+    {
+        if (DynamicGrid.Rows.Count > 0)
+        {
+            DynamicGrid.ScrollBars = ScrollBars.None;
+            DynamicsRowCollection = DynamicsRowCollection.OrderBy((int z) => z).ToList();
+            foreach (int item3 in DynamicsRowCollection)
+            {
+                Read.DynobjectAmount++;
+                ClassDynamicObject item = new ClassDynamicObject
+                {
+                    Id = Read.DynamicsList[item3].Id,
+                    InCline1 = Read.DynamicsList[item3].InCline1,
+                    InCline2 = Read.DynamicsList[item3].InCline2,
+                    Rotation = Read.DynamicsList[item3].Rotation,
+                    Scale = Read.DynamicsList[item3].Scale,
+                    TriggerId = Read.DynamicsList[item3].TriggerId,
+                    X_position = Read.DynamicsList[item3].X_position,
+                    Y_position = Read.DynamicsList[item3].Y_position,
+                    Z_position = Read.DynamicsList[item3].Z_position
+                };
+                Read.DynamicsList.Add(item);
+                DynamicGrid.Rows.Add(Read.DynobjectAmount, DynamicGrid.Rows[item3].Cells[1].Value, DynamicGrid.Rows[item3].Cells[2].Value, DynamicGrid.Rows[item3].Cells[3].Value);
+            }
+            DynamicGrid.ScrollBars = ScrollBars.Vertical;
+            List<int> dynamicsRowCollection = DynamicsRowCollection;
+            DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
+            for (int i = 1; i <= dynamicsRowCollection.Count; i++)
+            {
+                DynamicGrid.Rows[DynamicGrid.Rows.Count - i].Selected = true;
+            }
+            DynamicGrid_CurrentCellChanged(null, null);
+        }
+        else
+        {
+            Read.DynobjectAmount++;
+            ClassDynamicObject item2 = new ClassDynamicObject
+            {
+                Id = 16
+            };
+            Read.DynamicsList.Add(item2);
+            if (Language == 1)
+            {
+                DynamicGrid.Rows.Add(1, 9, "Ворота", 0);
+            }
+            else
+            {
+                DynamicGrid.Rows.Add(1, 9, "Gates", 0);
+            }
+            DynamicGrid_CurrentCellChanged(null, null);
+        }
+        if (Language == 1)
+        {
+            DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
+        }
+        else
+        {
+            DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
+        }
+    }
+
+    private void DDelete_button_Click(object sender, EventArgs e)
+    {
+        if (Read == null || DynamicsRowCollection.Count == 0)
+        {
+            return;
+        }
+        string text = "Вы уверены,что хотите удалить выбранные объекты?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete selected objects?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        int num = DynamicsRowCollection.Min();
+        DynamicGrid.ScrollBars = ScrollBars.None;
+        ErrorsGrid.ScrollBars = ScrollBars.None;
+        AllowCellChanging = false;
+        DynamicGrid.ClearSelection();
+        MainProgressBar.Maximum = DynamicsRowCollection.Count;
+        Read.DynobjectAmount -= DynamicsRowCollection.Count;
+        foreach (int j in DynamicsRowCollection)
+        {
+            List<IntDictionary> Matched = (from f in ErrorDynamicsCollection
+                                           where f.GridIndex == j
+                                           orderby f.ErrorInex descending
+                                           select f).ToList();
+            foreach (IntDictionary item in Matched)
+            {
+                ErrorsGrid.Rows.RemoveAt(item.ErrorInex);
+                ErrorDynamicsCollection.RemoveAt(ErrorDynamicsCollection.FindIndex((IntDictionary t) => t.ErrorInex == item.ErrorInex));
+            }
+            ErrorDynamicsCollection.Where((IntDictionary b) => b.GridIndex > j).ToList().ForEach(delegate (IntDictionary s)
+            {
+                s.ErrorInex -= Matched.Count;
+            });
+            ErrorDynamicsCollection.Where((IntDictionary a) => a.GridIndex > j).ToList().ForEach(delegate (IntDictionary s)
+            {
+                s.GridIndex--;
+            });
+            Read.DynamicsList.RemoveAt(j);
+            DynamicGrid.Rows.RemoveAt(j);
+            MainProgressBar.Value++;
+        }
+        if (ErrorsGrid.Rows.Count != 0)
+        {
+            int num2 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Min((IntDictionary f) => f.ErrorInex) : 0);
+            int num3 = ((ErrorDynamicsCollection.Count != 0) ? ErrorDynamicsCollection.Max((IntDictionary f) => f.ErrorInex) : 0);
+            int i;
+            for (i = num2; i <= num3; i++)
+            {
+                ErrorsGrid.Rows[i].Cells[0].Value = i + 1;
+                ErrorsGrid.Rows[i].Cells[1].Value = ErrorDynamicsCollection.Find((IntDictionary f) => f.ErrorInex == i).GridIndex + 1;
+            }
+        }
+        AllowCellChanging = true;
+        MainProgressBar.Value = 0;
+        DynamicGrid.ScrollBars = ScrollBars.Vertical;
+        ErrorsGrid.ScrollBars = ScrollBars.Vertical;
+        if (DynamicGrid.Rows.Count > num)
+        {
+            DynamicGrid.CurrentCell = DynamicGrid.Rows[num].Cells[1];
+            DynamicGrid.FirstDisplayedScrollingRowIndex = num;
+        }
+        else if (DynamicGrid.Rows.Count != 0)
+        {
+            DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
+            DynamicGrid.FirstDisplayedScrollingRowIndex = DynamicGrid.Rows.Count - 1;
+        }
+        DynamicGrid_CurrentCellChanged(null, null);
+        for (int k = 0; k < DynamicGrid.Rows.Count; k++)
+        {
+            DynamicGrid.Rows[k].Cells[0].Value = k + 1;
+        }
+        if (Language == 1)
+        {
+            DynObjectsTab.Text = $"Динамические объекты 1/{Read.DynobjectAmount}";
+        }
+        else
+        {
+            DynObjectsTab.Text = $"Dynamic objects 1/{Read.DynobjectAmount}";
+        }
+    }
+
+    private void DInsterCordsFromGame_Click(object sender, EventArgs e)
+    {
+        ClassPosition coordinates = GetCoordinates();
+        if (coordinates != null)
+        {
+            DX_position.Text = coordinates.PosX.ToString();
+            DY_position.Text = coordinates.PosY.ToString();
+            DZ_position.Text = coordinates.PosZ.ToString();
+            DynamicsLeave(DX_position, null);
+            DynamicsLeave(DY_position, null);
+            DynamicsLeave(DZ_position, null);
+        }
+    }
+
+    private void TriggerUsingInMobsAndNpcsGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+    {
+        if(!UdE.API.IsElementsEditorRunning)
+        {
+            if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+            {
+                string caption = Convert.ToString(MUTrigger.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                toolTip1.SetToolTip(MUTrigger, caption);
+            }
+        }
+        else
+        {
+            if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+            {
+                if (int.TryParse(MUTrigger.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+                {
+                    UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+                }
+            }
+        }
+    }
+
+    private void TriggersGrid_CurrentCellChanged(object sender, EventArgs e)
+    {
+        if (AllowCellChanging)
+        {
+            TriggersRowCollection = (from DataGridViewRow f in TriggersGrid.SelectedRows
+                                     select f.Index into v
+                                     orderby v descending
+                                     select v).ToList();
+            if (TriggersGrid.CurrentRow != null)
+            {
+                TriggersRowIndex = TriggersGrid.CurrentRow.Index;
+                if (TriggersRowIndex != -1)
+                {
+                    TId_textbox.Text = Read.TriggersList[TriggersRowIndex].Id.ToString();
+                    TGmId_textbox.Text = Read.TriggersList[TriggersRowIndex].GmID.ToString();
+                    TName_textbox.Text = Read.TriggersList[TriggersRowIndex].TriggerName.ToString();
+                    TWaitStart_textbox.Text = Read.TriggersList[TriggersRowIndex].WaitWhileStart.ToString();
+                    TWaitStop_textbox.Text = Read.TriggersList[TriggersRowIndex].WaitWhileStop.ToString();
+                    TAutoStart.Checked = Convert.ToBoolean(Read.TriggersList[TriggersRowIndex].AutoStart);
+                    TDuration.Text = Read.TriggersList[TriggersRowIndex].Duration.ToString();
+                    TStartBySchedule.Checked = Convert.ToBoolean(Read.TriggersList[TriggersRowIndex].DontStartOnSchedule);
+                    TStopBySchedule.Checked = Convert.ToBoolean(Read.TriggersList[TriggersRowIndex].DontStopOnSchedule);
+                    TStartYear.Text = Read.TriggersList[TriggersRowIndex].StartYear.ToString();
+                    TStartMonth.Text = Read.TriggersList[TriggersRowIndex].StartMonth.ToString();
+                    TStartWeekDay.SelectedIndex = Read.TriggersList[TriggersRowIndex].StartWeekDay + 1;
+                    TStartDay.Text = Read.TriggersList[TriggersRowIndex].StartDay.ToString();
+                    TStartHour.Text = Read.TriggersList[TriggersRowIndex].StartHour.ToString();
+                    TStartMinute.Text = Read.TriggersList[TriggersRowIndex].StartMinute.ToString();
+                    TStopYear.Text = Read.TriggersList[TriggersRowIndex].StopYear.ToString();
+                    TStopMonth.Text = Read.TriggersList[TriggersRowIndex].StopMonth.ToString();
+                    TStopWeekDay.SelectedIndex = Read.TriggersList[TriggersRowIndex].StopWeekDay + 1;
+                    TStopDay.Text = Read.TriggersList[TriggersRowIndex].StopDay.ToString();
+                    TStopHour.Text = Read.TriggersList[TriggersRowIndex].StopHour.ToString();
+                    TStopMinute.Text = Read.TriggersList[TriggersRowIndex].StopMinute.ToString();
+                    MUTrigger.ScrollBars = ScrollBars.None;
+                    RUTrigger.ScrollBars = ScrollBars.None;
+                    DUTrigger.ScrollBars = ScrollBars.None;
+                    MonstersContact = Read.NpcMobList.Where((ClassDefaultMonsters z) => z.Trigger_id == Read.TriggersList[TriggersRowIndex].Id).ToList();
+                    MUTrigger.Rows.Clear();
+                    for (int i = 0; i < MonstersContact.Count; i++)
+                    {
+                        string text = Convert.ToString(NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[i])].Cells[1].Value);
+                        string text2 = Convert.ToString(NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[i])].Cells[2].Value);
+                        MUTrigger.Rows.Add(i + 1, text, text2);
+                    }
+                    ResourcesContact = Read.ResourcesList.Where((ClassDefaultResources z) => z.Trigger_id == Read.TriggersList[TriggersRowIndex].Id).ToList();
+                    RUTrigger.Rows.Clear();
+                    for (int j = 0; j < ResourcesContact.Count; j++)
+                    {
+                        string text3 = Convert.ToString(ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[j])].Cells[1].Value);
+                        string text4 = Convert.ToString(ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[j])].Cells[2].Value);
+                        RUTrigger.Rows.Add(j + 1, text3, text4);
+                    }
+                    DynamicsContact = Read.DynamicsList.Where((ClassDynamicObject z) => z.TriggerId == Read.TriggersList[TriggersRowIndex].Id).ToList();
+                    DUTrigger.Rows.Clear();
+                    for (int k = 0; k < DynamicsContact.Count; k++)
+                    {
+                        string text5 = Convert.ToString(DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[k])].Cells[1].Value);
+                        string text6 = Convert.ToString(DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[k])].Cells[2].Value);
+                        DUTrigger.Rows.Add(k + 1, text5, text6);
+                    }
+                    MUTrigger.ScrollBars = ScrollBars.Vertical;
+                    RUTrigger.ScrollBars = ScrollBars.Vertical;
+                    DUTrigger.ScrollBars = ScrollBars.Vertical;
+                }
+            }
+        }
+        if (Language == 1)
+        {
+            TriggersTab.Text = $"Триггеры {TriggersRowCollection.Count}/{Read.TriggersAmount}";
+        }
+        else
+        {
+            TriggersTab.Text = $"Triggers {TriggersRowCollection.Count}/{Read.TriggersAmount}";
+        }
+    }
+
+    private void TId_textbox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Return)
+        {
+            TId_textbox_Leave(sender, new EventArgs());
+        }
+    }
+
+    private void TId_textbox_Leave(object sender, EventArgs e)
+    {
+        Control control = sender as Control;
+        int result;
+        switch (control.Name)
+        {
+            case "TId_textbox":
+                int.TryParse(TId_textbox.Text, out result);
+                {
+                    foreach (int item in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item].Id = result;
+                        TriggersGrid.Rows[item].Cells[1].Value = result;
+                    }
+                    break;
+                }
+            case "TGmId_textbox":
+                int.TryParse(TGmId_textbox.Text, out result);
+                {
+                    foreach (int item2 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item2].GmID = result;
+                        TriggersGrid.Rows[item2].Cells[2].Value = result;
+                    }
+                    break;
+                }
+            case "TName_textbox":
+                {
+                    foreach (int item3 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item3].TriggerName = TName_textbox.Text;
+                        TriggersGrid.Rows[item3].Cells[3].Value = TName_textbox.Text;
+                    }
+                    break;
+                }
+            case "TWaitStart_textbox":
+                int.TryParse(TWaitStart_textbox.Text, out result);
+                {
+                    foreach (int item4 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item4].WaitWhileStart = result;
+                    }
+                    break;
+                }
+            case "TWaitStop_textbox":
+                int.TryParse(TWaitStop_textbox.Text, out result);
+                {
+                    foreach (int item5 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item5].WaitWhileStop = result;
+                    }
+                    break;
+                }
+            case "TDuration":
+                int.TryParse(TDuration.Text, out result);
+                {
+                    foreach (int item6 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item6].Duration = result;
+                    }
+                    break;
+                }
+            case "TAutoStart":
+                {
+                    foreach (int item7 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item7].AutoStart = Convert.ToByte(TAutoStart.Checked);
+                    }
+                    break;
+                }
+            case "TStartBySchedule":
+                {
+                    foreach (int item8 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item8].DontStartOnSchedule = Convert.ToByte(TStartBySchedule.Checked);
+                    }
+                    break;
+                }
+            case "TStopBySchedule":
+                {
+                    foreach (int item9 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item9].DontStopOnSchedule = Convert.ToByte(TStopBySchedule.Checked);
+                    }
+                    break;
+                }
+            case "TStartYear":
+                int.TryParse(TStartYear.Text, out result);
+                {
+                    foreach (int item10 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item10].StartYear = result;
+                    }
+                    break;
+                }
+            case "TStartMonth":
+                int.TryParse(TStartMonth.Text, out result);
+                {
+                    foreach (int item11 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item11].StartMonth = result;
+                    }
+                    break;
+                }
+            case "TStartWeekDay":
+                {
+                    foreach (int item12 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item12].StartWeekDay = TStartWeekDay.SelectedIndex - 1;
+                    }
+                    break;
+                }
+            case "TStartDay":
+                int.TryParse(TStartDay.Text, out result);
+                {
+                    foreach (int item13 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item13].StartDay = result;
+                    }
+                    break;
+                }
+            case "TStartHour":
+                int.TryParse(TStartHour.Text, out result);
+                {
+                    foreach (int item14 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item14].StartHour = result;
+                    }
+                    break;
+                }
+            case "TStartMinute":
+                int.TryParse(TStartMinute.Text, out result);
+                {
+                    foreach (int item15 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item15].StartMinute = result;
+                    }
+                    break;
+                }
+            case "TStopYear":
+                int.TryParse(TStopYear.Text, out result);
+                {
+                    foreach (int item16 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item16].StopYear = result;
+                    }
+                    break;
+                }
+            case "TStopMonth":
+                int.TryParse(TStopMonth.Text, out result);
+                {
+                    foreach (int item17 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item17].StopMonth = result;
+                    }
+                    break;
+                }
+            case "TStopWeekDay":
+                {
+                    foreach (int item18 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item18].StopWeekDay = TStopWeekDay.SelectedIndex - 1;
+                    }
+                    break;
+                }
+            case "TStopDay":
+                int.TryParse(TStopDay.Text, out result);
+                {
+                    foreach (int item19 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item19].StopDay = result;
+                    }
+                    break;
+                }
+            case "TStopHour":
+                int.TryParse(TStopHour.Text, out result);
+                {
+                    foreach (int item20 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item20].StopHour = result;
+                    }
+                    break;
+                }
+            case "TStopMinute":
+                int.TryParse(TStopMinute.Text, out result);
+                {
+                    foreach (int item21 in TriggersRowCollection)
+                    {
+                        Read.TriggersList[item21].StopMinute = result;
+                    }
+                    break;
+                }
+        }
+    }
+
+    private void CloneTrigger_Click(object sender, EventArgs e)
+    {
+        if (TriggersGrid.Rows.Count > 0)
+        {
+            TriggersGrid.ScrollBars = ScrollBars.None;
+            TriggersRowCollection = TriggersRowCollection.OrderBy((int z) => z).ToList();
+            foreach (int item2 in TriggersRowCollection)
+            {
+                Read.TriggersAmount++;
+                ClassTrigger classTrigger = new ClassTrigger
+                {
+                    Id = Read.TriggersList.Max((ClassTrigger z) => z.Id) + 1,
+                    GmID = Read.TriggersList.Max((ClassTrigger z) => z.GmID) + 1,
+                    TriggerName = Read.TriggersList[item2].TriggerName,
+                    AutoStart = Read.TriggersList[item2].AutoStart,
+                    DontStartOnSchedule = Read.TriggersList[item2].DontStartOnSchedule,
+                    DontStopOnSchedule = Read.TriggersList[item2].DontStopOnSchedule,
+                    Duration = Read.TriggersList[item2].Duration,
+                    StartDay = Read.TriggersList[item2].StartDay,
+                    StartHour = Read.TriggersList[item2].StartHour,
+                    StartMinute = Read.TriggersList[item2].StartMinute,
+                    StartMonth = Read.TriggersList[item2].StartMonth,
+                    StartWeekDay = Read.TriggersList[item2].StartWeekDay,
+                    StartYear = Read.TriggersList[item2].StartYear,
+                    StopDay = Read.TriggersList[item2].StopDay,
+                    StopHour = Read.TriggersList[item2].StopHour,
+                    StopMinute = Read.TriggersList[item2].StopMinute,
+                    StopMonth = Read.TriggersList[item2].StopMonth,
+                    StopWeekDay = Read.TriggersList[item2].StopWeekDay,
+                    StopYear = Read.TriggersList[item2].StopYear,
+                    WaitWhileStart = Read.TriggersList[item2].WaitWhileStart,
+                    WaitWhileStop = Read.TriggersList[item2].WaitWhileStop
+                };
+                Read.TriggersList.Add(classTrigger);
+                TriggersGrid.Rows.Add(Read.TriggersAmount, classTrigger.Id, classTrigger.GmID, TriggersGrid.Rows[item2].Cells[3].Value);
+            }
+            TriggersGrid.ScrollBars = ScrollBars.Vertical;
+            List<int> triggersRowCollection = TriggersRowCollection;
+            TriggersGrid.CurrentCell = TriggersGrid.Rows[TriggersGrid.Rows.Count - 1].Cells[1];
+            for (int i = 1; i <= triggersRowCollection.Count; i++)
+            {
+                TriggersGrid.Rows[TriggersGrid.Rows.Count - i].Selected = true;
+            }
+            TriggersGrid_CurrentCellChanged(null, null);
+        }
+        else
+        {
+            Read.TriggersAmount++;
+            ClassTrigger item = new ClassTrigger
+            {
+                Id = 1,
+                GmID = 2,
+                TriggerName = "TriggerOne",
+                Duration = 60,
+                StartYear = -1,
+                StartMonth = -1,
+                StartWeekDay = -1,
+                StartDay = -1,
+                StartHour = -1,
+                StartMinute = -1,
+                StopYear = -1,
+                StopMonth = -1,
+                StopWeekDay = -1,
+                StopDay = -1,
+                StopHour = -1,
+                StopMinute = -1
+            };
+            Read.TriggersList.Add(item);
+            TriggersGrid.Rows.Add(1, 1, 2, "TriggerOne");
+            TriggersGrid_CurrentCellChanged(null, null);
+        }
+        if (Language == 1)
+        {
+            TriggersTab.Text = $"Триггеры 1/{Read.TriggersAmount}";
+        }
+        else
+        {
+            TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
+        }
+    }
+
+    private void DeleteTrigger_Click(object sender, EventArgs e)
+    {
+        if (TriggersRowCollection.Count == 0)
+        {
+            return;
+        }
+        string text = "Вы уверены,что хотите удалить выбранные триггера?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete selected triggers?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        TriggersRowCollection = TriggersRowCollection.OrderByDescending((int z) => z).ToList();
+        TriggersGrid.ScrollBars = ScrollBars.None;
+        int num = TriggersRowCollection.Min();
+        TriggersGrid.ClearSelection();
+        Read.TriggersAmount -= TriggersRowCollection.Count;
+        foreach (int item in TriggersRowCollection)
+        {
+            Read.TriggersList.RemoveAt(item);
+            TriggersGrid.Rows.RemoveAt(item);
+        }
+        TriggersGrid.ScrollBars = ScrollBars.Vertical;
+        if (TriggersGrid.Rows.Count > num)
+        {
+            TriggersGrid.CurrentCell = TriggersGrid.Rows[num].Cells[1];
+            TriggersGrid.FirstDisplayedScrollingRowIndex = num;
+        }
+        else if (TriggersGrid.Rows.Count != 0)
+        {
+            TriggersGrid.CurrentCell = TriggersGrid.Rows[TriggersGrid.Rows.Count - 1].Cells[1];
+            TriggersGrid.FirstDisplayedScrollingRowIndex = TriggersGrid.Rows.Count - 1;
+        }
+        if (TriggersGrid.Rows.Count == 0)
+        {
+            TriggersGrid.Rows.Clear();
+        }
+        TriggersGrid_CurrentCellChanged(null, null);
+        if (Language == 1)
+        {
+            TriggersTab.Text = $"Триггеры 1/{Read.TriggersAmount}";
+        }
+        else
+        {
+            TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
+        }
+    }
+
+    private void GotoNpcMobsContacts_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (MUTrigger.SelectedRows.Count != 0)
+            {
+                NpcMobsGrid.ClearSelection();
+                NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[MUTrigger.SelectedRows[MUTrigger.SelectedRows.Count - 1].Index])].Cells[1];
+                for (int i = 0; i < MUTrigger.SelectedRows.Count; i++)
+                {
+                    NpcMobsGrid.Rows[Read.NpcMobList.IndexOf(MonstersContact[MUTrigger.SelectedRows[i].Index])].Selected = true;
+                }
+                ExistenceGrid_CellChanged(null, null);
+                MainTabControl.SelectedIndex = 0;
+            }
+        }
+        catch
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Действие невозможно", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("Wrong action", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void GotoResourcesContacts_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (RUTrigger.SelectedRows.Count != 0)
+            {
+                ResourcesGrid.ClearSelection();
+                ResourcesGrid.CurrentCell = ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[RUTrigger.SelectedRows[RUTrigger.SelectedRows.Count - 1].Index])].Cells[1];
+                for (int i = 0; i < RUTrigger.SelectedRows.Count; i++)
+                {
+                    ResourcesGrid.Rows[Read.ResourcesList.IndexOf(ResourcesContact[RUTrigger.SelectedRows[i].Index])].Selected = true;
+                }
+                MainTabControl.SelectedIndex = 1;
+            }
+        }
+        catch
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Действие невозможно", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("Wrong action", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void GotoDynamicsContacts_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (DUTrigger.SelectedRows.Count != 0)
+            {
+                DynamicGrid.ClearSelection();
+                DynamicGrid.CurrentCell = DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[DUTrigger.SelectedRows[DUTrigger.SelectedRows.Count - 1].Index])].Cells[1];
+                for (int i = 0; i < DUTrigger.SelectedRows.Count; i++)
+                {
+                    DynamicGrid.Rows[Read.DynamicsList.IndexOf(DynamicsContact[DUTrigger.SelectedRows[i].Index])].Selected = true;
+                }
+                MainTabControl.SelectedIndex = 2;
+            }
+        }
+        catch
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Действие невозможно", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("Wrong action", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void DeleteEmptyTrigger_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        List<int> list = new List<int>();
+        int i;
+        for (i = 0; i < Read.TriggersAmount; i++)
+        {
+            int num = Read.NpcMobList.FindIndex((ClassDefaultMonsters z) => z.Trigger_id == Read.TriggersList[i].Id);
+            int num2 = Read.ResourcesList.FindIndex((ClassDefaultResources z) => z.Trigger_id == Read.TriggersList[i].Id);
+            int num3 = Read.DynamicsList.FindIndex((ClassDynamicObject z) => z.TriggerId == Read.TriggersList[i].Id);
+            if (num == -1 && num2 == -1 && num3 == -1)
+            {
+                list.Add(Read.TriggersList.IndexOf(Read.TriggersList[i]));
+            }
+        }
+        TriggersGrid.ScrollBars = ScrollBars.None;
+        list = list.OrderByDescending((int z) => z).ToList();
+        string text = "Вы уверены,что хотите удалить неиспользуемые триггеры?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete empty triggers?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        foreach (int item in list)
+        {
+            Read.TriggersAmount--;
+            Read.TriggersList.RemoveAt(item);
+            TriggersGrid.Rows.RemoveAt(item);
+        }
+        TriggersGrid.ScrollBars = ScrollBars.Vertical;
+        if (Language == 1)
+        {
+            TriggersTab.Text = $"Триггеры 1/{Read.TriggersAmount}";
+        }
+        else
+        {
+            TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
+        }
+        if (Language == 1)
+        {
+            MessageBox.Show($"Удалено {list.Count} триггеров", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else
+        {
+            MessageBox.Show($"Deleted {list.Count} triggers", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    private void MUTrigger_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        GotoNpcMobsContacts_Click(null, null);
+    }
+
+    private void RUTrigger_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        GotoResourcesContacts_Click(null, null);
+    }
+
+    private void DUTrigger_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        GotoDynamicsContacts_Click(null, null);
+    }
+
+    private void ExistenceSearchButton_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        Action = 1;
+        string text = "Существа";
+        if (Language == 2)
+        {
+            text = "Existence";
+        }
+        SearchMonsters = new List<int>();
+        SearchGrid.ScrollBars = ScrollBars.None;
+        SearchGrid.Rows.Clear();
+        if (ExistenceSearchId_Radio.Checked)
+        {
+            int.TryParse(ExistenceSearchId.Text, out var IdIndex3);
+            SearchMonsters = (from o in Read.NpcMobList.Select((ClassDefaultMonsters item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where o.Item.MobDops.Any((ClassExtraMonsters x) => x.Id == IdIndex3)
+                              select o.Index).ToList();
+            for (int i = 0; i < SearchMonsters.Count(); i++)
+            {
+                SearchGrid.Rows.Add(i + 1, NpcMobsGrid.Rows[SearchMonsters[i]].Cells[1].Value, NpcMobsGrid.Rows[SearchMonsters[i]].Cells[2].Value, text);
+            }
+        }
+        else if (ExistenceSearchName_Radio.Checked)
+        {
+            int num = 1;
+            for (int j = 0; j < NpcMobsGrid.Rows.Count; j++)
+            {
+                if (NpcMobsGrid.Rows[j].Cells[2].Value.ToString().ToLower().Contains(ExistenceSearchName.Text.ToLower()))
+                {
+                    SearchMonsters.Add(j);
+                    SearchGrid.Rows.Add(num, NpcMobsGrid.Rows[j].Cells[1].Value, NpcMobsGrid.Rows[j].Cells[2].Value, text);
+                    num++;
+                }
+            }
+        }
+        else if (ExistenceSearchTrigger_Radio.Checked)
+        {
+            int.TryParse(ExistenceSearchId.Text, out var IdIndex2);
+            SearchMonsters = (from z in Read.NpcMobList.Select((ClassDefaultMonsters item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where z.Item.Trigger_id == IdIndex2
+                              select z into o
+                              select o.Index).ToList();
+            for (int k = 0; k < SearchMonsters.Count; k++)
+            {
+                SearchGrid.Rows.Add(k + 1, NpcMobsGrid.Rows[SearchMonsters[k]].Cells[1].Value, NpcMobsGrid.Rows[SearchMonsters[k]].Cells[2].Value, text);
+            }
+        }
+        else if (ExistenceSearchPath_Radio.Checked)
+        {
+            int.TryParse(ExistenceSearchPath.Text, out var IdIndex);
+            SearchMonsters = (from o in Read.NpcMobList.Select((ClassDefaultMonsters item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where o.Item.MobDops.Any((ClassExtraMonsters x) => x.Path == IdIndex)
+                              select o.Index).ToList();
+            for (int l = 0; l < SearchMonsters.Count; l++)
+            {
+                SearchGrid.Rows.Add(l + 1, NpcMobsGrid.Rows[SearchMonsters[l]].Cells[1].Value, NpcMobsGrid.Rows[SearchMonsters[l]].Cells[2].Value, text);
+            }
+        }
+        SearchGrid.ScrollBars = ScrollBars.Vertical;
+    }
+
+    private void ResourceSearchButton_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        Action = 2;
+        string text = "Ресерсы";
+        if (Language == 2)
+        {
+            text = "Resources";
+        }
+        SearchResources = new List<int>();
+        SearchGrid.ScrollBars = ScrollBars.None;
+        SearchGrid.Rows.Clear();
+        if (ResourceSearchId_Radio.Checked)
+        {
+            int.TryParse(ResourceSearchId.Text, out var IdIndex2);
+            SearchResources = (from o in Read.ResourcesList.Select((ClassDefaultResources item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                               where o.Item.ResExtra.Any((ClassExtraResources x) => x.Id == IdIndex2)
+                               select o.Index).ToList();
+            for (int i = 0; i < SearchResources.Count(); i++)
+            {
+                SearchGrid.Rows.Add(i + 1, ResourcesGrid.Rows[SearchResources[i]].Cells[1].Value, ResourcesGrid.Rows[SearchResources[i]].Cells[2].Value, text);
+            }
+        }
+        else if (ResourceSearchName_Radio.Checked)
+        {
+            int num = 1;
+            for (int j = 0; j < ResourcesGrid.Rows.Count; j++)
+            {
+                if (ResourcesGrid.Rows[j].Cells[2].Value.ToString().ToLower().Contains(ResourceSearchName.Text.ToLower()))
+                {
+                    SearchResources.Add(j);
+                    SearchGrid.Rows.Add(num, ResourcesGrid.Rows[j].Cells[1].Value, ResourcesGrid.Rows[j].Cells[2].Value, text);
+                    num++;
+                }
+            }
+        }
+        else if (ResourceSearchTrigger_Radio.Checked)
+        {
+            int.TryParse(ResourceSearchTrigger.Text, out var IdIndex);
+            SearchResources = (from z in Read.ResourcesList.Select((ClassDefaultResources item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                               where z.Item.Trigger_id == IdIndex
+                               select z into o
+                               select o.Index).ToList();
+            for (int k = 0; k < SearchResources.Count; k++)
+            {
+                SearchGrid.Rows.Add(k + 1, ResourcesGrid.Rows[SearchResources[k]].Cells[1].Value, ResourcesGrid.Rows[SearchResources[k]].Cells[2].Value, text);
+            }
+        }
+        SearchGrid.ScrollBars = ScrollBars.Vertical;
+    }
+
+    private void DynamicSearchButton_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        Action = 3;
+        string text = "Дин.Объекты";
+        if (Language == 2)
+        {
+            text = "Dyn.Objects";
+        }
+        SearchDynamics = new List<int>();
+        DynamicGrid.ScrollBars = ScrollBars.None;
+        SearchGrid.Rows.Clear();
+        if (DynamicSearchId_Radio.Checked)
+        {
+            int.TryParse(DynamicSearchId.Text, out var IdIndex2);
+            SearchDynamics = (from o in Read.DynamicsList.Select((ClassDynamicObject item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where o.Item.Id == IdIndex2
+                              select o.Index).ToList();
+            for (int i = 0; i < SearchDynamics.Count(); i++)
+            {
+                SearchGrid.Rows.Add(i + 1, DynamicGrid.Rows[SearchDynamics[i]].Cells[1].Value, DynamicGrid.Rows[SearchDynamics[i]].Cells[2].Value, text);
+            }
+        }
+        else if (DynamicSearchName_Radio.Checked)
+        {
+            int num = 1;
+            for (int j = 0; j < DynamicGrid.Rows.Count; j++)
+            {
+                if (DynamicGrid.Rows[j].Cells[2].Value.ToString().ToLower().Contains(DynamicSearchName.Text.ToLower()))
+                {
+                    SearchDynamics.Add(j);
+                    SearchGrid.Rows.Add(num, DynamicGrid.Rows[j].Cells[1].Value, DynamicGrid.Rows[j].Cells[2].Value, text);
+                    num++;
+                }
+            }
+        }
+        else if (DynamicSearchTrigger_Radio.Checked)
+        {
+            int.TryParse(DynamicSearchTrigger.Text, out var IdIndex);
+            SearchDynamics = (from z in Read.DynamicsList.Select((ClassDynamicObject item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where z.Item.TriggerId == IdIndex
+                              select z into o
+                              select o.Index).ToList();
+            for (int k = 0; k < SearchDynamics.Count; k++)
+            {
+                SearchGrid.Rows.Add(k + 1, DynamicGrid.Rows[SearchDynamics[k]].Cells[1].Value, DynamicGrid.Rows[SearchDynamics[k]].Cells[2].Value, text);
+            }
+        }
+        DynamicGrid.ScrollBars = ScrollBars.Vertical;
+    }
+
+    private void TriggerSearchButton_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        Action = 4;
+        string text = "Триггеры";
+        if (Language == 2)
+        {
+            text = "Triggers";
+        }
+        SearchTriggers = new List<int>();
+        SearchGrid.ScrollBars = ScrollBars.None;
+        SearchGrid.Rows.Clear();
+        if (TriggerSearchId_Radio.Checked)
+        {
+            int.TryParse(TriggerSearchID.Text, out var IdIndex2);
+            SearchTriggers = (from o in Read.TriggersList.Select((ClassTrigger item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where o.Item.Id == IdIndex2
+                              select o.Index).ToList();
+            for (int i = 0; i < SearchTriggers.Count(); i++)
+            {
+                SearchGrid.Rows.Add(i + 1, TriggersGrid.Rows[SearchTriggers[i]].Cells[1].Value, TriggersGrid.Rows[SearchTriggers[i]].Cells[3].Value, text);
+            }
+        }
+        else if (TriggerSearchGmId_Radio.Checked)
+        {
+            int.TryParse(TriggerSearchGmID.Text, out var IdIndex);
+            SearchTriggers = (from z in Read.TriggersList.Select((ClassTrigger item, int index) => new
+            {
+                Item = item,
+                Index = index
+            })
+                              where z.Item.GmID == IdIndex
+                              select z into o
+                              select o.Index).ToList();
+            for (int j = 0; j < SearchTriggers.Count; j++)
+            {
+                SearchGrid.Rows.Add(j + 1, TriggersGrid.Rows[SearchTriggers[j]].Cells[1].Value, TriggersGrid.Rows[SearchTriggers[j]].Cells[3].Value, text);
+            }
+        }
+        else if (TriggerSearchName_Radio.Checked)
+        {
+            int num = 1;
+            for (int k = 0; k < TriggersGrid.Rows.Count; k++)
+            {
+                if (TriggersGrid.Rows[k].Cells[3].Value.ToString().ToLower().Contains(TriggerSearchName.Text.ToLower()))
+                {
+                    SearchTriggers.Add(k);
+                    SearchGrid.Rows.Add(num, TriggersGrid.Rows[k].Cells[1].Value, TriggersGrid.Rows[k].Cells[3].Value, text);
+                    num++;
+                }
+            }
+        }
+        SearchGrid.ScrollBars = ScrollBars.Vertical;
+    }
+
+    private void MoveToSelected_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Read == null)
+            {
+                return;
+            }
+            if (Action == 1 && SearchGrid.Rows.Count != 0)
+            {
+                NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[SearchMonsters[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
+                foreach (DataGridViewRow selectedRow in SearchGrid.SelectedRows)
+                {
+                    NpcMobsGrid.Rows[SearchMonsters[selectedRow.Index]].Selected = true;
+                }
+                MainTabControl.SelectedIndex = 0;
+                ExistenceGrid_CellChanged(null, null);
+            }
+            else if (Action == 2 && SearchGrid.Rows.Count != 0)
+            {
+                ResourcesGrid.CurrentCell = ResourcesGrid.Rows[SearchResources[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
+                foreach (DataGridViewRow selectedRow2 in SearchGrid.SelectedRows)
+                {
+                    ResourcesGrid.Rows[SearchResources[selectedRow2.Index]].Selected = true;
+                }
+                MainTabControl.SelectedIndex = 1;
+                ResourcesGrid_CurrentCellChanged(null, null);
+            }
+            else if (Action == 3 && SearchGrid.Rows.Count != 0)
+            {
+                DynamicGrid.CurrentCell = DynamicGrid.Rows[SearchDynamics[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
+                foreach (DataGridViewRow selectedRow3 in SearchGrid.SelectedRows)
+                {
+                    DynamicGrid.Rows[SearchDynamics[selectedRow3.Index]].Selected = true;
+                }
+                MainTabControl.SelectedIndex = 2;
+                DynamicGrid_CurrentCellChanged(null, null);
+            }
+            else
+            {
+                if (Action != 4 || SearchGrid.Rows.Count == 0)
+                {
+                    return;
+                }
+                TriggersGrid.CurrentCell = TriggersGrid.Rows[SearchTriggers[SearchGrid.SelectedRows[SearchGrid.SelectedRows.Count - 1].Index]].Cells[1];
+                foreach (DataGridViewRow selectedRow4 in SearchGrid.SelectedRows)
+                {
+                    TriggersGrid.Rows[SearchTriggers[selectedRow4.Index]].Selected = true;
+                }
+                MainTabControl.SelectedIndex = 3;
+                TriggersGrid_CurrentCellChanged(null, null);
+            }
+        }
+        catch
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Invalid operation!!...", "NpcGen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("Неверное действие!!...", "NpcGen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void TriggerSearchID_TextChanged(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            int.TryParse(TriggerSearchID.Text, out var Parsed);
+            int num = Read.TriggersList.FindIndex((ClassTrigger z) => z.Id == Parsed);
+            if (num != -1)
+            {
+                TriggerSearchName.Text = TriggersGrid.Rows[num].Cells[3].Value.ToString();
+            }
+        }
+    }
+
+    private void TriggerSearchGmID_TextChanged(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            int.TryParse(TriggerSearchGmID.Text, out var Parsed);
+            int num = Read.TriggersList.FindIndex((ClassTrigger z) => z.GmID == Parsed);
+            if (num != -1)
+            {
+                TriggerSearchName.Text = TriggersGrid.Rows[num].Cells[3].Value.ToString();
+            }
+        }
+    }
+
+    private void ExistenceSearchId_TextChanged(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            int.TryParse(ExistenceSearchId.Text, out var Parsed);
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == Parsed);
+                if (num != -1)
+                {
+                    ExistenceSearchName.Text = Element.ExistenceLists[num].Name;
+                }
+                else
+                {
+                    ExistenceSearchName.Text = "";
+                }
+            }
+            else
+            {
+                ExistenceSearchName.Text = Elementsdata.GetNpcName(Parsed);
+            }
+
+        }
+    }
+
+    private void ResourceSearchId_TextChanged(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            int.TryParse(ResourceSearchId.Text, out var Parsed);
+            int num = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == Parsed);
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                if (num != -1)
+                {
+                    ResourceSearchName.Text = Element.ResourcesList[num].Name;
+                }
+                else
+                {
+                    ResourceSearchName.Text = "";
+                }
+            }
+            else
+            {
+                ResourceSearchName.Text = Elementsdata.GetMineName(Parsed);
+            }
+
+        }
+    }
+
+    private void DynamicSearchId_TextChanged(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        int.TryParse(DynamicSearchId.Text, out var Parsed);
+        if (Language == 1)
+        {
+            int num = DynamicsListRu.FindIndex((DefaultInformation z) => z.Id == Parsed);
+            if (num != -1)
+            {
+                DynamicSearchName.Text = DynamicsListRu[num].Name;
+            }
+            else
+            {
+                DynamicSearchName.Text = "";
+            }
+        }
+        else if (Language == 2)
+        {
+            int num2 = DynamicsListEn.FindIndex((DefaultInformation z) => z.Id == Parsed);
+            if (num2 != -1)
+            {
+                DynamicSearchName.Text = DynamicsListEn[num2].Name;
+            }
+            else
+            {
+                DynamicSearchName.Text = "";
+            }
+        }
+    }
+
+    private void MainTabControl_Click(object sender, EventArgs e)
+    {
+        Control control = sender as Control;
+        switch (control.Name)
+        {
+            case "ExistenceSearchId":
+                ExistenceSearchId_Radio.Checked = true;
+                break;
+            case "ExistenceSearchName":
+                ExistenceSearchName_Radio.Checked = true;
+                break;
+            case "ExistenceSearchTrigger":
+                ExistenceSearchTrigger_Radio.Checked = true;
+                break;
+            case "ExistenceSearchPath":
+                ExistenceSearchPath_Radio.Checked = true;
+                break;
+            case "ResourceSearchId":
+                ResourceSearchId_Radio.Checked = true;
+                break;
+            case "ResourceSearchName":
+                ResourceSearchName_Radio.Checked = true;
+                break;
+            case "ResourceSearchTrigger":
+                ResourceSearchTrigger_Radio.Checked = true;
+                break;
+            case "DynamicSearchId":
+                DynamicSearchId_Radio.Checked = true;
+                break;
+            case "DynamicSearchName":
+                DynamicSearchName_Radio.Checked = true;
+                break;
+            case "DynamicSearchTrigger":
+                DynamicSearchTrigger_Radio.Checked = true;
+                break;
+            case "TriggerSearchID":
+                TriggerSearchId_Radio.Checked = true;
+                break;
+            case "TriggerSearchGmID":
+                TriggerSearchGmId_Radio.Checked = true;
+                break;
+            case "TriggerSearchName":
+                TriggerSearchName_Radio.Checked = true;
+                break;
+        }
+    }
+
+    private void DId_numeric_DoubleClick(object sender, EventArgs e)
+    {
+        DynamicForm.SetWindow = 1;
+        DynamicForm.ShowDialog(this);
+    }
+
+    private void SearchGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        MoveToSelected_Click(null, null);
+    }
+
+    private void SearchErrorsButton_Click(object sender, EventArgs e)
+    {
+        if (Read == null)
+        {
+            return;
+        }
+        ErrorExistenceCollection = new List<IntDictionary>();
+        ErrorResourcesCollection = new List<IntDictionary>();
+        ErrorDynamicsCollection = new List<IntDictionary>();
+        ErrorsLanguage = Language;
+        string text = "Мобы и Нпс";
+        string text2 = "Ресурсы";
+        string text3 = "Динамические объекты";
+        string text4 = "Количество объектов в группе не может быть равно 0";
+        string text5 = "Триггер не найден";
+        string text6 = "Неизвестный ID";
+        string text7 = "Количество объекта не может быть равно 0";
+        if (Language == 2)
+        {
+            text = "Mobs And Npcs";
+            text2 = "Resources";
+            text3 = "Dynamic Objects";
+            text4 = "Objects amount in group can't be equal to 0";
+            text5 = "Trigger not found";
+            text6 = "Unknown ID";
+            text7 = "Object amount can't be equal to 0";
+        }
+        MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount;
+        ErrorsGrid.ScrollBars = ScrollBars.None;
+        ErrorsGrid.Rows.Clear();
+        int num = 1;
+        int k;
+        for (k = 0; k < Read.NpcMobsAmount; k++)
+        {
+            if (Read.NpcMobList[k].Amount_in_group == 0)
+            {
+                ErrorsGrid.Rows.Add(num, k + 1, text, text4);
+                ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
+                num++;
+            }
+            if (Read.NpcMobList[k].Trigger_id != 0 && Read.TriggersList.FindIndex((ClassTrigger f) => f.Id == Read.NpcMobList[k].Trigger_id) == -1)
+            {
+                ErrorsGrid.Rows.Add(num, k + 1, text, text5);
+                ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
+                num++;
+            }
+            int z3;
+            for (z3 = 0; z3 < Read.NpcMobList[k].Amount_in_group; z3++)
+            {
+                if (!UdE.API.IsElementsEditorRunning)
+                {
+                    if (Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Read.NpcMobList[k].MobDops[z3].Id) == -1)
+                    {
+                        ErrorsGrid.Rows.Add(num, k + 1, text, text6);
+                        ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
+                        num++;
+                        break;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        UdE.API.GetItemNameByID(UdE.ItemType.NpcOrMobOrMine, Read.NpcMobList[k].MobDops[z3].Id);
+                    }
+                    catch
+                    {
+                        ErrorsGrid.Rows.Add(num, k + 1, text, text6);
+                        ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
+                        num++;
+                        break;
+                    }
+                }
+
+            }
+            for (int l = 0; l < Read.NpcMobList[k].Amount_in_group; l++)
+            {
+                if (Read.NpcMobList[k].MobDops[l].Amount == 0)
+                {
+                    ErrorsGrid.Rows.Add(num, k + 1, text, text7);
+                    ErrorExistenceCollection.Add(new IntDictionary(num - 1, k));
+                    num++;
+                    break;
+                }
+            }
+            MainProgressBar.Value++;
+        }
+        int j;
+        for (j = 0; j < Read.ResourcesAmount; j++)
+        {
+            if (Read.ResourcesList[j].Amount_in_group == 0)
+            {
+                ErrorsGrid.Rows.Add(num, j + 1, text2, text4);
+                ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
+                num++;
+            }
+            if (Read.ResourcesList[j].Trigger_id != 0 && Read.TriggersList.FindIndex((ClassTrigger f) => f.Id == Read.ResourcesList[j].Trigger_id) == -1)
+            {
+                ErrorsGrid.Rows.Add(num, j + 1, text2, text5);
+                ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
+                num++;
+            }
+            int z2;
+            for (z2 = 0; z2 < Read.ResourcesList[j].Amount_in_group; z2++)
+            {
+                if (!UdE.API.IsElementsEditorRunning)
+                {
+                    if (Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Read.ResourcesList[j].ResExtra[z2].Id) == -1)
+                    {
+                        ErrorsGrid.Rows.Add(num, j + 1, text2, text6);
+                        ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
+                        num++;
+                        break;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        UdE.API.GetItemNameByID(UdE.ItemType.NpcOrMobOrMine, Read.ResourcesList[j].ResExtra[z2].Id);
+                    }
+                    catch
+                    {
+                        ErrorsGrid.Rows.Add(num, j + 1, text2, text6);
+                        ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
+                        num++;
+                        break;
+                    }
+                }
+
+            }
+            for (int m = 0; m < Read.ResourcesList[j].Amount_in_group; m++)
+            {
+                if (Read.ResourcesList[j].ResExtra[m].Amount == 0)
+                {
+                    ErrorsGrid.Rows.Add(num, j + 1, text2, text7);
+                    ErrorResourcesCollection.Add(new IntDictionary(num - 1, j));
+                    num++;
+                    break;
+                }
+            }
+            MainProgressBar.Value++;
+        }
+        int i;
+        for (i = 0; i < Read.DynobjectAmount; i++)
+        {
+            if (Read.DynamicsList[i].TriggerId != 0 && Read.TriggersList.FindIndex((ClassTrigger z) => z.Id == Read.DynamicsList[i].TriggerId) == -1)
+            {
+                ErrorsGrid.Rows.Add(num, i + 1, text3, text5);
+                ErrorDynamicsCollection.Add(new IntDictionary(num - 1, i));
+                num++;
+            }
+            MainProgressBar.Value++;
+        }
+        MainProgressBar.Value = 0;
+        ErrorsGrid.ScrollBars = ScrollBars.Vertical;
+    }
+
+    private void ErrorsGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        try
+        {
+            string text = ErrorsGrid.Rows[e.RowIndex].Cells[2].Value.ToString();
+            if (text == "Мобы и Нпс" || text == "Mobs And Npcs")
+            {
+                NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[Convert.ToInt32(ErrorsGrid.Rows[e.RowIndex].Cells[1].Value) - 1].Cells[1];
+                MainTabControl.SelectedIndex = 0;
+            }
+            else if (text == "Ресурсы" || text == "Resources")
+            {
+                ResourcesGrid.CurrentCell = ResourcesGrid.Rows[Convert.ToInt32(ErrorsGrid.Rows[e.RowIndex].Cells[1].Value) - 1].Cells[1];
+                MainTabControl.SelectedIndex = 1;
+            }
+            else if (text == "Динамические объекты" || text == "Dynamic Objects")
+            {
+                DynamicGrid.CurrentCell = DynamicGrid.Rows[Convert.ToInt32(ErrorsGrid.Rows[e.RowIndex].Cells[1].Value) - 1].Cells[1];
+                MainTabControl.SelectedIndex = 2;
+            }
+        }
+        catch
+        {
+            if (Language == 1)
+            {
+                MessageBox.Show("Объект не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("Object doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+        }
+    }
+
+    private void RemoveAllErrors_Click(object sender, EventArgs e)
+    {
+        string text = "Вы уверены,что хотите удалить все объекты с ошибками?";
+        if (Language == 2)
+        {
+            text = "Are you sure that you want to delete all objects with errors?";
+        }
+        DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+        if (dialogResult != DialogResult.Yes)
+        {
+            return;
+        }
+        NpcMobsGrid.ScrollBars = ScrollBars.None;
+        ResourcesGrid.ScrollBars = ScrollBars.None;
+        DynamicGrid.ScrollBars = ScrollBars.None;
+        ErrorsGrid.Rows.Clear();
+        List<int> list = new List<int>();
+        List<int> list2 = new List<int>();
+        List<int> list3 = new List<int>();
+        ErrorExistenceCollection = ErrorExistenceCollection.OrderByDescending((IntDictionary r) => r.GridIndex).ToList();
+        MainProgressBar.Maximum = ErrorExistenceCollection.Count + ErrorResourcesCollection.Count + ErrorDynamicsCollection.Count;
+        foreach (IntDictionary k in ErrorExistenceCollection)
+        {
+            if (list.FindIndex((int f) => f == k.GridIndex) == -1)
+            {
+                NpcMobsGrid.Rows.RemoveAt(k.GridIndex);
+                Read.NpcMobList.RemoveAt(k.GridIndex);
+                list.Add(k.GridIndex);
+            }
+            MainProgressBar.Value++;
+        }
+        Read.NpcMobsAmount = Read.NpcMobList.Count;
+        ErrorExistenceCollection.Clear();
+        ExistenceGrid_CellChanged(null, null);
+        ErrorResourcesCollection = ErrorResourcesCollection.OrderByDescending((IntDictionary r) => r.GridIndex).ToList();
+        foreach (IntDictionary j in ErrorResourcesCollection)
+        {
+            if (list2.FindIndex((int f) => f == j.GridIndex) == -1)
+            {
+                ResourcesGrid.Rows.RemoveAt(j.GridIndex);
+                Read.ResourcesList.RemoveAt(j.GridIndex);
+                list2.Add(j.GridIndex);
+            }
+            MainProgressBar.Value++;
+        }
+        Read.ResourcesAmount = Read.ResourcesList.Count;
+        ErrorResourcesCollection.Clear();
+        ResourcesGrid_CurrentCellChanged(null, null);
+        ErrorDynamicsCollection = ErrorDynamicsCollection.OrderByDescending((IntDictionary r) => r.GridIndex).ToList();
+        foreach (IntDictionary i in ErrorDynamicsCollection)
+        {
+            if (list3.FindIndex((int f) => f == i.GridIndex) == -1)
+            {
+                DynamicGrid.Rows.RemoveAt(i.GridIndex);
+                Read.DynamicsList.RemoveAt(i.GridIndex);
+                list3.Add(i.GridIndex);
+            }
+            MainProgressBar.Value++;
+        }
+        NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
+        ResourcesGrid.ScrollBars = ScrollBars.Vertical;
+        DynamicGrid.ScrollBars = ScrollBars.Vertical;
+        if (NpcMobsGrid.CurrentCell != null)
+        {
+            NpcMobsGrid.FirstDisplayedScrollingRowIndex = NpcMobsGrid.CurrentCell.RowIndex;
+        }
+        if (ResourcesGrid.CurrentCell != null)
+        {
+            ResourcesGrid.FirstDisplayedScrollingRowIndex = ResourcesGrid.CurrentCell.RowIndex;
+        }
+        if (DynamicGrid.CurrentCell != null)
+        {
+            DynamicGrid.FirstDisplayedScrollingRowIndex = DynamicGrid.CurrentCell.RowIndex;
+        }
+        Read.DynobjectAmount = Read.DynamicsList.Count;
+        ErrorDynamicsCollection.Clear();
+        DynamicGrid_CurrentCellChanged(null, null);
+        MainProgressBar.Value = 0;
+    }
+
+    private void GetAllControls(Control container, ref List<Control> ControlList)
+    {
+        foreach (Control control in container.Controls)
+        {
+            GetAllControls(control, ref ControlList);
+            if (control is TabPage || control is GroupBox || control is RadioButton)
+            {
+                ControlList.Add(control);
+            }
+        }
+    }
+
+    private void GetAllLabels(Control container, ref List<Control> ControlList)
+    {
+        foreach (Control control in container.Controls)
+        {
+            GetAllLabels(control, ref ControlList);
+            if (control is Label || control is RadioButton || control is GroupBox)
+            {
+                ControlList.Add(control);
+            }
+        }
+    }
+
+    private void GetAllTextBoxs(Control container, ref List<Control> ControlList)
+    {
+        foreach (Control control in container.Controls)
+        {
+            GetAllTextBoxs(control, ref ControlList);
+            if (control is TextBox)
+            {
+                ControlList.Add(control);
+            }
+        }
+    }
+
+    private void InterfaceColorChanged(object sender, EventArgs e)
+    {
+        if ((sender as Control).Name == "Dark")
+        {
+            InterfaceColor = 2;
+            BackColor = Color.FromArgb(58, 58, 58);
+            List<Control> ControlList = new List<Control>();
+            GetAllControls(this, ref ControlList);
+            foreach (Control item in ControlList)
+            {
+                item.BackColor = Color.FromArgb(58, 58, 58);
+            }
+            List<Control> ControlList2 = new List<Control>();
+            GetAllLabels(this, ref ControlList2);
+            foreach (Control item2 in ControlList2)
+            {
+                item2.ForeColor = Color.FromArgb(220, 220, 220);
+            }
+            DynamicPictureBox.BackColor = Color.FromArgb(58, 58, 58);
+            List<Control> ControlList3 = new List<Control>();
+            GetAllTextBoxs(this, ref ControlList3);
+            foreach (Control item3 in ControlList3)
+            {
+                item3.BackColor = Color.FromArgb(75, 75, 75);
+                item3.ForeColor = Color.FromArgb(243, 243, 243);
+            }
+            ExistenceToolStrip.BackColor = Color.FromArgb(58, 58, 58);
+            toolStrip1.BackColor = Color.FromArgb(58, 58, 58);
+            toolStrip2.BackColor = Color.FromArgb(58, 58, 58);
+            toolStrip3.BackColor = Color.FromArgb(58, 58, 58);
+            ExportExistence.ForeColor = Color.FromArgb(240, 240, 240);
+            ImportExistence.ForeColor = Color.FromArgb(240, 240, 240);
+            ExportResources.ForeColor = Color.FromArgb(240, 240, 240);
+            ImportResources.ForeColor = Color.FromArgb(240, 240, 240);
+            LineUpResource.ForeColor = Color.FromArgb(240, 240, 240);
+            MoveResources.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripButton3.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripButton4.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripDropDownButton3.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripDropDownButton4.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripButton5.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripButton6.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripButton7.ForeColor = Color.FromArgb(240, 240, 240);
+            toolStripDropDownButton6.ForeColor = Color.FromArgb(240, 240, 240);
+            LineUpExistenceDropDown.ForeColor = Color.FromArgb(240, 240, 240);
+            MoveExistenceDropDown.ForeColor = Color.FromArgb(240, 240, 240);
+            Agression.BackColor = Color.FromArgb(90, 90, 90);
+            Path_type.BackColor = Color.FromArgb(90, 90, 90);
+            Agression.ForeColor = Color.FromArgb(245, 245, 245);
+            Path_type.ForeColor = Color.FromArgb(245, 245, 245);
+        }
+        else
+        {
+            InterfaceColor = 1;
+            BackColor = Color.FromArgb(239, 244, 250);
+            List<Control> ControlList4 = new List<Control>();
+            GetAllControls(this, ref ControlList4);
+            foreach (Control item4 in ControlList4)
+            {
+                item4.BackColor = Color.FromArgb(239, 244, 250);
+            }
+            List<Control> ControlList5 = new List<Control>();
+            GetAllLabels(this, ref ControlList5);
+            foreach (Control item5 in ControlList5)
+            {
+                item5.ForeColor = SystemColors.ControlText;
+            }
+            DynamicPictureBox.BackColor = Color.FromArgb(239, 244, 250);
+            List<Control> ControlList6 = new List<Control>();
+            GetAllTextBoxs(this, ref ControlList6);
+            foreach (Control item6 in ControlList6)
+            {
+                item6.BackColor = SystemColors.Window;
+                item6.ForeColor = SystemColors.ControlText;
+            }
+            ExistenceToolStrip.BackColor = Color.FromArgb(239, 244, 250);
+            toolStrip1.BackColor = Color.FromArgb(239, 244, 250);
+            toolStrip2.BackColor = Color.FromArgb(239, 244, 250);
+            toolStrip3.BackColor = Color.FromArgb(239, 244, 250);
+            ExportExistence.ForeColor = SystemColors.ControlText;
+            ImportExistence.ForeColor = SystemColors.ControlText;
+            ExportResources.ForeColor = SystemColors.ControlText;
+            ImportResources.ForeColor = SystemColors.ControlText;
+            LineUpResource.ForeColor = SystemColors.ControlText;
+            MoveResources.ForeColor = SystemColors.ControlText;
+            toolStripButton3.ForeColor = SystemColors.ControlText;
+            toolStripButton4.ForeColor = SystemColors.ControlText;
+            toolStripDropDownButton3.ForeColor = SystemColors.ControlText;
+            toolStripDropDownButton4.ForeColor = SystemColors.ControlText;
+            toolStripButton5.ForeColor = SystemColors.ControlText;
+            toolStripButton6.ForeColor = SystemColors.ControlText;
+            toolStripButton7.ForeColor = SystemColors.ControlText;
+            toolStripDropDownButton6.ForeColor = SystemColors.ControlText;
+            LineUpExistenceDropDown.ForeColor = SystemColors.ControlText;
+            MoveExistenceDropDown.ForeColor = SystemColors.ControlText;
+            Agression.BackColor = Color.FromArgb(255, 192, 128);
+            Path_type.BackColor = Color.FromArgb(255, 192, 128);
+            Agression.ForeColor = SystemColors.ControlText;
+            Path_type.ForeColor = SystemColors.ControlText;
+        }
+        Id_numeric.BackColor = Color.FromArgb(128, 255, 128);
+        RId_numeric.BackColor = Color.FromArgb(128, 255, 128);
+        DId_numeric.BackColor = Color.FromArgb(128, 255, 128);
+        Id_numeric.ForeColor = Color.Black;
+        RId_numeric.ForeColor = Color.Black;
+        DId_numeric.ForeColor = Color.Black;
+        groupBox23.BackColor = Color.FromArgb(128, 255, 128);
+        groupBox23.ForeColor = Color.Black;
+        Clear.ForeColor = Color.Black;
+        Dark.ForeColor = Color.Black;
+        Clear.BackColor = Color.Transparent;
+        Dark.BackColor = Color.Transparent;
+        Label_DynamicName.ForeColor = Color.Red;
+        if (DynamicForm != null)
+        {
+            DynamicForm.SetColor(InterfaceColor);
+        }
+    }
+
+    public void ShowWrongFile()
+    {
+        if (Language == 1)
+        {
+            MessageBox.Show("Неверный файл!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else
+        {
+            MessageBox.Show("Wrong file!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    private void ExportExistence_Click(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            if (MainTabControl.SelectedIndex == 0)
+            {
+                if (NpcRowCollection.Count != 0)
+                {
+                    saveFileDialog.FileName = $"Npcgen Existences[{NpcRowCollection.Count}]";
+                    saveFileDialog.Filter = "Npcgen Existence | *.nblee";
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        Read.ExportExistence(saveFileDialog.FileName, NpcRowCollection);
+                    }
+                }
+            }
+            else if (MainTabControl.SelectedIndex == 1)
+            {
+                if (ResourcesRowCollection.Count != 0)
+                {
+                    saveFileDialog.FileName = $"Npcgen Resources[{ResourcesRowCollection.Count}]";
+                    saveFileDialog.Filter = "Npcgen Resource | *.nbler";
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        Read.ExportResource(saveFileDialog.FileName, ResourcesRowCollection);
+                    }
+                }
+            }
+            else if (MainTabControl.SelectedIndex == 2)
+            {
+                if (DynamicsRowCollection.Count != 0)
+                {
+                    saveFileDialog.FileName = $"Npcgen Dynamic Objects[{DynamicsRowCollection.Count}]";
+                    saveFileDialog.Filter = "Npcgen Dynamic Objects | *.nbled";
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        Read.ExportDynamics(saveFileDialog.FileName, DynamicsRowCollection);
+                    }
+                }
+            }
+            else if (MainTabControl.SelectedIndex == 3 && TriggersRowCollection.Count != 0)
+            {
+                saveFileDialog.FileName = $"Npcgen Triggers[{TriggersRowCollection.Count}]";
+                saveFileDialog.Filter = "Npcgen Triggers | *.nblet";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    Read.ExportTriggers(saveFileDialog.FileName, TriggersRowCollection);
+                }
+            }
+        }
+        else if (Language == 1)
+        {
+            MessageBox.Show("Файл не загружен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else
+        {
+            MessageBox.Show("File isn't loaded!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    private void ImportExistence_Click(object sender, EventArgs e)
+    {
+        if (Read != null)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (MainTabControl.SelectedIndex == 0)
+            {
+                openFileDialog.FileName = "Npcgen Exported Existence";
+                openFileDialog.Filter = "Npcgen Existence | *.nblee";
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                BinaryReader binaryReader = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
+                if (Encoding.Default.GetString(binaryReader.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "Existence")
+                {
+                    int num = binaryReader.ReadInt32();
+                    for (int k = 0; k < num; k++)
+                    {
+                        ClassDefaultMonsters classDefaultMonsters = Read.ReadExistence(binaryReader, 15);
+                        int[] Id_joined2 = new int[classDefaultMonsters.Amount_in_group];
+                        string[] array = new string[classDefaultMonsters.Amount_in_group];
+                        int j;
+                        for (j = 0; j < classDefaultMonsters.Amount_in_group; j++)
+                        {
+                            Id_joined2[j] = classDefaultMonsters.MobDops[j].Id;
+                            if (!UdE.API.IsElementsEditorRunning)
+                            {
+                                int num2 = Element.ExistenceLists.FindIndex((NpcMonster v) => v.Id == Id_joined2[j]);
+                                if (num2 != -1)
+                                {
+                                    array[j] = Element.ExistenceLists[num2].Name;
+                                }
+                                else
+                                {
+                                    array[j] = "?";
+                                }
+                            }
+                            else
+                            {
+                                array[j] = Elementsdata.GetNpcName(Id_joined2[j]);
+                            }
+
+                        }
+                        NpcMobsGrid.Rows.Add(NpcMobsGrid.Rows.Count + 1, string.Join(",", Id_joined2), string.Join(",", array));
+                        Read.NpcMobList.Add(classDefaultMonsters);
+                        Read.NpcMobsAmount++;
+                    }
+                    NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
+                    for (int l = 0; l < num; l++)
+                    {
+                        NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1 - l].Selected = true;
+                    }
+                    ExistenceGrid_CellChanged(null, null);
+                    binaryReader.Close();
+                }
+                else
+                {
+                    ShowWrongFile();
+                }
+            }
+            else if (MainTabControl.SelectedIndex == 1)
+            {
+                openFileDialog.FileName = "Npcgen Exported Resources";
+                openFileDialog.Filter = "Npcgen Resources | *.nbler";
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                BinaryReader binaryReader2 = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
+                if (Encoding.Default.GetString(binaryReader2.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "Resources")
+                {
+                    int num3 = binaryReader2.ReadInt32();
+                    for (int m = 0; m < num3; m++)
+                    {
+                        ClassDefaultResources classDefaultResources = Read.ReadResource(binaryReader2, 15);
+                        int[] Id_joined = new int[classDefaultResources.Amount_in_group];
+                        string[] array2 = new string[classDefaultResources.Amount_in_group];
+                        int i;
+                        for (i = 0; i < classDefaultResources.Amount_in_group; i++)
+                        {
+                            Id_joined[i] = classDefaultResources.ResExtra[i].Id;
+                            if (!UdE.API.IsElementsEditorRunning)
+                            {
+                                int num4 = Element.ResourcesList.FindIndex((NpcMonster v) => v.Id == Id_joined[i]);
+                                if (num4 != -1)
+                                {
+                                    array2[i] = Element.ResourcesList[num4].Name;
+                                }
+                                else
+                                {
+                                    array2[i] = "?";
+                                }
+                            }
+                            else
+                            {
+                                array2[i] = Elementsdata.GetMineName(Id_joined[i]);
+                            }
+
+                        }
+                        ResourcesGrid.Rows.Add(ResourcesGrid.Rows.Count + 1, string.Join(",", Id_joined), string.Join(",", array2));
+                        Read.ResourcesList.Add(classDefaultResources);
+                        Read.ResourcesAmount++;
+                    }
+                    ResourcesGrid.CurrentCell = ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1].Cells[1];
+                    for (int n = 0; n < num3; n++)
+                    {
+                        ResourcesGrid.Rows[ResourcesGrid.Rows.Count - 1 - n].Selected = true;
+                    }
+                    ResourcesGrid_CurrentCellChanged(null, null);
+                }
+                else
+                {
+                    ShowWrongFile();
+                }
+            }
+            else if (MainTabControl.SelectedIndex == 2)
+            {
+                openFileDialog.FileName = "Npcgen Exported Dynamic Objects";
+                openFileDialog.Filter = "Npcgen Dynamic Objects | *.nbled";
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                BinaryReader binaryReader3 = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
+                if (Encoding.Default.GetString(binaryReader3.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "DynObject")
+                {
+                    int num5 = binaryReader3.ReadInt32();
+                    for (int num6 = 0; num6 < num5; num6++)
+                    {
+                        ClassDynamicObject classDynamicObject = Read.ReadDynObjects(binaryReader3, 15);
+                        DynamicGrid.Rows.Add(DynamicGrid.Rows.Count + 1, classDynamicObject.Id, GetDynamicName(classDynamicObject.Id), classDynamicObject.TriggerId);
+                        Read.DynamicsList.Add(classDynamicObject);
+                        Read.DynobjectAmount++;
+                    }
+                    DynamicGrid.CurrentCell = DynamicGrid.Rows[DynamicGrid.Rows.Count - 1].Cells[1];
+                    for (int num7 = 0; num7 < num5; num7++)
+                    {
+                        DynamicGrid.Rows[DynamicGrid.Rows.Count - 1 - num7].Selected = true;
+                    }
+                    DynamicGrid_CurrentCellChanged(null, null);
+                }
+            }
+            else
+            {
+                if (MainTabControl.SelectedIndex != 3)
+                {
+                    return;
+                }
+                openFileDialog.FileName = "Npcgen Exported Triggers";
+                openFileDialog.Filter = "Npcgen Triggers | *.nblet";
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                BinaryReader binaryReader4 = new BinaryReader(File.Open(openFileDialog.FileName, FileMode.Open));
+                if (Encoding.Default.GetString(binaryReader4.ReadBytes(33)).Split(new string[1] { "||" }, StringSplitOptions.None).ElementAt(1) == "Triggerss")
+                {
+                    int num8 = binaryReader4.ReadInt32();
+                    for (int num9 = 0; num9 < num8; num9++)
+                    {
+                        ClassTrigger classTrigger = Read.ReadTrigger(binaryReader4, 15);
+                        TriggersGrid.Rows.Add(TriggersGrid.Rows.Count + 1, classTrigger.Id, classTrigger.GmID, classTrigger.TriggerName);
+                        Read.TriggersList.Add(classTrigger);
+                        Read.TriggersAmount++;
+                    }
+                    TriggersGrid.CurrentCell = TriggersGrid.Rows[TriggersGrid.Rows.Count - 1].Cells[1];
+                    for (int num10 = 0; num10 < num8; num10++)
+                    {
+                        TriggersGrid.Rows[TriggersGrid.Rows.Count - 1 - num10].Selected = true;
+                    }
+                    TriggersGrid_CurrentCellChanged(null, null);
+                }
+            }
+        }
+        else if (Language == 1)
+        {
+            MessageBox.Show("Файл не загружен!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        else
+        {
+            MessageBox.Show("File isn't loaded!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+    }
+
+    private void ExistenceSearchId_DoubleClick(object sender, EventArgs e)
+    {
+        if (ChooseFromElementsForm == null)
+        {
+            return;
+        }
+        int.TryParse(ExistenceSearchId.Text, out var b);
+        int num = Element.ExistenceLists.FindIndex((NpcMonster z) => z.Id == b);
+        ChooseFromElementsForm.SetAction = 1;
+        ChooseFromElementsForm.SetWindow = 2;
+        if (!UdE.API.IsElementsEditorRunning)
+        {
+            if (num != -1)
+            {
+                if (num >= Element.MonsterdAmount)
+                {
+                    ChooseFromElementsForm.FindRow(num - Element.MonsterdAmount, "Npc");
+                }
+                else
+                {
+                    ChooseFromElementsForm.FindRow(num, "Mob");
+                }
+            }
+            ChooseFromElementsForm.ShowDialog(this);
+        }
+        else
+        {
+            if (!UdE.API.IsSelectItemDialogCreated())
+            {
+                if (UdE.API.CreateSelectItemDialog(this) == IntPtr.Zero)
+                    return;
+            }
+
+            int selectedItemId = UdE.API.ShowSelectItemDialogByID(UdE.ItemType.NpcOrMobOrMine, b);
+            if (selectedItemId > 0)
+            {
+                ExistenceSearchId.Text = selectedItemId.ToString();
+                b = selectedItemId;
+                SetId(selectedItemId, 1, 2);
+            }
+            UdE.API.DestroySelectItemDialog();
+        }
+
+    }
+
+    private void ResourceSearchId_DoubleClick(object sender, EventArgs e)
+    {
+        if (ChooseFromElementsForm != null)
+        {
+            ChooseFromElementsForm.SetAction = 2;
+            ChooseFromElementsForm.SetWindow = 2;
+            int.TryParse(ResourceSearchId.Text, out var b);
+            if (!UdE.API.IsElementsEditorRunning)
+            {
+                int num = Element.ResourcesList.FindIndex((NpcMonster z) => z.Id == b);
+                if (num != -1)
+                {
+                    ChooseFromElementsForm.FindRow(num, "Resource");
+                }
+                ChooseFromElementsForm.ShowDialog(this);
+            }
+            else
+            {
+                if (!UdE.API.IsSelectItemDialogCreated())
+                {
+                    if (UdE.API.CreateSelectItemDialog(this) == IntPtr.Zero)
+                        return;
+                }
+
+                int selectedItemId = UdE.API.ShowSelectItemDialogByID(UdE.ItemType.PW_MINE_ESSENCE, b);
+                if (selectedItemId > 0)
+                {
+                    ResourceSearchId.Text = selectedItemId.ToString();
+                    b = selectedItemId;
+                    SetId(selectedItemId, 2, 2);
+                }
+                UdE.API.DestroySelectItemDialog();
+            }
+        }
+    }
+
+    private void DynamicSearchId_DoubleClick(object sender, EventArgs e)
+    {
+        DynamicForm.SetWindow = 2;
+        DynamicForm.ShowDialog(this);
+    }
+
+    private void ExistenceToEnd_Click(object sender, EventArgs e)
+    {
+        if (Read != null && NpcMobsGrid.CurrentRow != null && NpcMobsGrid.CurrentRow.Index != -1)
+        {
+            ClassDefaultMonsters item = Read.NpcMobList[NpcMobsGrid.CurrentRow.Index];
+            Read.NpcMobList.RemoveAt(NpcMobsGrid.CurrentRow.Index);
+            Read.NpcMobList.Insert(Read.NpcMobList.Count, item);
+            DataGridViewRow dataGridViewRow = NpcMobsGrid.Rows[NpcMobsGrid.CurrentRow.Index];
+            NpcMobsGrid.Rows.Remove(dataGridViewRow);
+            NpcMobsGrid.Rows.Insert(NpcMobsGrid.Rows.Count, dataGridViewRow);
+            NpcMobsGrid.CurrentCell = NpcMobsGrid.Rows[NpcMobsGrid.Rows.Count - 1].Cells[1];
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && components != null)
+        {
+            components.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -7515,6 +7819,9 @@ public class Form1 : Form
             this.NpcsGroupGrid.ShowRowErrors = false;
             this.NpcsGroupGrid.Size = new System.Drawing.Size(218, 186);
             this.NpcsGroupGrid.TabIndex = 15;
+            this.NpcsGroupGrid.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.NpcsGroupGrid_CellMouseEnter);
+            this.NpcsGroupGrid.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.NpcsGroupGrid_CellMouseLeave);
+            this.NpcsGroupGrid.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.NpcsGroupGrid_CellMouseMove);
             this.NpcsGroupGrid.CurrentCellChanged += new System.EventHandler(this.UnderExistenceGrid_CellChanged);
             // 
             // dataGridViewTextBoxColumn3
@@ -7816,6 +8123,9 @@ public class Form1 : Form
             this.Id_numeric.Name = "Id_numeric";
             this.Id_numeric.Size = new System.Drawing.Size(80, 20);
             this.Id_numeric.TabIndex = 38;
+            this.Id_numeric.MouseEnter += new System.EventHandler(this.Id_numeric_MouseEnter);
+            this.Id_numeric.MouseLeave += new System.EventHandler(this.Id_numeric_MouseLeave);
+            this.Id_numeric.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Id_numeric_MouseMove);
             this.Id_numeric.DoubleClick += new System.EventHandler(this.Id_numeric_DoubleClick);
             this.Id_numeric.KeyDown += new System.Windows.Forms.KeyEventHandler(this.UnderNpcAndMobs_EnterPress);
             this.Id_numeric.Leave += new System.EventHandler(this.UnderNpcAndMobs_Leave);
@@ -7957,6 +8267,8 @@ public class Form1 : Form
             this.NpcMobsGrid.Size = new System.Drawing.Size(359, 425);
             this.NpcMobsGrid.TabIndex = 15;
             this.NpcMobsGrid.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.NpcMobsGrid_CellMouseEnter);
+            this.NpcMobsGrid.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.NpcMobsGrid_CellMouseLeave);
+            this.NpcMobsGrid.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.NpcMobsGrid_CellMouseMove);
             this.NpcMobsGrid.CurrentCellChanged += new System.EventHandler(this.ExistenceGrid_CellChanged);
             this.NpcMobsGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GridsKeyDown);
             // 
@@ -8049,7 +8361,7 @@ public class Form1 : Form
             this.UpExistence.Image = ((System.Drawing.Image)(resources.GetObject("UpExistence.Image")));
             this.UpExistence.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.UpExistence.Name = "UpExistence";
-            this.UpExistence.Size = new System.Drawing.Size(180, 22);
+            this.UpExistence.Size = new System.Drawing.Size(159, 22);
             this.UpExistence.Text = "Выше   Shift+W";
             this.UpExistence.Click += new System.EventHandler(this.UpObjects);
             // 
@@ -8057,25 +8369,25 @@ public class Form1 : Form
             // 
             this.DownExistence.Image = ((System.Drawing.Image)(resources.GetObject("DownExistence.Image")));
             this.DownExistence.Name = "DownExistence";
-            this.DownExistence.Size = new System.Drawing.Size(180, 22);
+            this.DownExistence.Size = new System.Drawing.Size(159, 22);
             this.DownExistence.Text = "Ниже    Shift+S";
             this.DownExistence.Click += new System.EventHandler(this.DownObjects);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(156, 6);
             // 
             // вНачалоToolStripMenuItem
             // 
             this.вНачалоToolStripMenuItem.Name = "вНачалоToolStripMenuItem";
-            this.вНачалоToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.вНачалоToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.вНачалоToolStripMenuItem.Text = "To the begining";
             // 
             // ExistenceToEnd
             // 
             this.ExistenceToEnd.Name = "ExistenceToEnd";
-            this.ExistenceToEnd.Size = new System.Drawing.Size(180, 22);
+            this.ExistenceToEnd.Size = new System.Drawing.Size(159, 22);
             this.ExistenceToEnd.Text = "In the end";
             this.ExistenceToEnd.Click += new System.EventHandler(this.ExistenceToEnd_Click);
             // 
@@ -9069,6 +9381,9 @@ public class Form1 : Form
             this.RId_numeric.Name = "RId_numeric";
             this.RId_numeric.Size = new System.Drawing.Size(80, 20);
             this.RId_numeric.TabIndex = 38;
+            this.RId_numeric.MouseEnter += new System.EventHandler(this.RId_numeric_MouseEnter);
+            this.RId_numeric.MouseLeave += new System.EventHandler(this.RId_numeric_MouseLeave);
+            this.RId_numeric.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RId_numeric_MouseMove);
             this.RId_numeric.DoubleClick += new System.EventHandler(this.RId_numeric_DoubleClick);
             this.RId_numeric.KeyDown += new System.Windows.Forms.KeyEventHandler(this.UnderResources_EnterPress);
             this.RId_numeric.Leave += new System.EventHandler(this.UnderResourcesLeave);
@@ -9150,6 +9465,9 @@ public class Form1 : Form
             this.ResourcesGroupGrid.ShowRowErrors = false;
             this.ResourcesGroupGrid.Size = new System.Drawing.Size(218, 189);
             this.ResourcesGroupGrid.TabIndex = 15;
+            this.ResourcesGroupGrid.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResourcesGroupGrid_CellMouseEnter);
+            this.ResourcesGroupGrid.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResourcesGroupGrid_CellMouseLeave);
+            this.ResourcesGroupGrid.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ResourcesGroupGrid_CellMouseMove);
             this.ResourcesGroupGrid.CurrentCellChanged += new System.EventHandler(this.ResourcesGroupGrid_CurrentCellChanged);
             // 
             // dataGridViewTextBoxColumn9
@@ -9739,6 +10057,8 @@ public class Form1 : Form
             this.ResourcesGrid.Size = new System.Drawing.Size(359, 425);
             this.ResourcesGrid.TabIndex = 14;
             this.ResourcesGrid.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResourcesGrid_CellMouseEnter);
+            this.ResourcesGrid.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResourcesGrid_CellMouseLeave);
+            this.ResourcesGrid.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ResourcesGrid_CellMouseMove);
             this.ResourcesGrid.CurrentCellChanged += new System.EventHandler(this.ResourcesGrid_CurrentCellChanged);
             this.ResourcesGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GridsKeyDown);
             // 
@@ -10626,6 +10946,9 @@ public class Form1 : Form
             this.RUTrigger.Size = new System.Drawing.Size(194, 197);
             this.RUTrigger.TabIndex = 25;
             this.RUTrigger.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.RUTrigger_CellDoubleClick);
+            this.RUTrigger.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.RUTrigger_CellMouseEnter);
+            this.RUTrigger.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.RUTrigger_CellMouseLeave);
+            this.RUTrigger.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.RUTrigger_CellMouseMove);
             // 
             // dataGridViewTextBoxColumn22
             // 
@@ -10726,6 +11049,8 @@ public class Form1 : Form
             this.MUTrigger.TabIndex = 25;
             this.MUTrigger.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.MUTrigger_CellDoubleClick);
             this.MUTrigger.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.TriggerUsingInMobsAndNpcsGrid_CellMouseEnter);
+            this.MUTrigger.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.MUTrigger_CellMouseLeave);
+            this.MUTrigger.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.MUTrigger_CellMouseMove);
             // 
             // dataGridViewTextBoxColumn28
             // 
@@ -11391,7 +11716,7 @@ public class Form1 : Form
             this.UpTrigger.Image = ((System.Drawing.Image)(resources.GetObject("UpTrigger.Image")));
             this.UpTrigger.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.UpTrigger.Name = "UpTrigger";
-            this.UpTrigger.Size = new System.Drawing.Size(180, 22);
+            this.UpTrigger.Size = new System.Drawing.Size(107, 22);
             this.UpTrigger.Text = "Выше";
             this.UpTrigger.Click += new System.EventHandler(this.UpObjects);
             // 
@@ -11399,7 +11724,7 @@ public class Form1 : Form
             // 
             this.DownTrigger.Image = ((System.Drawing.Image)(resources.GetObject("DownTrigger.Image")));
             this.DownTrigger.Name = "DownTrigger";
-            this.DownTrigger.Size = new System.Drawing.Size(180, 22);
+            this.DownTrigger.Size = new System.Drawing.Size(107, 22);
             this.DownTrigger.Text = "Ниже";
             this.DownTrigger.Click += new System.EventHandler(this.DownObjects);
             // 
@@ -12860,7 +13185,6 @@ public class Form1 : Form
             this.Search_element.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Search_element.BackColor = System.Drawing.SystemColors.Control;
             this.Search_element.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Search_element.Image = ((System.Drawing.Image)(resources.GetObject("Search_element.Image")));
             this.Search_element.Location = new System.Drawing.Point(762, 6);
             this.Search_element.Name = "Search_element";
             this.Search_element.Size = new System.Drawing.Size(26, 20);
@@ -13005,5 +13329,176 @@ public class Form1 : Form
             this.ResumeLayout(false);
             this.PerformLayout();
 
-	}
+    }
+
+    private void Id_numeric_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (int.TryParse(Id_numeric.Value.ToString(), out int id) && id > 0)
+        {
+            UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+        }
+    }
+
+    private void Id_numeric_MouseEnter(object sender, EventArgs e)
+    {
+        if (int.TryParse(Id_numeric.Value.ToString(), out int id) && id > 0)
+        {
+            UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+        }
+    }
+
+    private void Id_numeric_MouseLeave(object sender, EventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void NpcMobsGrid_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void NpcMobsGrid_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(NpcMobsGrid.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void NpcsGroupGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(NpcsGroupGrid.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void NpcsGroupGrid_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(NpcsGroupGrid.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void NpcsGroupGrid_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void ResourcesGrid_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void ResourcesGrid_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(ResourcesGrid.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void ResourcesGroupGrid_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(ResourcesGroupGrid.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void ResourcesGroupGrid_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void ResourcesGroupGrid_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(ResourcesGroupGrid.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void RId_numeric_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (int.TryParse(RId_numeric.Value.ToString(), out int id) && id > 0)
+        {
+            UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+        }
+    }
+
+    private void RId_numeric_MouseEnter(object sender, EventArgs e)
+    {
+        if (int.TryParse(RId_numeric.Value.ToString(), out int id) && id > 0)
+        {
+            UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+        }
+    }
+
+    private void RId_numeric_MouseLeave(object sender, EventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void MUTrigger_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
+
+    private void MUTrigger_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(MUTrigger.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void RUTrigger_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(RUTrigger.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void RUTrigger_CellMouseMove(object sender, DataGridViewCellMouseEventArgs e)
+    {
+        if ((e.ColumnIndex > 0) & (e.RowIndex >= 0))
+        {
+            if (int.TryParse(RUTrigger.Rows[e.RowIndex].Cells[1].Value.ToString(), out int id) && id > 0)
+            {
+                UdE.API.ShowToolTip(UdE.ItemType.NpcOrMobOrMine, id);
+            }
+        }
+    }
+
+    private void RUTrigger_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+    {
+        UdE.API.fHideToolTip();
+    }
 }
