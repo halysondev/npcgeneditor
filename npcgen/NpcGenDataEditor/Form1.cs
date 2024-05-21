@@ -983,6 +983,11 @@ public class Form1 : Form
     public Form1()
     {
         InitializeComponent();
+        if(UdE.API.IsElementsEditorRunning)
+        {
+            Elements_textbox.Enabled = false;
+            Search_element.Enabled = false;
+        }
         try
         {
             KBDHook.LocalHook = false;
@@ -1371,9 +1376,12 @@ public class Form1 : Form
 
     private void SearchElementButton(object sender, EventArgs e)
     {
-        if (Element_dialog.ShowDialog() == DialogResult.OK)
+        if(!UdE.API.IsElementsEditorRunning)
         {
-            Elements_textbox.Text = Element_dialog.FileName;
+            if (Element_dialog.ShowDialog() == DialogResult.OK)
+            {
+                Elements_textbox.Text = Element_dialog.FileName;
+            }
         }
     }
 
@@ -1395,80 +1403,161 @@ public class Form1 : Form
 
     private void OpenElementAndNpcgen(object sender, EventArgs e)
     {
-        if (File.Exists(Npcgen_textbox.Text) && File.Exists(Elements_textbox.Text))
+        if(!UdE.API.IsElementsEditorRunning)
         {
-            Read = new NpcGen();
-            BinaryReader binaryReader = new BinaryReader(File.Open(Npcgen_textbox.Text, FileMode.Open));
-            Read.ReadNpcgen(binaryReader);
-            binaryReader.Close();
-            Element = new Elementsdata(Elements_textbox.Text);
-            Text = Npcgen_textbox.Text + "  -  Version " + Read.File_version + "  -  Npcgen Editor By Luka v1.7.4 and Updated by Haly";
-            NpcMobsGrid.ScrollBars = ScrollBars.None;
-            ResourcesGrid.ScrollBars = ScrollBars.None;
-            DynamicGrid.ScrollBars = ScrollBars.None;
-            TriggersGrid.ScrollBars = ScrollBars.None;
-            new Thread((ThreadStart)delegate
+            if (File.Exists(Npcgen_textbox.Text) && File.Exists(Elements_textbox.Text))
             {
-                ChooseFromElementsForm = new MobsNpcsForm(this, Element.ExistenceLists, Element.ResourcesList, Element.MonsterdAmount, Element.NpcsAmount);
-                ChooseFromElementsForm.RefreshLanguage(Language);
-            }).Start();
-            NpcMobsGrid.Rows.Clear();
-            ResourcesGrid.Rows.Clear();
-            DynamicGrid.Rows.Clear();
-            TriggersGrid.Rows.Clear();
-            ErrorsGrid.Rows.Clear();
-            MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount + Read.TriggersAmount;
-            SortNpcGen();
-            SortDynamicObjects();
-            SortTriggers();
-            NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
-            ResourcesGrid.ScrollBars = ScrollBars.Vertical;
-            DynamicGrid.ScrollBars = ScrollBars.Vertical;
-            TriggersGrid.ScrollBars = ScrollBars.Vertical;
-            if (Language == 1)
-            {
-                ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
-                ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
-                DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
-                TriggersTab.Text = $"Тригеры 1/{Read.TriggersAmount}";
-            }
-            else
-            {
-                ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
-                ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
-                DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
-                TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
-            }
-            if (Read.File_version <= 6)
-            {
+                Read = new NpcGen();
+                BinaryReader binaryReader = new BinaryReader(File.Open(Npcgen_textbox.Text, FileMode.Open));
+                Read.ReadNpcgen(binaryReader);
+                binaryReader.Close();
+                Element = new Elementsdata(Elements_textbox.Text);
+                Text = Npcgen_textbox.Text + "  -  Version " + Read.File_version + "  -  Npcgen Editor By Luka v1.7.4 and Updated by Haly";
+                NpcMobsGrid.ScrollBars = ScrollBars.None;
+                ResourcesGrid.ScrollBars = ScrollBars.None;
+                DynamicGrid.ScrollBars = ScrollBars.None;
+                TriggersGrid.ScrollBars = ScrollBars.None;
+                new Thread((ThreadStart)delegate
+                {
+                    ChooseFromElementsForm = new MobsNpcsForm(this, Element.ExistenceLists, Element.ResourcesList, Element.MonsterdAmount, Element.NpcsAmount);
+                    ChooseFromElementsForm.RefreshLanguage(Language);
+                }).Start();
+                NpcMobsGrid.Rows.Clear();
+                ResourcesGrid.Rows.Clear();
+                DynamicGrid.Rows.Clear();
+                TriggersGrid.Rows.Clear();
+                ErrorsGrid.Rows.Clear();
+                MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount + Read.TriggersAmount;
+                SortNpcGen();
+                SortDynamicObjects();
+                SortTriggers();
+                NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
+                ResourcesGrid.ScrollBars = ScrollBars.Vertical;
+                DynamicGrid.ScrollBars = ScrollBars.Vertical;
+                TriggersGrid.ScrollBars = ScrollBars.Vertical;
                 if (Language == 1)
                 {
-                    MessageBox.Show("Обратите внимание,в этой версии триггеры не были доступны,но их можно редактировать для конвертирования в другую версию!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
+                    ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
+                    DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
+                    TriggersTab.Text = $"Тригеры 1/{Read.TriggersAmount}";
                 }
-                else if (Language == 2)
+                else
                 {
-                    MessageBox.Show("Make attention,triggers didn't exist in this file version,but you can edit them for converting to another version!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
+                    ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
+                    DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
+                    TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
+                }
+                if (Read.File_version <= 6)
+                {
+                    if (Language == 1)
+                    {
+                        MessageBox.Show("Обратите внимание,в этой версии триггеры не были доступны,но их можно редактировать для конвертирования в другую версию!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                    else if (Language == 2)
+                    {
+                        MessageBox.Show("Make attention,triggers didn't exist in this file version,but you can edit them for converting to another version!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                }
+                string text = "Проверить файл на ошибки?";
+                if (Language == 2)
+                {
+                    text = "Do you want to check file on errors?";
+                }
+                DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    SearchErrorsButton_Click(null, null);
+                    MainTabControl.SelectedIndex = 5;
                 }
             }
-            string text = "Проверить файл на ошибки?";
-            if (Language == 2)
+            else if (Language == 1)
             {
-                text = "Do you want to check file on errors?";
+                MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-            DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            else if (Language == 2)
             {
-                SearchErrorsButton_Click(null, null);
-                MainTabControl.SelectedIndex = 5;
+                MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
         }
-        else if (Language == 1)
+        else
         {
-            MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-        }
-        else if (Language == 2)
-        {
-            MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            if (File.Exists(Npcgen_textbox.Text))
+            {
+                Read = new NpcGen();
+                BinaryReader binaryReader = new BinaryReader(File.Open(Npcgen_textbox.Text, FileMode.Open));
+                Read.ReadNpcgen(binaryReader);
+                binaryReader.Close();
+                //Element = new Elementsdata(Elements_textbox.Text);
+                Text = Npcgen_textbox.Text + "  -  Version " + Read.File_version + "  -  Npcgen Editor By Luka v1.7.4 and Updated by Haly";
+                NpcMobsGrid.ScrollBars = ScrollBars.None;
+                ResourcesGrid.ScrollBars = ScrollBars.None;
+                DynamicGrid.ScrollBars = ScrollBars.None;
+                TriggersGrid.ScrollBars = ScrollBars.None;
+                //new Thread((ThreadStart)delegate
+                //{
+                //    ChooseFromElementsForm = new MobsNpcsForm(this, Element.ExistenceLists, Element.ResourcesList, Element.MonsterdAmount, Element.NpcsAmount);
+                //    ChooseFromElementsForm.RefreshLanguage(Language);
+                //}).Start();
+                NpcMobsGrid.Rows.Clear();
+                ResourcesGrid.Rows.Clear();
+                DynamicGrid.Rows.Clear();
+                TriggersGrid.Rows.Clear();
+                ErrorsGrid.Rows.Clear();
+                MainProgressBar.Maximum = Read.NpcMobsAmount + Read.ResourcesAmount + Read.DynobjectAmount + Read.TriggersAmount;
+                SortNpcGen();
+                SortDynamicObjects();
+                SortTriggers();
+                NpcMobsGrid.ScrollBars = ScrollBars.Vertical;
+                ResourcesGrid.ScrollBars = ScrollBars.Vertical;
+                DynamicGrid.ScrollBars = ScrollBars.Vertical;
+                TriggersGrid.ScrollBars = ScrollBars.Vertical;
+                if (Language == 1)
+                {
+                    ExistenceTab.Text = $"Мобы и Нипы 1/{Read.NpcMobsAmount}";
+                    ResourcesTab.Text = $"Ресурсы 1/{Read.ResourcesAmount}";
+                    DynObjectsTab.Text = $"Динамические Объекты 1/{Read.DynobjectAmount}";
+                    TriggersTab.Text = $"Тригеры 1/{Read.TriggersAmount}";
+                }
+                else
+                {
+                    ExistenceTab.Text = $"Mobs and Npcs 1/{Read.NpcMobsAmount}";
+                    ResourcesTab.Text = $"Resources 1/{Read.ResourcesAmount}";
+                    DynObjectsTab.Text = $"Dynamic Objects 1/{Read.DynobjectAmount}";
+                    TriggersTab.Text = $"Triggers 1/{Read.TriggersAmount}";
+                }
+                if (Read.File_version <= 6)
+                {
+                    if (Language == 1)
+                    {
+                        MessageBox.Show("Обратите внимание,в этой версии триггеры не были доступны,но их можно редактировать для конвертирования в другую версию!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                    else if (Language == 2)
+                    {
+                        MessageBox.Show("Make attention,triggers didn't exist in this file version,but you can edit them for converting to another version!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    }
+                }
+                string text = "Проверить файл на ошибки?";
+                if (Language == 2)
+                {
+                    text = "Do you want to check file on errors?";
+                }
+                DialogResult dialogResult = MessageBox.Show(text, "Npcgen Editor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    SearchErrorsButton_Click(null, null);
+                    MainTabControl.SelectedIndex = 5;
+                }
+            }
+            else if (Language == 1)
+            {
+                MessageBox.Show("Файл не существует!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else if (Language == 2)
+            {
+                MessageBox.Show("File doesn't exist!!...", "Npcgen Editor", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
         }
     }
 
