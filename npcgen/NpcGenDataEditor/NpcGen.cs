@@ -90,7 +90,7 @@ internal class NpcGen
 	public void ExportExistence(string Path, List<int> SelectedExistence)
 	{
 		BinaryWriter binaryWriter = new BinaryWriter(File.Create(Path));
-		binaryWriter.Write("Npcgen Editor by Luka and Updated by Haly||Existence");
+		binaryWriter.Write("Npcgen Editor by Luka||Existence");
 		binaryWriter.Write(SelectedExistence.Count);
 		foreach (int item in SelectedExistence)
 		{
@@ -102,7 +102,7 @@ internal class NpcGen
 	public void ExportResource(string Path, List<int> SelectedResources)
 	{
 		BinaryWriter binaryWriter = new BinaryWriter(File.Create(Path));
-		binaryWriter.Write("Npcgen Editor by Luka and Updated by Haly||Resources");
+		binaryWriter.Write("Npcgen Editor by Luka||Resources");
 		binaryWriter.Write(SelectedResources.Count);
 		foreach (int SelectedResource in SelectedResources)
 		{
@@ -114,7 +114,7 @@ internal class NpcGen
 	public void ExportDynamics(string Path, List<int> SelectedDynamics)
 	{
 		BinaryWriter binaryWriter = new BinaryWriter(File.Create(Path));
-		binaryWriter.Write("Npcgen Editor by Luka and Updated by Haly||DynObject");
+		binaryWriter.Write("Npcgen Editor by Luka||DynObject");
 		binaryWriter.Write(SelectedDynamics.Count);
 		foreach (int SelectedDynamic in SelectedDynamics)
 		{
@@ -126,7 +126,7 @@ internal class NpcGen
 	public void ExportTriggers(string Path, List<int> SelectedTriggers)
 	{
 		BinaryWriter binaryWriter = new BinaryWriter(File.Create(Path));
-		binaryWriter.Write("Npcgen Editor by Luka and Updated by Haly||Triggerss");
+		binaryWriter.Write("Npcgen Editor by Luka||Triggerss");
 		binaryWriter.Write(SelectedTriggers.Count);
 		foreach (int SelectedTrigger in SelectedTriggers)
 		{
